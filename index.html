@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>모두의 급식?</title>
-<meta name="description" content="오늘 뭐 먹지? 고민 말고 일단 잡솨봐">
+<meta name="description" content="빡.만.앱 (청소년지도사가 빡쳐서 만든 앱)">
 <meta property="og:title" content="모두의 급식?">
-<meta property="og:description" content="오늘 뭐 먹지? 고민 말고 일단 잡솨봐">
+<meta property="og:description" content="빡.만.앱 (청소년지도사가 빡쳐서 만든 앱)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
@@ -46,6 +46,8 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-off
 .ding{font-family:var(--title);font-size:26px;color:#E8743B;margin:0 0 18px}
 .ding small{display:block;font-family:var(--body);font-size:13px;color:#A49A8B;letter-spacing:.2em;margin-bottom:2px}
 .ld p{margin:8px 0 0;font-size:15px;color:#8A8276}
+.ld p.bbak{font-family:var(--title);font-size:22px;line-height:1.2;color:#D23A2E;margin:0;letter-spacing:.08em}
+.ld p.bsub{font-size:13px;color:#A49A8B;margin:4px 0 30px}
 
 .top{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg);border-bottom:1px solid var(--line);z-index:5}
 .top .ttl{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
@@ -135,20 +137,86 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-off
 details{font-size:12px;color:var(--ink-soft);margin-top:10px}
 details ul{padding-left:16px}
 .err{position:absolute;inset:0;display:none;place-items:center;text-align:center;padding:24px;font-size:14px;color:var(--ink-soft)}
+.tag-bk{font-size:11px;background:#E07A1F;color:#FFFFFF;border-radius:8px;padding:0 6px}
+.tag-bk.tap{pointer-events:auto;cursor:pointer;font-size:12px;padding:3px 9px;border:2px solid #FFFFFF;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.hero{text-align:center;border:2px dashed var(--line);border-radius:16px;padding:12px;margin:8px 0 12px}
+.hero .spimg{max-width:230px;margin-bottom:8px}
+.hero b{font-family:var(--title);font-weight:400;font-size:24px;color:var(--accent);display:block;line-height:1.25}
+.hero span{font-size:13px;color:var(--ink-soft);display:block}
+.dishhero{position:relative;margin:4px 0 14px;border-radius:20px;overflow:hidden;box-shadow:0 10px 26px rgba(40,30,10,.22)}
+.dishhero img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.dishhero figcaption{position:absolute;left:0;right:0;bottom:0;padding:28px 16px 14px;background:linear-gradient(transparent,rgba(0,0,0,.62));color:#FFFFFF;text-align:left}
+.dishhero figcaption small{display:block;font-size:13px;opacity:.9}
+.dishhero figcaption b{font-family:var(--title);font-weight:400;font-size:28px;line-height:1.2}
+.howto{list-style:none;margin:6px 0 16px;padding:0}
+.howto li{padding:9px 0;border-bottom:1px solid var(--line);font-size:14.5px;line-height:1.5}
+.howto li b{display:block;font-size:15px}
+.smeal{border-bottom:1px solid var(--line);padding:10px 0;font-size:14px;line-height:1.55}
+.smeal b{display:block;font-size:13px;color:var(--ink-soft);font-weight:500}
+.smeal.now b{color:var(--accent)}
+.actimg{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;margin-bottom:6px}
+.orgbtn{width:100%;margin-top:10px;border:1px solid var(--line);background:transparent;border-radius:12px;padding:10px;font-size:14px;color:var(--ink)}
+.orglist{list-style:none;padding:0;margin:0}
+.orglist li{display:flex;justify-content:space-between;gap:10px;padding:10px 2px;border-bottom:1px solid var(--line);font-size:15px}
+.orglist li small{color:var(--ink-soft);font-size:13px}
+.picks{display:grid;gap:8px;margin:4px 0 10px}
+.pick{display:flex;align-items:center;gap:12px;text-align:left;background:var(--sheet);border:2px solid var(--line);border-radius:14px;padding:12px 14px;font-size:16px;font-weight:700;color:var(--ink)}
+.pick .e{font-size:24px;flex:0 0 auto}
+.pick small{display:block;font-weight:400;font-size:13px;color:var(--ink-soft)}
+.pick:hover{border-color:var(--ink)}
+.sbox{display:flex;gap:8px;margin:6px 0 8px}
+.sbox input{flex:1;min-width:0;border:2px solid var(--line);border-radius:12px;padding:12px;font:inherit;font-size:16px;background:var(--sheet);color:var(--ink)}
+.sbox .btn{flex:0 0 auto;padding:12px 16px}
+.slist{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.slist button{width:100%;text-align:left;border:1px solid var(--line);background:transparent;border-radius:12px;padding:10px 12px;font-size:15px}
+.slist small{display:block;font-size:12px;color:var(--ink-soft)}
+.msg{font-size:14px;color:var(--ink-soft);margin:6px 0}
+.back{margin-bottom:6px}
+.dish{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px dotted var(--line);font-size:15px}
+.dish small{font-size:12px;color:var(--ink-soft);text-align:right}
+.wx{display:flex;gap:12px;align-items:center;border:2px dashed var(--line);border-radius:14px;padding:10px;margin:10px 0}
+.wx img{width:78px;height:78px;border-radius:12px;object-fit:cover;flex:0 0 auto}
+.wx b{font-family:var(--title);font-weight:400;font-size:20px;color:var(--accent);display:block}
+.wx span{font-size:13px;color:var(--ink-soft)}
+#storyCard .btn{flex:0 0 auto}
+#storyOv .card{word-break:keep-all;border-radius:0;height:100%;max-height:none;display:flex;flex-direction:column}
+.sline{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;text-align:center}
+.sline .who{font-size:13px;color:var(--ink-soft);margin:0}
+.sline h3{font-family:var(--title);font-weight:400;font-size:26px;line-height:1.4;margin:0;word-break:keep-all}
+.sline h3 em{font-style:normal;color:var(--red)}
+.bkid{width:120px;height:120px;margin:0 auto}
+.receipt{background:#FFFDF6;color:#2A2620;padding:18px 18px 22px;font-size:15px;border:1px solid #E3DAC4;margin:6px 0 14px;-webkit-mask:radial-gradient(7px at 50% 100%,#0000 98%,#000) 50% 100%/14px 100% repeat-x;mask:radial-gradient(7px at 50% 100%,#0000 98%,#000) 50% 100%/14px 100% repeat-x}
+.receipt h4{font-family:var(--title);font-weight:400;font-size:21px;text-align:center;margin:0}
+.receipt .rd{text-align:center;font-size:12px;color:#6B6255;margin:0 0 8px;padding-bottom:8px;border-bottom:2px dashed #D9CFBA}
+.rrow{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dotted #D9CFBA}
+.rrow b{font-variant-numeric:tabular-nums}
+.rrow.hit b{color:#D23A2E;font-size:17px}
+.rnote{font-size:12px;color:#6B6255;margin:8px 0 0;line-height:1.55}
+.big{font-family:var(--title);font-size:23px;line-height:1.4;margin:0 0 6px;word-break:keep-all}
+.math{font-size:14px;color:var(--ink-soft);margin:0 0 14px}
+.vopts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.vopt{display:flex;flex-direction:column;align-items:center;gap:4px;border:2px solid var(--line);background:transparent;border-radius:12px;padding:8px;font-size:14px;font-weight:700}
+.vopt img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}
+.vbar{margin:6px 0;font-size:14px}
+.vbar i{display:block;height:8px;border-radius:4px;background:var(--accent);margin-top:3px}
+.vbar.mine{font-weight:700}
+.teaser{width:100%;text-align:left;border:2px solid #E07A1F;background:rgba(224,122,31,.08);border-radius:14px;padding:14px;font-size:15px;margin:0 0 14px}
+.teaser b{display:block;font-family:var(--title);font-weight:400;font-size:19px}
 @media (prefers-reduced-motion:reduce){.ld .steam,.bubble,.stamp{animation:none}}
 </style>
 </head>
 <body>
 <div class="app" id="app">
   <div id="loading"><div class="ld">
+    <p class="bbak">빡.만.앱</p><p class="bsub">청소년지도사가 빡쳐서 만든 앱</p>
     <svg class="bell" id="bellSvg" viewBox="0 0 96 110" aria-hidden="true"><rect x="44" y="0" width="8" height="12" rx="3" fill="#8A6A45"/><path d="M48 10 C22 10 18 40 18 62 C18 74 12 80 8 86 L88 86 C84 80 78 74 78 62 C78 40 74 10 48 10Z" fill="#E6B53C" stroke="#B88A1E" stroke-width="3"/><rect x="6" y="84" width="84" height="8" rx="4" fill="#C9961F"/><circle cx="48" cy="100" r="9" fill="#B88A1E"/><path d="M30 40 C32 28 40 22 48 22" stroke="#FFF2C4" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
-    <p class="ding"><small>딩동댕동~</small>급식시간이다~!</p>
-    <h1>모두의 급식?</h1><p>오늘 뭐 먹지? 고민 말고 일단 잡솨봐</p>
+    <h1>모두의 급식?</h1><p>우리 학교 급식, 우리 아이 급식, 오늘 뭐 먹지?<br>하다 보면 왜 빡쳤는지 알게 돼요.</p>
     <div class="ldbtns" id="ldBtns"><button class="btn" id="ring">🔔 종 치고 들어가기</button><button class="linkbtn" id="silent">소리 없이 들어가기</button></div></div></div>
 
   <header class="top">
     <div class="ttl"><span class="logo">모두의 급식?</span>
     <span class="me">나는 <b id="myname"></b></span></div>
+    <button class="icon-btn" id="help" aria-label="이용 방법">?</button>
     <button class="icon-btn" id="reroll" aria-label="이름 다시 뽑기">🔄</button>
     <button class="icon-btn" id="sound" aria-label="소리 켜기">🔇</button>
   </header>
@@ -172,30 +240,78 @@ details ul{padding-left:16px}
 
 
   <div class="overlay on" id="door"><div class="card">
-    <h2 id="doorTitle"></h2><p class="date" id="doorDate"></p>
-    <div class="today"><img class="spimg" id="doorImg" alt="" onerror="this.remove()"><div class="sp" id="doorSpecial"></div><ul id="doorList"></ul></div>
-    <button class="btn" id="enter" style="width:100%">급식실 들어가기</button>
-    <div style="text-align:center"><button class="linkbtn" id="openMonth">이번 달 식단표 보기</button></div>
+    <div id="dPick">
+      <p class="date" style="margin:0 0 2px;color:var(--red)">빡.만.앱</p><h2>오늘 뭐 나와?</h2><p class="date" id="doorDate"></p>
+      <div class="picks">
+        <button class="pick" data-m="me"><span class="e">🎒</span><span>우리 학교 급식<small>학교 이름으로 오늘 메뉴 보기</small></span></button>
+        <button class="pick" data-m="kid"><span class="e">👨‍👩‍👧</span><span>우리 아이 학교 급식<small>아이 학교 오늘 메뉴와 알레르기</small></span></button>
+        <button class="pick" data-m="alma"><span class="e">🏫</span><span>내 모교 오늘 급식<small>그 시절 우리 학교, 요즘은 뭐 먹을까?</small></span></button>
+        <button class="pick" data-m="lunch"><span class="e">🍱</span><span>오늘 점심 추천<small>날씨 보고 골라 드려요</small></span></button>
+      </div>
+    </div>
+    <div id="dSearch" hidden>
+      <button class="linkbtn back" data-back>← 처음으로</button>
+      <h2 id="sTitle"></h2>
+      <div class="sbox"><input id="sInput" type="search" enterkeyhint="search" autocomplete="off"><button class="btn" id="sGo">찾기</button></div>
+      <p class="msg" id="sMsg"></p>
+      <ul class="slist" id="sList"></ul>
+    </div>
+    <div id="dMeal" hidden>
+      <button class="linkbtn back" data-back>← 처음으로</button>
+      <h2 id="mTitle"></h2><p class="date" id="mDate"></p>
+      <div class="hero"><img class="spimg" id="wxImg" alt="" onerror="this.style.display='none'"><span id="wxWhy"></span><b id="wxName"></b><span id="wxSub">오늘 급식실 특식</span></div>
+      <div id="mDishes"></div>
+      <details id="mNutri"><summary>칼로리·영양 정보</summary><ul id="mNutriList"></ul></details>
+      <button class="btn" id="enter" style="width:100%">이 식판 들고 급식실 가기</button>
+    </div>
+  </div></div>
+
+  <div class="overlay" id="helpOv"><div class="card">
+    <h2>이렇게 놀아요</h2><p class="date">급식실 한 바퀴, 2분이면 충분해요.</p>
+    <ul class="howto">
+      <li><b>👆 걷기</b>바닥을 누르면 그쪽으로 걸어가요.</li>
+      <li><b>🍱 배식</b>배식대 앞에서 "식판 받기" 한 번이면 오늘 메뉴가 다 담겨요.</li>
+      <li><b>🥛 우유 뽑기</b>흰우유·초코·바나나, 운 좋으면 딸기우유!</li>
+      <li><b>🪑 앉기</b>의자 옆에 서면 "앉기" 버튼이 떠요. 귀찮으면 "아무 데나 앉기".</li>
+      <li><b>😋 먹기</b>"냠냠"을 다섯 번 누르면 식판이 깨끗해져요.</li>
+      <li><b>📋 식단표</b>아래 버튼. 학교를 골랐다면 그 학교의 다음 급식들이 보여요.</li>
+      <li><b>🍽 한 그릇 더</b>다 먹고 다시 줄 설 수 있어요.</li>
+      <li><b>🗑 퇴식구</b>식판 반납하면 끝. 다음 달 특식 투표가 기다려요.</li>
+      <li><b>💬 주황 가방</b>급식실 어딘가의 주황 가방 친구, 눌러 보면 이야기가 있어요.</li>
+    </ul>
+    <button class="btn" id="closeHelp" style="width:100%">알겠어요, 밥 먹으러!</button>
   </div></div>
 
   <div class="overlay" id="monthOv"><div class="card">
-    <h2>이번 달 식단표</h2><p class="date">★ 오늘의 특식 = 직장인 추천 점심 메뉴 (데이터 통계 기반)</p>
+    <h2 id="monthH">이번 달 식단표</h2><p class="date" id="monthSub">★ 오늘의 특식 = 직장인 추천 점심 메뉴 (데이터 통계 기반)</p>
     <div style="overflow-x:auto"><table class="month" id="monthTable"></table></div>
     <p class="fact" style="margin:10px 0 0">★ 특식은 직장인 점심 메뉴 조사 통계를 참고했어요. 잡코리아 직장인 502명 조사(2023): 백반 정식 24.9%, 김치찌개 11.4%, 제육볶음 6.6%, 순두부찌개 6.2%, 순댓국 5.2% · 인크루트 조사(2022) 직장인 선호 4대 메뉴: 제육볶음·김치찌개·짜장면·돼지국밥</p>
     <button class="btn sub" id="closeMonth" style="width:100%;margin-top:12px">닫기</button>
   </div></div>
 
+  <div class="overlay" id="orgOv"><div class="card">
+    <h2>참여 기관</h2><p class="date">매달 1위 메뉴를 아이들 실제 특식으로 만드는 청소년방과후아카데미예요.</p>
+    <ul class="orglist" id="orgList"></ul>
+    <p class="fact" style="margin-top:12px">함께하고 싶은 기관은 계속 늘어나요. 참여 문의는 운영 기관으로 연락해 주세요.</p>
+    <button class="btn sub" id="closeOrg" style="width:100%">닫기</button>
+  </div></div>
+
+  <div class="overlay" id="storyOv"><div class="card" id="storyCard"></div></div>
+
   <div class="overlay" id="exit"><div class="card" id="exitCard">
     <div class="kidq" id="stamp"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="66" r="40" fill="#F6D7B8"/><path d="M19 62 C17 24 103 24 101 62 C93 46 80 40 60 40 C40 40 27 46 19 62Z" fill="#2B2522"/><path d="M41 66 q6 -7 12 0" stroke="#2A2620" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M67 66 q6 -7 12 0" stroke="#2A2620" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="38" cy="79" r="6" fill="#F2A7A0"/><circle cx="82" cy="79" r="6" fill="#F2A7A0"/><path d="M50 84 q10 13 20 0 z" fill="#C2453A"/><g transform="rotate(22 98 80)"><rect x="95" y="74" width="6" height="36" rx="3" fill="#9AA3A8"/><ellipse cx="98" cy="70" rx="8" ry="10" fill="#B9C0C4"/></g></svg><p>잘 먹었나요?</p></div>
     <p class="result" id="result"></p>
+    <div class="vote" id="vote"></div>
+    <button class="teaser" id="teaser"><b>아까 그 주황 가방 친구,</b>무슨 일이었는지 볼래요?</button>
+    <div id="exitCampaign">
     <p class="fact" id="visitors" style="text-align:center;display:none"></p>
-    <div class="note">저는 방과후아카데미에서 아이들과 저녁을 먹는 청소년지도사입니다.<br>내년부터 몇몇 아이들은 이 밥값으로 2,000원을 내야 합니다.<br>같은 식탁에서 같은 밥을 먹는데, 집 형편을 물어보고 계산서를 줍니다.<br>말로 설명하기가 너무 억울해서, 직접 급식실을 만들었습니다.<div class="sig">한 청소년지도사가</div></div>
-    <p class="fact">2027년 정부 예산 가내시(안)는 청소년방과후아카데미 한 곳당 예산을 1,564만 원(7.86%) 줄이고, 기준중위소득 150% 초과 가구 학생에게 한 끼 2,000원의 급식비 자부담을 새로 만들었습니다(소득 증빙 필요). 학교 급식과 지역아동센터, 농산어촌형 방과후아카데미의 방학 급식은 소득을 묻지 않습니다.</p>
+    <div class="note">저는 방과후아카데미에서 아이들과 함께 활동하는 청소년지도사입니다.<br>내년부터 몇몇 아이들은 이 밥값으로 2,000원을 내야 합니다.<br>같은 식탁에서 같은 밥을 먹는데, 집 형편을 물어보고 계산서를 줍니다.<br>말로 설명하기가 너무 억울해서, 직접 급식실을 만들었습니다.<div class="sig">한 청소년지도사가</div></div>
+    <p class="fact">2027년 정부 예산 가내시(안)는 청소년방과후아카데미 한 곳당 예산을 1,564만 원(7.86%) 줄이고, 기준중위소득 150% 초과 가구 학생에게 한 끼 2,000원의 급식비 자부담을 새로 만들었습니다(소득 증빙 필요). 학교 돌봄, 지역아동센터, 다함께돌봄센터의 저녁 급식은 소득을 묻지 않습니다.</p>
     <a class="petition" href="https://petitions.assembly.go.kr/proceed/onGoingAll/5CB51C03131E1ED4E064ECE7A7064E8B" target="_blank" rel="noopener">이 밥값이 바뀌길 바라신다면, 청원에 동의하기</a>
     <p class="fact" style="text-align:center;margin:0 0 10px">국회 국민동의청원은 30일 안에 5만 명이 모이면 국회 위원회로 넘어갑니다.</p>
+    </div>
     <div class="row"><button class="btn sub" id="shareBtn">오늘의 급식 공유하기</button></div>
     <div class="toast" id="toast" role="status"></div>
-    <div class="vote" id="vote"></div>
     <button class="btn sub" id="again" style="width:100%">다시 급식실로</button>
     <details><summary>근거 자료</summary><ul>
       <li>성평등가족부 청소년활동진흥과-2361(2026. 8. 24.) 2027년 예산안 가내시 지침</li>
@@ -266,19 +382,14 @@ const WOW=false;
 const dateStr=`${today.getMonth()+1}월 ${today.getDate()}일 ${DAYS[today.getDay()]}요일`;
 const LABELS=['밥','국','반찬','반찬','김치','오늘의 특식'];
 const DISHES=M.map((d,i)=>({...d,label:LABELS[i]}));
-const SP=DISHES[5];
+let SP=DISHES[5];
 
-$('#doorTitle').textContent=(M.weekend?'주말엔 특별히, ':'오늘 점심은 ')+SP.n+' 어때요?';
-$('#doorDate').textContent='오늘의 특식 · '+dateStr;
-if(SP.img){$('#doorImg').src=SP.img;$('#doorImg').alt=SP.n;}else $('#doorImg').remove();
-$('#doorSpecial').textContent=(WOW?'✨ ':'')+'오늘의 급식';
-$('#doorList').innerHTML=DISHES.map(d=>d.t==='sp'?`<li><b>${d.n}</b> (특식)</li>`:`<li>${d.n}</li>`).join('')+'<li>후식: 우유 뽑기</li>';
+$('#doorDate').textContent=dateStr;
 function buildMonth(){const start=new Date(today);start.setDate(start.getDate()-((start.getDay()+6)%7));
   let h='<tr><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr>';
   for(let w=0;w<4;w++){h+='<tr>';for(let i=0;i<5;i++){const d=new Date(start);d.setDate(start.getDate()+w*7+i);const m=menuOf(d);const now=d.toDateString()===today.toDateString();
     h+=`<td class="${now?'now':''}"><div class="d">${d.getMonth()+1}/${d.getDate()}</div>${m[0].n}<br>${m[2].n}<br><span class="s">★${m[5].n}</span></td>`;}h+='</tr>';}
   $('#monthTable').innerHTML=h;}
-$('#openMonth').onclick=()=>{buildMonth();$('#monthOv').classList.add('on');};
 $('#closeMonth').onclick=()=>$('#monthOv').classList.remove('on');
 
 /* ───────── 소리 ───────── */
@@ -353,14 +464,14 @@ const boardTex=canvasTex(1024,560,(g,w,h)=>{});
 const board=new THREE.Mesh(new THREE.PlaneGeometry(4.4,2.4),new THREE.MeshLambertMaterial({map:boardTex}));board.position.set(0,2.75,-RZ+.11);scene.add(board);
 box(4.6,2.6,.04,0x9C7146,0,2.75,-RZ+.05);
 function drawBoard(){const c=boardTex.image,g=c.getContext('2d');g.fillStyle='#2F5543';g.fillRect(0,0,1024,560);
-  g.fillStyle='#F3F0E2';g.font='64px Jua, "Noto Sans KR", sans-serif';g.textAlign='center';g.fillText('오늘의 급식 · '+dateStr,512,90);
+  g.fillStyle='#F3F0E2';g.font='64px Jua, "Noto Sans KR", sans-serif';g.textAlign='center';g.fillText(((typeof SRC==='string'&&SRC!=='모두의 급식실'&&SRC!=='오늘의 점심 추천')?SRC:'오늘의 급식')+' · '+dateStr,512,90,980);
   g.font='44px "Noto Sans KR", sans-serif';DISHES.slice(0,5).forEach((d,i)=>g.fillText(d.n,512,170+i*58));
   g.fillStyle='#FFE28A';g.font='54px Jua, "Noto Sans KR", sans-serif';g.fillText('★ 특식 '+SP.n,512,500);boardTex.needsUpdate=true;}
 drawBoard();
 // 표어
 const posterDraws=[];function poster(text,x,y,z,ry=0,w=1.3,h=1.7){const draw=(g)=>{g.fillStyle='#FFFDF4';g.fillRect(0,0,260,340);g.fillStyle='#3B2F25';g.font='78px Jua, "Noto Sans KR", sans-serif';g.textAlign='center';text.split('\n').forEach((l,i)=>g.fillText(l,130,95+i*90));};const t=canvasTex(260,340,draw);posterDraws.push(()=>{draw(t.image.getContext('2d'));t.needsUpdate=true;});
   const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshLambertMaterial({map:t}));m.position.set(x,y,z);m.rotation.y=ry;scene.add(m);return {m,t};}
-const posters=[poster('꼭꼭\n씹어\n먹자',-4.4,2.7,-RZ+.09),poster('음식을\n남기지\n맙시다',4.4,2.7,-RZ+.09)];
+const posters=[poster('꼭꼭\n씹어\n먹자',-4.4,2.7,-RZ+.09)];
 // 브라운관 TV
 const tv=new THREE.Group();tv.position.set(RX-.9,3.1,-RZ+1);tv.rotation.y=-.5;scene.add(tv);
 box(1.1,.9,.9,0x5A5853,0,0,0,tv);box(.86,.66,.02,lam(0x3F555B,{emissive:0x24363A,emissiveIntensity:.6}),0,0,.46,tv);box(.3,.6,.3,0x4A4844,0,-.7,-.1,tv);
@@ -376,14 +487,21 @@ box(10.4,.9,.9,0xB7BEC2,0,.45,CTR_Z);box(10.6,.06,1.05,0xD5DADC,0,.93,CTR_Z);
 box(10.4,.05,.35,lam(0xDDEFF5,{transparent:true,opacity:.45}),0,1.55,CTR_Z+.15);// 가림막
 for(const x of [-5.1,0,5.1])box(.04,.6,.04,0xAAB2B6,x,1.25,CTR_Z+.15);
 const binFood=[];
-DISHES.forEach((d,i)=>{const isSp=d.t==='sp';const bx=BIN_X[i];
-  box(1.3,.08,.75,0x7E878C,bx,.96,CTR_Z);
-  const f=foodMesh(d,4.6);f.position.set(bx,1.0,CTR_Z);scene.add(f);binFood.push(f);
-  if(isSp){const glow=box(1.42,.04,.87,lam(0xE6B53C,{emissive:0xE6B53C,emissiveIntensity:.5}),bx,.95,CTR_Z);}
-});
+BIN_X.forEach((bx,i)=>{box(1.3,.08,.75,0x7E878C,bx,.96,CTR_Z);if(i===5)box(1.42,.04,.87,lam(0xE6B53C,{emissive:0xE6B53C,emissiveIntensity:.5}),bx,.95,CTR_Z);});
+function drawBins(){binFood.forEach(f=>scene.remove(f));binFood.length=0;
+  DISHES.forEach((d,i)=>{const f=foodMesh(d,4.6);f.position.set(BIN_X[i],1.0,CTR_Z);scene.add(f);binFood.push(f);});}
+drawBins();
 // 특식 팻말
 const spSign=new THREE.Mesh(new THREE.PlaneGeometry(1.6,.5),new THREE.MeshLambertMaterial({map:canvasTex(512,160,(g)=>{g.fillStyle='#E6B53C';g.fillRect(0,0,512,160);g.fillStyle='#3B2B05';g.font='56px Jua, sans-serif';g.textAlign='center';g.fillText('오늘의 특식',256,100);})}));
 spSign.position.set(BIN_X[5],.6,CTR_Z+.47);scene.add(spSign);
+// 배식대 뒤 특식 사진 (액자 + 조명)
+const spFrame=new THREE.Group();spFrame.position.set(BIN_X[5]-.2,2.75,-RZ+.12);scene.add(spFrame);
+box(2.5,2.9,.06,0xE6B53C,0,0,0,spFrame);
+const spPhotoMat=new THREE.MeshBasicMaterial({color:0xFFFFFF});const spPhoto=new THREE.Mesh(new THREE.PlaneGeometry(2.3,2.3),spPhotoMat);spPhoto.position.set(0,.2,.04);spFrame.add(spPhoto);
+const spCap=new THREE.Mesh(new THREE.PlaneGeometry(2.3,.36),new THREE.MeshBasicMaterial({map:canvasTex(512,80,()=>{})}));spCap.position.set(0,-1.17,.04);spFrame.add(spCap);
+function drawSpPhoto(){const g=spCap.material.map.image.getContext('2d');g.fillStyle='#3B2B05';g.fillRect(0,0,512,80);g.fillStyle='#FFE28A';g.font='44px Jua, "Noto Sans KR", sans-serif';g.textAlign='center';g.fillText('오늘의 특식 · '+SP.n,256,56,490);spCap.material.map.needsUpdate=true;
+  if(!SP.img)return;new THREE.TextureLoader().load(SP.img,t=>{t.encoding=THREE.sRGBEncoding;spPhotoMat.map=t;spPhotoMat.needsUpdate=true;});}
+drawSpPhoto();
 // 우유 상자
 const milkBox=new THREE.Group();milkBox.position.set(5.9,0,CTR_Z+.2);scene.add(milkBox);
 box(.9,.6,.6,0x3F7FC0,0,.3,0,milkBox);for(let i=0;i<4;i++)for(let j=0;j<2;j++){box(.15,.22,.15,0xFFFFFF,-.3+i*.2,.71,-.12+j*.24,milkBox);}
@@ -478,6 +596,14 @@ function animKid(k,dt,t){
   else{u.legL.rotation.x=u.legR.rotation.x=0;u.body.position.y=Math.sin(t*2+u.phase)*.01;u.armL.rotation.x=u.armR.rotation.x=u.carry?-1.2:0;}
 }
 
+/* 겹침 방지: 서 있는 아이들끼리 살짝 밀어내기 */
+const R_MIN=.62;
+function separate(){const all=[me,...npcs].filter(k=>k.visible&&!k.userData.sitting);
+  for(let i=0;i<all.length;i++)for(let j=i+1;j<all.length;j++){const a=all[i],b=all[j];
+    let dx=b.position.x-a.position.x,dz=b.position.z-a.position.z;const d=Math.hypot(dx,dz);if(d>=R_MIN)continue;
+    if(d<1e-4){dx=.01;dz=0;}const push=(R_MIN-Math.max(d,1e-4))/2;const nx=dx/Math.max(d,1e-4),nz=dz/Math.max(d,1e-4);
+    const wa=a===me&&state==='serving'?0:1,wb=b===me&&state==='serving'?0:1;const sum=wa+wb||1;
+    a.position.x-=nx*push*2*wa/sum;a.position.z-=nz*push*2*wa/sum;b.position.x+=nx*push*2*wb/sum;b.position.z+=nz*push*2*wb/sum;}}
 /* 걷기: 경유점 배열을 차례로 이동 */
 const movers=new Set();
 function walkPath(k,pts,speed=2.6){
@@ -534,17 +660,19 @@ const cook=cooks[1];
 cooks.forEach(c=>{const ladle=new THREE.Group();c.userData.armR.add(ladle);cyl(.012,.012,.4,0x9AA3A8,0,-.45,.1,ladle).rotation.x=1.2;sph(.06,0x9AA3A8,0,-.55,.28,ladle);});
 
 /* 친구들 (혼자 모드 분위기용, 나중에 실제 접속자로 교체) */
-const npcs=[];
+const npcs=[];let meQueue=false,npcAtCounter=0;
 function freeSeat(){const f=SEATS.filter(s=>!s.taken);return f[rand(f.length)];}
 async function npcLife(k){
   const u=k.userData;
   while(true){
     k.position.set(-6.4,0,10.5);k.visible=true;setCarry(k,null);
-    await walkPath(k,[[-5.6,8],[0,7],[0,AISLE_Z],[-5.2,-7.7]],2.2);
+    await walkPath(k,[[-5.6,8],[0,7],[0,AISLE_Z]],2.2);
+    while(meQueue)await wait(600);
+    npcAtCounter++;await walkPath(k,[[-5.2,-7.7]],2.2);
     const tray=makeTray();setCarry(k,tray);
     for(let i=0;i<6;i++){await walkPath(k,[[BIN_X[i],-7.75]],1.8);trayPut(tray,i,DISHES[i],Math.random()<.3?1:0);await wait(350+rand(300));
       if(Math.random()<.12)say(k,'더 주세요!',1200);}
-    const seat=freeSeat();if(!seat){await wait(2000);continue;}seat.taken=k;
+    npcAtCounter--;const seat=freeSeat();if(!seat){await wait(2000);continue;}seat.taken=k;
     await walkPath(k,[[0,AISLE_Z],[0,seat.z],[seat.x,seat.z]],2.2);
     sitDown(k,seat);u.eating=true;
     const dur=12000+rand(18000);const end=performance.now()+dur;
@@ -570,7 +698,8 @@ for(let i=0;i<3;i++){const k=makeKid({skin:SKIN[rand(3)],hair:HAIR[rand(4)],suit
 
 /* ───────── 카메라 ───────── */
 const camOff=new THREE.Vector3(0,7.2,8.2);const camTarget=new THREE.Vector3();const FAR=new THREE.Vector3(0,7.2,8.2),NEAR_SERVE=new THREE.Vector3(0,3.1,3.6),NEAR_SEAT=new THREE.Vector3(1.6,3.1,3.5);
-function placeCam(instant){const seatOff=mySeat&&mySeat.face!==0?new THREE.Vector3(1.6,3.1,-3.5):NEAR_SEAT;camOff.lerp(state==='serving'?NEAR_SERVE:(state==='seated'?seatOff:FAR),instant?1:.05);const want=me.position.clone().add(camOff);
+function placeCam(instant){
+  if(bkFocus){const mid=me.position.clone().lerp(bk.position,.5);const want=mid.clone().add(new THREE.Vector3(0,3.9,5.3));if(instant)camera.position.copy(want);else camera.position.lerp(want,.06);camTarget.set(mid.x,1.0,mid.z-.9);camera.lookAt(camTarget);return;}const seatOff=mySeat&&mySeat.face!==0?new THREE.Vector3(1.6,3.1,-3.5):NEAR_SEAT;camOff.lerp(state==='serving'?NEAR_SERVE:(state==='seated'?seatOff:FAR),instant?1:.05);const want=me.position.clone().add(camOff);
   want.x=Math.max(-6,Math.min(6,want.x));want.z=Math.max(-7,Math.min(18,want.z));
   if(instant)camera.position.copy(want);else camera.position.lerp(want,.08);
   const near=state==='serving'||state==='seated';camTarget.set(near?me.position.x:Math.max(-4,Math.min(4,me.position.x)),near?.85:.6,near?me.position.z-(state==='serving'?1.2:.2):Math.max(-11,Math.min(9.5,me.position.z-.6)));camera.lookAt(camTarget);}
@@ -583,7 +712,13 @@ function updNav(){
   $('#navMore').disabled=!(state==='seated'||(state==='idle'&&ate));
   $('#navExit').disabled=!(state==='seated'||state==='carrying'||(state==='idle'&&ate));
 }
-$('#navMenu').onclick=()=>{buildMonth();$('#monthOv').classList.add('on');};
+$('#navMenu').onclick=()=>{
+  if(SCHOOL_MEALS&&SCHOOL_MEALS.length){$('#monthH').textContent=SRC+' 급식';$('#monthSub').textContent='나이스 교육정보 개방포털 · 앞으로 열흘';
+    $('#monthTable').innerHTML='<tr><td>'+SCHOOL_MEALS.map(m=>{const d=new Date(+m.date.slice(0,4),+m.date.slice(4,6)-1,+m.date.slice(6,8));return `<div class="smeal${m.date===ymd(today)?' now':''}"><b>${d.getMonth()+1}/${d.getDate()} (${DAYS[d.getDay()]}) ${m.type}</b>${m.dishes.map(x=>x.name).join(', ')}</div>`;}).join('')+'</td></tr>';}
+  else{$('#monthH').textContent='이번 달 식단표';$('#monthSub').textContent='★ 오늘의 특식 = 직장인 추천 점심 메뉴 (데이터 통계 기반)';buildMonth();}
+  $('#monthOv').classList.add('on');};
+$('#help').onclick=()=>$('#helpOv').classList.add('on');
+$('#closeHelp').onclick=()=>$('#helpOv').classList.remove('on');
 $('#navMore').onclick=()=>{if(me.userData.tableTray){scene.remove(me.userData.tableTray);me.userData.tableTray=null;}goQueue();};
 $('#navExit').onclick=()=>goExit();
 function idleAct(){setAct(`<p class="say">배식대에 줄을 서 볼까?<small>바닥을 누르면 걸어가요</small></p><div class="row"><button class="btn" id="queue">배식대로 가기</button></div>`);$('#queue').onclick=walkCounter;}
@@ -601,11 +736,41 @@ function checkCounter(){
 async function goQueue(){
   if(state==='serving')return;
   if(mySeat){standUp(me,mySeat);mySeat.taken=null;mySeat=null;if(me.userData.carry){setCarry(me,null);}}
-  state='walking';setAct('<p class="say" style="margin:0">배식대로 가는 중…</p>');
+  const first=!bkDone;
+  if(first){qInst=(!storySeen&&Math.random()<.4)?'bangka':['school','center','dahamke'][rand(3)];const I=INST[qInst];
+    bkBag.material.color.setHex(I[1]);if(qInst==='bangka')hideBks();
+    bk.visible=true;bk.position.set(BIN_X[0],0,-7.75);bk.rotation.y=Math.PI/2;bkTray=makeTray();setCarry(bk,bkTray);
+    bkLbl=addLabel(bk,qInst==='bangka'?'주황 가방':I[0],'tag-bk',0,1.62);bkLbl.el.style.background=I[2];}
+  meQueue=true;state='walking';setAct('<p class="say" style="margin:0">배식대로 가는 중…</p>');
   myTray=makeTray();setCarry(me,myTray);
-  await walkPath(me,routeTo(me.position,{x:-5.2,z:-7.7}));
-  state='serving';serve(0);
+  await walkPath(me,routeTo(me.position,{x:-5.2,z:-6.6}));
+  for(let i=0;i<12&&npcAtCounter>0;i++){if(i===0)setAct('<p class="say" style="margin:0">앞 친구들 배식 끝나길 기다리는 중…</p>');await wait(400);}
+  await walkPath(me,[[-5.2,-7.7]]);
+  state='serving';
+  setAct(`<p class="say">${first?'앞 친구 다음이 내 차례!':'다시 줄 섰다'}<small>오늘 메뉴 ${DISHES.length}가지</small></p><div class="row"><button class="btn" id="takeAll">식판 받기</button></div>`);
+  $('#takeAll').onclick=()=>first?serveWithBk():serveAll(0);
 }
+async function serveAll(from){setAct('<p class="say" style="margin:0">배식 받는 중…</p>');
+  for(let i=from;i<DISHES.length;i++){await walkPath(me,[[BIN_X[i],-7.75]],2.6);trayPut(myTray,i,DISHES[i]);clink();if(i===DISHES.length-1||Math.random()<.3)say(cookOf(i),i===5?'특식은 듬뿍~':KIND[rand(KIND.length)][0],1300);await wait(180);}
+  say(cookOf(5),'맛있게 먹어~',1600);afterServe();}
+function afterServe(){meQueue=false;setAct(`${SP.img?`<img class="actimg" src="${SP.img}" alt="${SP.n}" onerror="this.remove()">`:''}<p class="say">오늘의 특식, ${SP.n}!<small>우유도 챙겨 갈까?</small></p><div class="row"><button class="btn" id="milkBtn">우유 챙기기</button></div>`);$('#milkBtn').onclick=getMilk;}
+async function serveWithBk(){bkFocus=true;setAct('<p class="say" style="margin:0">배식 받는 중…</p>');
+  for(let i=0;i<6;i++){const ps=[walkPath(bk,[[BIN_X[i],-7.75]],2.4)];if(i>0)ps.push(walkPath(me,[[BIN_X[i-1],-7.75]],2.4));await Promise.all(ps);
+    if(i<5)trayPut(bkTray,i,DISHES[i]);if(i>0){trayPut(myTray,i-1,DISHES[i-1]);clink();}await wait(220);}
+  const ck=cookOf(5);
+  if(qInst!=='bangka'){say(bk,INST[qInst][0]+'에서 왔어요!',1500);await wait(900);say(ck,'그래, 맛있게 먹어~',1600);trayPut(bkTray,5,DISHES[5]);clink();await wait(900);
+    bkDone=true;bkFocus=false;bkSit();removeLabel(bkLbl);await walkPath(me,[[BIN_X[5],-7.75]],2.4);trayPut(myTray,5,DISHES[5]);clink();say(ck,'너도 맛있게 먹어~',1600);afterServe();return;}
+  say(ck,'잠깐!',1200);await wait(1100);
+  say(ck,'너는 어디서 왔니?',1500);await wait(1500);
+  say(bk,'방과후아카데미요.',1500);await wait(1600);
+  say(ck,'내년부턴 부모님 소득 증빙 서류가 필요해. 기준 넘으면 한 끼 2,000원이고.',3400);thud();await wait(2200);won(bk);
+  await wait(1300);say(bk,'…',1800);
+  bkAct();}
+function bkAct(){setAct(`<p class="say">앞 친구가 멈칫했다<small>주황 가방 친구</small></p><div class="row">${storySeen?'':'<button class="btn gold" id="whatHappened">무슨 일이야?</button>'}<button class="btn${storySeen?'':' sub'}" id="myTurn">내 특식 받기</button></div>`);
+  if(!storySeen)$('#whatHappened').onclick=()=>openStory(bkAct);
+  $('#myTurn').onclick=async()=>{bkDone=true;bkFocus=false;trayPut(bkTray,5,DISHES[5]);bkSit();
+    await walkPath(me,[[BIN_X[5],-7.75]],2.4);trayPut(myTray,5,DISHES[5]);clink();say(cookOf(5),'너도 맛있게 먹어~',1600);afterServe();};}
+async function bkSit(){const seat=freeSeat();if(!seat)return;seat.taken=bk;await walkPath(bk,routeTo(bk.position,{x:seat.x,z:seat.z}),2.2);sitDown(bk,seat);bk.userData.eating=true;}
 const KIND=[['그래, 많이 먹고 쑥쑥 커라~',1],['오늘도 애썼다, 든든히 먹어~',1],['맛있게 먹어 줘서 고마워~',1],['더 필요하면 또 와, 얼마든지!',1],['너는 특별히 두 국자!',2],['잘 먹는 모습이 제일 예쁘다~',1]];
 const SKIP=['그래, 대신 다른 거 많이 먹어~','괜찮아, 먹고 싶은 것만 먹어도 돼~','다음엔 한 입만 먹어 볼까?'];
 function serve(i){
@@ -669,11 +834,12 @@ function eat(){
 }
 async function goExit(){
   if(mySeat){standUp(me,mySeat);mySeat.taken=null;mySeat=null;}
-  state='walking';setAct('<p class="say" style="margin:0">퇴식구로…</p>');
-  await walkPath(me,routeTo(me.position,{x:RX-.9,z:8.5}));
+  state='walking';setAct('<p class="say" style="margin:0">퇴식구로 쓩~</p>');
+  await walkPath(me,routeTo(me.position,{x:RX-.9,z:8.5}),11);
   setCarry(me,null);thud();setAct('');
-  $('#result').innerHTML=paidCount?`오늘 내 밥값<b class="red">2,000원${paidCount>1?' × '+paidCount:''}</b>같은 밥인데, 나만 계산서를 받았습니다.`:`오늘 내 밥값<b>0원</b>하지만 어떤 친구는 2,000원을 냈습니다.`;
-  renderVote();showVisitors();$('#exit').classList.add('on');const st=$('#stamp');st.style.animation='none';void st.offsetWidth;st.style.animation='';$('#exitCard').scrollTop=0;state='exit';updNav();
+  $('#result').innerHTML=`${SP.img?`<figure class="dishhero"><img src="${SP.img}" alt="${SP.n}" onerror="this.parentNode.remove()"><figcaption><small>${SRC==='모두의 급식실'?'오늘의 특식':SRC==='오늘의 점심 추천'?'오늘의 추천 메뉴':SRC+' 급식 + 오늘의 특식'}</small><b>${SP.n}, 맛있었죠?</b></figcaption></figure>`:''}식판까지 싹싹, 한 그릇 뚝딱!`;
+  $('#teaser').hidden=storySeen;$('#exitCampaign').hidden=!storySeen;
+  loadOrgs().then(()=>{const b=$('#orgBtn');if(b&&ORG_N)b.textContent=`참여 기관 보기 (${ORG_N}곳)`;});renderVote();showVisitors();$('#exit').classList.add('on');const st=$('#stamp');st.style.animation='none';void st.offsetWidth;st.style.animation='';$('#exitCard').scrollTop=0;state='exit';updNav();
 }
 /* 액션 패널을 캐릭터 옆에 붙이기 */
 const actV=new THREE.Vector3();
@@ -686,7 +852,7 @@ function placeAct(){
   let top=y-ah/2;top=Math.max(8,Math.min(h-ah-84,top));
   act.style.left=left+'px';act.style.top=top+'px';
 }
-$('#again').onclick=()=>{$('#exit').classList.remove('on');paidCount=0;milk=null;ate=false;me.position.set(-6.4,0,10);state='idle';idleAct();};
+$('#again').onclick=()=>{$('#exit').classList.remove('on');milk=null;ate=false;me.position.set(-6.4,0,10);state='idle';idleAct();};
 
 /* 바닥·의자 누르기 */
 const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();let downAt=null;
@@ -708,16 +874,35 @@ renderer.domElement.addEventListener('pointerup',e=>{
   walkPath(me,[[x,z]]);updNav();
 });
 
-/* 이번 판 투표 (지금은 이 기기에만 저장) */
-function renderVote(){const t=new Date(today);t.setDate(t.getDate()+1);const opts=['제육볶음','차돌 된장찌개','돈가스'];
-  let v=null;try{v=localStorage.getItem('vote-'+t.toDateString());}catch(e){}
-  const el=$('#vote');if(v){el.innerHTML=`<p>내일 특식 투표 완료: <b>${v}</b>. 내일 칠판에서 확인하세요!</p>`;return;}
-  el.innerHTML='<p>내일 특식, 뭐 먹고 싶어요?</p><div class="row">'+opts.map(o=>`<button class="btn sub" data-o="${o}">${o}</button>`).join('')+'</div>';
-  el.querySelectorAll('button').forEach(b=>b.onclick=()=>{try{localStorage.setItem('vote-'+t.toDateString(),b.dataset.o);}catch(e){}renderVote();});}
+/* 다음 달 특식 투표 (Supabase, 기기당 한 달 1표) */
+const VOTE_OPTS=[['제육볶음 정식',2],['돈가스',5],['짜장면',3],['부대찌개',11]];
+const vm=new Date(today.getFullYear(),today.getMonth()+1,1);
+const VOTE_MONTH=`${vm.getFullYear()}-${String(vm.getMonth()+1).padStart(2,'0')}`;
+function devId(){let d=null;try{d=localStorage.getItem('gs-dev');if(!d){d=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+Date.now());localStorage.setItem('gs-dev',d);}}catch(e){d=d||'nostore-'+Date.now();}return d;}
+let myVote=null;try{myVote=localStorage.getItem('gs-vote-'+VOTE_MONTH);}catch(e){}
+async function renderVote(){const el=$('#vote');const mlabel=(vm.getMonth()+1)+'월';
+  const head=`<p><b>${mlabel} 특식 투표</b><br><span style="font-size:13px;color:var(--ink-soft)">1위 메뉴는 참여하는 청소년방과후아카데미에서 아이들 저녁 특식으로 만들어요.</span></p>`;
+  const orgBtn=`<button class="orgbtn" id="orgBtn">참여 기관 보기${ORG_N?` (${ORG_N}곳)`:''}</button>`;
+  if(!myVote){el.innerHTML=head+'<div class="vopts">'+VOTE_OPTS.map(([n,i])=>`<button class="vopt" data-o="${n}"><img src="img/${String(i).padStart(2,'0')}.webp" alt="" onerror="this.remove()">${n}</button>`).join('')+'</div>';
+    el.insertAdjacentHTML('beforeend',orgBtn);$('#orgBtn').onclick=openOrgs;
+    el.querySelectorAll('.vopt').forEach(b=>b.onclick=()=>castVote(b.dataset.o));return;}
+  el.innerHTML=head+'<p class="msg">투표 결과 불러오는 중…</p>';
+  try{const r=await fetch(SB_URL+'/rest/v1/rpc/vote_results',{method:'POST',headers:SB_H,body:JSON.stringify({p_month:VOTE_MONTH})});const res=await r.json();
+    const tot=Object.values(res).reduce((a,b)=>a+b,0)||1;
+    el.innerHTML=head+VOTE_OPTS.map(([n])=>{const c=res[n]||0,pc=Math.round(c/tot*100);return `<div class="vbar${n===myVote?' mine':''}">${n}${n===myVote?' (내 선택)':''} · ${pc}%<i style="width:${Math.max(2,pc)}%"></i></div>`;}).join('')+orgBtn;$('#orgBtn').onclick=openOrgs;
+  }catch(e){el.innerHTML=head+`<p class="msg">${myVote}에 투표했어요.</p>`;}}
+let ORG_N=0,ORGS=null;
+async function loadOrgs(){try{const r=await fetch(SB_URL+'/rest/v1/partner_orgs?select=name,region&order=created_at.asc',{headers:SB_H});ORGS=await r.json();ORG_N=ORGS.length;}catch(e){ORGS=[];}}
+async function openOrgs(){if(!ORGS)await loadOrgs();$('#orgList').innerHTML=ORGS.length?ORGS.map(o=>`<li><span>${o.name}</span><small>${o.region||''}</small></li>`).join(''):'<li>목록을 불러오지 못했어요.</li>';$('#orgOv').classList.add('on');}
+$('#closeOrg').onclick=()=>$('#orgOv').classList.remove('on');
+async function castVote(menu){const el=$('#vote');el.querySelectorAll('button').forEach(b=>b.disabled=true);
+  try{const r=await fetch(SB_URL+'/rest/v1/menu_votes',{method:'POST',headers:{...SB_H,'Prefer':'return=minimal'},body:JSON.stringify({vote_month:VOTE_MONTH,menu,device_id:devId()})});
+    if(!r.ok&&r.status!==409)throw new Error(r.status);}catch(e){$('#toast').textContent='투표가 저장되지 않았어요. 잠시 후 다시 눌러 주세요.';el.querySelectorAll('button').forEach(b=>b.disabled=false);return;}
+  myVote=menu;try{localStorage.setItem('gs-vote-'+VOTE_MONTH,menu);}catch(e){}renderVote();}
 
 /* 공유 카드 */
 $('#shareBtn').onclick=async()=>{
-  const url=location.href.split('#')[0];const text=`오늘의 급식: ${SP.n} 외 5가지. 점심 고민되면 일단 잡솨봐!${paidCount?' (나는 2,000원 냈다…)':''}`;
+  const url=location.href.split('#')[0];const text=`오늘의 급식: ${SRC==='모두의 급식실'||SRC==='오늘의 점심 추천'?'':SRC+' · '}특식 ${SP.n}. 우리 학교 급식도 찾아봐! #빡만앱`;
   try{const blob=await drawCard();const file=blob?new File([blob],'모두의급식.png',{type:'image/png'}):null;
     if(file&&navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'모두의 급식?',text:text+' '+url});return;}
     if(navigator.share){await navigator.share({title:'모두의 급식?',text,url});return;}
@@ -730,8 +915,9 @@ async function drawCard(){try{await document.fonts.ready;}catch(e){}
   for(let y=0;y<1920;y+=80)for(let x=0;x<1080;x+=80){g.fillStyle=((x+y)/80)%2?'#E6DCC4':'#D9CCB0';g.fillRect(x,y,80,80);}
   g.fillStyle='#FFFDF6';rr(g,80,160,920,1600,40);g.fill();g.textAlign='center';
   g.fillStyle='#2A2620';g.font='96px Jua, sans-serif';g.fillText('모두의 급식?',540,330);
-  g.font='40px "Noto Sans KR", sans-serif';g.fillStyle='#6B6255';g.fillText('오늘 뭐 먹지? 고민 말고 일단 잡솨봐',540,400);g.fillText(dateStr,540,470);
-  try{renderer.render(scene,camera);const snap=renderer.domElement;const sw=snap.width,shh=snap.height;const ratio=Math.min(840/sw,520/shh);g.drawImage(snap,540-sw*ratio/2,520,sw*ratio,shh*ratio);}catch(e){}
+  g.font='40px "Noto Sans KR", sans-serif';g.fillStyle='#6B6255';g.fillText('빡.만.앱 (청소년지도사가 빡쳐서 만든 앱)',540,400,900);g.fillText(dateStr,540,470);
+  let drew=false;if(SP.img){try{const im=new Image();im.src=SP.img;await im.decode();g.save();rr(g,290,500,500,500,40);g.clip();g.drawImage(im,290,500,500,500);g.restore();drew=true;}catch(e){}}
+  if(!drew){try{renderer.render(scene,camera);const snap=renderer.domElement;const sw=snap.width,shh=snap.height;const ratio=Math.min(840/sw,520/shh);g.drawImage(snap,540-sw*ratio/2,520,sw*ratio,shh*ratio);}catch(e){}}
   g.fillStyle='#E8743B';g.font='60px Jua, sans-serif';g.fillText('★ '+SP.n,540,1130);
   g.fillStyle='#2A2620';g.font='42px "Noto Sans KR", sans-serif';g.fillText(DISHES.slice(0,5).map(d=>d.n).join(' · '),540,1200,860);
   g.font='56px Jua, sans-serif';
@@ -745,7 +931,7 @@ function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);
 let last=performance.now();
 function loop(now){
   const dt=Math.min(.05,(now-last)/1000);last=now;const t=now/1000;
-  stepMovers(dt);
+  stepMovers(dt);separate();
   me.userData.walking=movers.has(me);animKid(me,dt,t);npcs.forEach(k=>{k.userData.walking=movers.has(k);animKid(k,dt,t);});
   cooks.forEach((c,ci)=>{animKid(c,dt,t);c.userData.armR.rotation.x=-.5+Math.sin(t*1.5+ci)*.25;});
   binFood.forEach((f,i)=>f.rotation.y=Math.sin(t*.6+i)*.05);
@@ -757,7 +943,111 @@ document.fonts&&document.fonts.ready.then(()=>{drawBoard();posterDraws.forEach(f
 resize();placeCam(true);requestAnimationFrame(loop);
 
 showName();
-$('#enter').onclick=async()=>{logVisit();$('#door').classList.remove('on');state='walking';setAct('<p class="say" style="margin:0">급식실로 들어가는 중…</p>');
+/* ───────── 입구: 학교 급식 · 날씨 특식 ───────── */
+const NEIS_FN='https://seiparhicrqnpxlyheqn.supabase.co/functions/v1/neis';
+const ALLERGY=['','난류','우유','메밀','땅콩','대두','밀','고등어','게','새우','돼지고기','복숭아','토마토','아황산류','호두','닭고기','쇠고기','오징어','조개류','잣'];
+const REGION={'서울특별시':[37.57,126.98],'부산광역시':[35.18,129.08],'대구광역시':[35.87,128.6],'인천광역시':[37.46,126.7],'광주광역시':[35.16,126.85],'대전광역시':[36.35,127.38],'울산광역시':[35.54,129.31],'세종특별자치시':[36.48,127.29],'경기도':[37.27,127.01],'강원특별자치도':[37.88,127.73],'강원도':[37.88,127.73],'충청북도':[36.64,127.49],'충청남도':[36.66,126.67],'전북특별자치도':[35.82,127.15],'전라북도':[35.82,127.15],'전라남도':[34.82,126.46],'경상북도':[36.58,128.5],'경상남도':[35.24,128.69],'제주특별자치도':[33.5,126.53]};
+var SCHOOL_MEALS=null,bkFocus=false,MODE=null,SRC='모두의 급식실',storySeen=false,bkDone=false,bkTray=null,bkLbl=null;
+const ymd=d=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+function showPane(id){['dPick','dSearch','dMeal'].forEach(x=>$('#'+x).hidden=x!==id);$('#door .card').scrollTop=0;}
+document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>showPane('dPick'));
+const S_TITLE={me:'우리 학교 찾기',kid:'아이 학교 찾기',alma:'내 모교 찾기'};
+document.querySelectorAll('.pick').forEach(b=>b.onclick=()=>{MODE=b.dataset.m;
+  if(MODE==='lunch'){showLunch();return;}
+  $('#sTitle').textContent=S_TITLE[MODE];$('#sInput').placeholder='학교 이름 (예: 동래중학교)';$('#sMsg').textContent='';$('#sList').innerHTML='';showPane('dSearch');setTimeout(()=>$('#sInput').focus(),50);});
+$('#sGo').onclick=searchSchool;$('#sInput').addEventListener('keydown',e=>{if(e.key==='Enter')searchSchool();});
+async function searchSchool(){const q=$('#sInput').value.trim();const msg=$('#sMsg');$('#sList').innerHTML='';
+  if(q.length<2){msg.textContent='학교 이름을 두 글자 이상 입력해 주세요.';return;}
+  msg.textContent='찾는 중…';
+  try{const r=await fetch(NEIS_FN+'?q='+encodeURIComponent(q));const d=await r.json();
+    if(!d.schools||!d.schools.length){msg.textContent='찾는 학교가 없어요. "중학교", "초등학교"까지 붙여서 다시 찾아보세요.';return;}
+    msg.textContent=d.schools.length+'곳을 찾았어요.';
+    $('#sList').innerHTML=d.schools.map((s,i)=>`<li><button data-i="${i}">${s.name}<small>${s.kind} · ${s.addr||s.region}</small></button></li>`).join('');
+    $('#sList').querySelectorAll('button').forEach(b=>b.onclick=()=>loadMeal(d.schools[+b.dataset.i]));
+  }catch(e){msg.textContent='학교 목록을 불러오지 못했어요. 잠시 후 다시 찾아 주세요.';}}
+function guessDish(n){
+  if(/밥|죽|라이스|리조또|필라프/.test(n))return{t:'rice',c:/카레|볶음|오므/.test(n)?C.yellow:(/잡곡|흑미|현미|귀리|보리/.test(n)?C.brown:C.rice)};
+  if(/국|탕|찌개|수프|스프|짬뽕|전골/.test(n))return{t:'soup',c:/김치|육개장|짬뽕|고추장|부대|순두부|매운/.test(n)?C.red:C.soup};
+  if(/깍두기|섞박지|총각/.test(n))return{t:'cube',c:C.kimchi};
+  if(/김치|겉절이/.test(n))return{t:'kimchi',c:C.kimchi};
+  if(/면|국수|스파게티|파스타|우동|라면|잡채|쫄면/.test(n))return{t:'noodle',c:C.noodle};
+  if(/우유|요구르트|요거트|주스|과일|사과|귤|배|바나나|포도|딸기|푸딩|케이크|빵|떡|쿠키/.test(n))return{t:'cube',c:C.pink};
+  if(/튀김|까스|가스|커틀릿|전$|전\b|강정|너겟|프라이/.test(n))return{t:'side',c:C.orange};
+  if(/나물|무침|샐러드|겉절이|쌈|시금치|브로콜리/.test(n))return{t:'side',c:C.green};
+  if(/계란|달걀|말이|찜/.test(n))return{t:'roll',c:C.yellow};
+  if(/제육|불고기|볶음|양념|떡볶이|닭갈비/.test(n))return{t:'side',c:C.red};
+  return{t:'side',c:C.brown};}
+function schoolDishes(list){const ds=list.map(x=>({n:x.name,...guessDish(x.name)}));const used=new Set();
+  const take=f=>{const i=ds.findIndex((d,j)=>!used.has(j)&&f(d));if(i<0)return null;used.add(i);return ds[i];};
+  const r=take(d=>d.t==='rice'),so=take(d=>d.t==='soup'),k=take(d=>d.t==='kimchi'||(d.t==='cube'&&d.c===C.kimchi));
+  const rest=ds.filter((d,j)=>!used.has(j));const out=[r||rest.shift(),so||rest.shift(),rest.shift(),rest.shift(),k||rest.shift()];
+  return out.map((d,i)=>d||{n:'오늘의 반찬',t:'side',c:C.green});}
+function applyDishes(five){const sp=DISHES[5];five.forEach((d,i)=>DISHES[i]={...d,label:LABELS[i]});DISHES[5]=sp;SP=sp;
+  if(typeof drawBins==='function')drawBins();drawBoard();}
+function setSpecial(pick){const [n,c,k]=SPECIALS[pick.i];const img='img/'+String(SP_IMG[pick.i]).padStart(2,'0')+'.webp';
+  DISHES[5]={n,c,t:'sp',k,img,label:'오늘의 특식'};SP=DISHES[5];drawSpPhoto();if(typeof drawBins==='function')drawBins();
+  $('#wxName').textContent=n;$('#wxWhy').textContent=pick.why;const im=$('#wxImg');im.style.display='';im.src=img;im.alt=n;}
+const WX_SETS={rain:[[13,'비 오는 날엔 칼국수'],[9,'비 오는 날엔 짬뽕'],[10,'비 오는 날엔 부대찌개'],[5,'비 오는 날엔 순두부']],snow:[[10,'눈 오는 날엔 부대찌개'],[16,'눈 오는 날엔 뚝배기'],[12,'눈 오는 날엔 순댓국']],
+  cold:[[6,'쌀쌀한 날엔 국밥'],[12,'쌀쌀한 날엔 순댓국'],[0,'쌀쌀한 날엔 김치찌개'],[16,'쌀쌀한 날엔 뚝배기']],cool:[[8,'선선한 날엔 된장찌개'],[1,'선선한 날엔 제육'],[4,'선선한 날엔 돈가스'],[3,'선선한 날엔 생선구이'],[17,'선선한 날엔 갈치구이']],
+  mild:[[7,'맑은 날엔 비빔밥'],[2,'맑은 날엔 짜장면'],[14,'맑은 날엔 파스타'],[19,'맑은 날엔 크림 파스타'],[1,'맑은 날엔 제육']],hot:[[18,'더운 날엔 쌀국수'],[7,'더운 날엔 비빔밥'],[14,'더운 날엔 파스타']]};
+async function weatherPick(region){const [la,lo]=REGION[region]||REGION['부산광역시'];let key='mild',temp=null;
+  try{const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${la}&longitude=${lo}&current=temperature_2m,weather_code&timezone=Asia%2FSeoul`);const d=await r.json();
+    temp=d.current.temperature_2m;const w=d.current.weather_code;
+    key=(w>=71&&w<=77)||w===85||w===86?'snow':((w>=51&&w<=67)||(w>=80&&w<=82)||w>=95?'rain':(temp<5?'cold':temp<15?'cool':temp<26?'mild':'hot'));}catch(e){}
+  const set=WX_SETS[key];const doy=Math.floor((today-new Date(today.getFullYear(),0,0))/864e5);const [i,why]=set[doy%set.length];
+  return{i,why:(temp!=null?`지금 ${Math.round(temp)}° · `:'')+why};}
+function renderMealList(list,cal,nutri){
+  $('#mDishes').innerHTML=list.map(x=>`<div class="dish"><span>${x.name}</span><small>${(x.allergy||[]).map(a=>ALLERGY[a]).filter(Boolean).join(' ')}</small></div>`).join('');
+  $('#mNutri').hidden=!cal;$('#mNutriList').innerHTML=cal?[`<li>${cal}</li>`,...nutri.map(n=>`<li>${n}</li>`)].join(''):'';}
+async function loadMeal(sc){showPane('dMeal');$('#mTitle').textContent=sc.name;$('#mDate').textContent='오늘 급식 불러오는 중…';$('#mDishes').innerHTML='';$('#mNutri').hidden=true;
+  const wxP=weatherPick(sc.region);
+  const end=new Date(today);end.setDate(end.getDate()+10);
+  let meal=null;try{const r=await fetch(`${NEIS_FN}?office=${sc.office}&school=${sc.school}&from=${ymd(today)}&to=${ymd(end)}`);const d=await r.json();
+    const ms=(d.meals||[]);meal=ms.find(m=>m.type==='중식')||ms[0]||null;SCHOOL_MEALS=ms.filter(m=>m.type==='중식');if(!SCHOOL_MEALS.length)SCHOOL_MEALS=ms;}catch(e){}
+  setSpecial(await wxP);
+  if(!meal){$('#mDate').textContent='앞으로 열흘 안에 올라온 급식이 없어요. 오늘은 급식실 기본 메뉴로 차려 둘게요.';SRC='모두의 급식실';renderMealList(DISHES.slice(0,5).map(d=>({name:d.n})),'',[]);drawBoard();return;}
+  const md=meal.date,isToday=md===ymd(today);const dd=new Date(+md.slice(0,4),+md.slice(4,6)-1,+md.slice(6,8));
+  $('#mDate').textContent=(isToday?'오늘':'다음 급식일')+` · ${dd.getMonth()+1}월 ${dd.getDate()}일 ${DAYS[dd.getDay()]}요일 ${meal.type}`+(MODE==='kid'?' · 알레르기 성분 표시':'');
+  renderMealList(meal.dishes,meal.cal,meal.nutrition);
+  SRC=sc.name;applyDishes(schoolDishes(meal.dishes));}
+async function showLunch(){SCHOOL_MEALS=null;showPane('dMeal');$('#mTitle').textContent='오늘 점심, 이거 어때요?';$('#mDate').textContent=dateStr+' · 직장인 점심 선호 통계 + 날씨';
+  SRC='오늘의 점심 추천';setSpecial(await weatherPick('부산광역시'));$('#mTitle').textContent=`오늘 점심, ${SP.n} 어때요?`;
+  $('#mDishes').innerHTML=`<p class="msg">급식실에 가면 ${DISHES.slice(0,5).map(d=>d.n).join(', ')}도 같이 나와요.</p>`;$('#mNutri').hidden=true;drawBoard();}
+
+/* ───────── 주황 가방 친구 ───────── */
+const INST={school:['학교 돌봄',0x3E73D6,'#3E73D6'],center:['지역아동센터',0x2E9A62,'#2E9A62'],dahamke:['다함께돌봄',0x8358C7,'#8358C7'],bangka:['방과후아카데미',0xE07A1F,'#E07A1F']};
+let qInst='bangka';
+const bk=makeKid({skin:SKIN[1],hair:HAIR[3],suit:0x8A93A0});bk.visible=false;npcs.push(bk);
+const bkBag=box(.38,.44,.18,lam(0xE07A1F),0,.7,-.23,bk.userData.body);box(.2,.12,.02,0xFFFFFF,0,.72,-.33,bk.userData.body);
+// 식탁에 혼자 앉은 주황 가방 아이 (줄에서 못 만난 사람용)
+const bks=makeKid({skin:SKIN[2],hair:HAIR[0],suit:0x8A93A0});npcs.push(bks);
+box(.38,.44,.18,0xE07A1F,0,.7,-.23,bks.userData.body);box(.2,.12,.02,0xFFFFFF,0,.72,-.33,bks.userData.body);
+let bksSeat=SEATS.filter(st=>!st.taken).sort((a,b)=>Math.abs(a.x)-Math.abs(b.x))[0];
+if(bksSeat){bksSeat.taken=bks;const tr=makeTray();DISHES.forEach((d,j)=>j<5&&trayPut(tr,j,d));u_seatOnly(bks,bksSeat,tr);}
+function u_seatOnly(k,seat,tr){k.userData.carry=tr;k.userData.body.add(tr);sitDown(k,seat);k.userData.eating=false;}
+const bksLbl=addLabel(bks,'💬 주황 가방','tag-bk tap',0,1.5);bksLbl.el.onclick=()=>{if(storySeen)return say(bks,'…고마워, 들어 줘서.',2000);openStory();};
+setInterval(()=>{if(bks.visible&&!storySeen&&state!=='exit')say(bks,'…',1400);},9000);
+function hideBks(){bks.visible=false;removeLabel(bksLbl);if(bksSeat){bksSeat.taken=null;if(bks.userData.tableTray){scene.remove(bks.userData.tableTray);bks.userData.tableTray=null;}}}
+const BKSVG='<svg class="bkid" viewBox="0 0 120 120" aria-hidden="true"><rect x="28" y="70" width="64" height="50" rx="14" fill="#E07A1F"/><circle cx="60" cy="52" r="34" fill="#EFC9A4"/><path d="M26 50 C24 18 96 18 94 50 C86 36 76 30 60 30 C44 30 34 36 26 50Z" fill="#4A3426"/><circle cx="48" cy="56" r="3.5" fill="#2A2620"/><circle cx="72" cy="56" r="3.5" fill="#2A2620"/><path d="M50 72 q10 -6 20 0" stroke="#2A2620" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg>';
+const STORY=[
+  {who:'주황 가방 친구',h:'나 <em>청소년방과후아카데미</em> 다녀.<br>학교 끝나면 거기서 돌봄 프로그램 하고,<br>저녁 먹고 집에 가.',btn:'그런데 왜?'},
+  {who:'주황 가방 친구',h:'내년부터는 밥 먹기 전에<br><em>부모님 소득 증빙 서류</em>를 내야 한대.<br>기준보다 높으면 한 끼 <em>2,000원</em>이고.',btn:'다른 친구들은?'},
+  {who:'주황 가방 친구',h:'학교 돌봄, 지역아동센터,<br>다함께돌봄 다니는 애들은<br>안 물어본대.<br>같은 밥인데.',btn:'계산서 보기'}];
+function openStory(back){const card=$('#storyCard');let i=0;
+  const step=()=>{if(i<STORY.length){const s=STORY[i];card.innerHTML=`<div class="sline">${BKSVG}<p class="who">${s.who}</p><h3>${s.h}</h3></div><button class="btn" id="sNext">${s.btn}</button>`;$('#sNext').onclick=()=>{i++;step();};card.scrollTop=0;return;}
+    storySeen=true;card.innerHTML=`${SP.img?`<img class="spimg sm" src="${SP.img}" alt="${SP.n}" onerror="this.remove()">`:''}<p class="big" style="text-align:center">같은 ${SP.n}인데,<br>계산서는 달라요.</p><div class="receipt" role="table" aria-label="기관별 저녁 급식비"><h4>오늘 저녁 계산서</h4><p class="rd">2027년부터 · 같은 메뉴, 같은 급식실</p>
+      <div class="rrow"><span>학교 돌봄</span><b>0원</b></div><div class="rrow"><span>지역아동센터</span><b>0원</b></div><div class="rrow"><span>다함께돌봄</span><b>0원</b></div>
+      <div class="rrow hit"><span>청소년방과후아카데미</span><b>2,000원*</b></div><p class="rnote">* 기준중위소득 150% 초과 가구 학생. 해당 여부 판단을 위해 부모님 소득 증빙 서류를 내야 합니다.</p></div>
+      <p class="big">2,000원보다 무거운 건, 밥 먹기 전에 듣는 “너희 집 형편은?”이라는 질문이에요.</p><p class="math">주 5일이면 한 달 약 4만 원, 형제 둘이면 8만 원.</p>
+      <div class="note">저는 방과후아카데미에서 아이들과 함께 활동하는 청소년지도사입니다. 같은 식탁에서 같은 밥을 먹는데, 우리 아이들에게만 집 형편을 묻고 계산서를 주게 됩니다.<div class="sig">한 청소년지도사가</div></div>
+      <a class="petition" href="https://petitions.assembly.go.kr/proceed/onGoingAll/5CB51C03131E1ED4E064ECE7A7064E8B" target="_blank" rel="noopener">청원에 동의하기</a>
+      <p class="fact" style="text-align:center">국회 국민동의청원은 30일 안에 5만 명이 모이면 위원회로 넘어갑니다.</p>
+      <button class="btn sub" id="sBack" style="width:100%">급식실로 돌아가기</button>`;card.scrollTop=0;
+    $('#sBack').onclick=()=>{$('#storyOv').classList.remove('on');back&&back();};};
+  $('#storyOv').classList.add('on');step();}
+$('#teaser').onclick=()=>{$('#exit').classList.remove('on');openStory(()=>{$('#exit').classList.add('on');$('#teaser').hidden=true;$('#exitCampaign').hidden=false;});};
+
+$('#enter').onclick=async()=>{logVisit();let seen=null;try{seen=localStorage.getItem('gs-help');localStorage.setItem('gs-help','1');}catch(e){}if(!seen)setTimeout(()=>$('#helpOv').classList.add('on'),2600);$('#door').classList.remove('on');state='walking';setAct('<p class="say" style="margin:0">급식실로 들어가는 중…</p>');
   await walkPath(me,[[-5.4,8.4]]);state='idle';idleAct();setTimeout(()=>$('#hintTap').style.opacity=0,6000);};
 updNav();
 $('#ring').onclick=()=>{unlockAudio();setSound(true);chime();$('#bellSvg').classList.add('ringing');$('#ldBtns').classList.add('hide');
@@ -766,6 +1056,7 @@ $('#silent').onclick=()=>{$('#loading').classList.add('gone');};
 })();
 
 /* 방문자 수: 1,000명 넘으면 공개 */
+const $=s=>document.querySelector(s);
 const SB_URL='https://seiparhicrqnpxlyheqn.supabase.co',SB_KEY='sb_publishable_mc0iEdUwKAKJwmFG-iIOIQ_PpMXpYTk';
 const SB_H={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'};
 let visitLogged=false;
