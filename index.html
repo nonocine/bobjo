@@ -34,6 +34,7 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1C1A16;--ink:#F2ECDD;--ink-soft:#B9AF9C;--line:#3B362D;--sheet:#26231D;--btn:#4E8F70;--btn-ink:#10140F;color-scheme:dark;}}
 :root[data-theme="dark"]{--bg:#1C1A16;--ink:#F2ECDD;--ink-soft:#B9AF9C;--line:#3B362D;--sheet:#26231D;--btn:#4E8F70;--btn-ink:#10140F;color-scheme:dark;}
 *,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{margin:0;height:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior:none}
 button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -161,6 +162,8 @@ details ul{padding-left:16px}
 .tag-bk.tap{pointer-events:auto;cursor:pointer;font-size:12px;padding:3px 9px;border:2px solid #FFFFFF;box-shadow:0 2px 6px rgba(0,0,0,.2)}
 .sec{font-weight:700;font-size:15px;margin:4px 0 2px}.sec small{font-weight:400;font-size:12px;color:var(--ink-soft);margin-left:6px}
 .bonus{display:inline-block;margin:0 0 8px;font-size:13px;font-weight:700;color:#FFFFFF;background:var(--accent);border-radius:999px;padding:3px 12px}
+.nextbtn{margin-top:10px;border:2px solid var(--accent);background:transparent;color:var(--accent);border-radius:999px;padding:7px 16px;font-size:14px;font-weight:700}
+#heroTag{cursor:pointer}
 .hero.bonusmode .spimg{max-width:150px}
 .hero{text-align:center;border:2px dashed var(--line);border-radius:16px;padding:12px;margin:8px 0 12px}
 .hero .spimg{max-width:230px;margin-bottom:8px}
@@ -185,6 +188,8 @@ details ul{padding-left:16px}
 .picks{display:grid;gap:8px;margin:4px 0 10px}
 .pick{display:flex;align-items:center;gap:12px;text-align:left;background:var(--sheet);border:2px solid var(--line);border-radius:14px;padding:12px 14px;font-size:16px;font-weight:700;color:var(--ink)}
 .pick .e{font-size:24px;flex:0 0 auto}
+.wtag{display:inline-block;font-style:normal;font-size:11px;font-weight:700;color:#FFFFFF;border-radius:999px;padding:1px 8px;margin-right:6px;vertical-align:2px}
+.wtag.w1{background:#3E73D6}.wtag.w2{background:#2E9A62}.wtag.w3{background:#E8743B}.wtag.w4{background:#8358C7}
 .pick small{display:block;font-weight:400;font-size:13px;color:var(--ink-soft)}
 .pick:hover{border-color:var(--ink)}
 .sbox{display:flex;gap:8px;margin:6px 0 8px}
@@ -267,10 +272,10 @@ details ul{padding-left:16px}
     <div id="dPick">
       <p class="date" style="margin:0 0 2px;color:var(--red)">빡.만.앱</p><h2>오늘 뭐 나와?</h2><p class="date" id="doorDate"></p>
       <div class="picks">
-        <button class="pick" data-m="me"><span class="e">🎒</span><span>우리 학교 급식<small>학교 이름으로 오늘 메뉴 보기</small></span></button>
-        <button class="pick" data-m="kid"><span class="e">👨‍👩‍👧</span><span>우리 아이 학교 급식<small>아이 학교 오늘 메뉴와 알레르기</small></span></button>
-        <button class="pick" data-m="alma"><span class="e">🏫</span><span>내 모교 오늘 급식<small>그 시절 우리 학교, 요즘은 뭐 먹을까?</small></span></button>
-        <button class="pick" data-m="lunch"><span class="e">🍱</span><span>오늘 점심 추천<small>날씨 보고 골라 드려요</small></span></button>
+        <button class="pick" data-m="me"><span class="e">🎒</span><span><i class="wtag w1">청소년</i>우리 학교 급식<small>학교 이름으로 오늘 메뉴 보기</small></span></button>
+        <button class="pick" data-m="kid"><span class="e">👨‍👩‍👧</span><span><i class="wtag w2">학부모</i>우리 아이 학교 급식<small>아이 학교 오늘 메뉴와 알레르기</small></span></button>
+        <button class="pick" data-m="alma"><span class="e">🏫</span><span><i class="wtag w4">어른</i>내 모교 오늘 급식<small>그 시절 우리 학교, 요즘은 뭐 먹을까?</small></span></button>
+        <button class="pick" data-m="lunch"><span class="e">🍱</span><span><i class="wtag w3">직장인</i>오늘 점심 추천<small>날씨 보고 골라 드려요</small></span></button>
       </div>
     </div>
     <div id="dSearch" hidden>
@@ -285,7 +290,7 @@ details ul{padding-left:16px}
       <h2 id="mTitle"></h2><p class="date" id="mDate"></p>
       <p class="sec" id="mDishesH" hidden></p>
       <div id="mDishes"></div>
-      <div class="hero" id="mHero"><p class="bonus" id="heroTag" hidden>＋ 덤으로 하나 더</p><img class="spimg" id="wxImg" alt="" onerror="this.style.display='none'"><span id="wxWhy"></span><b id="wxName"></b><span id="wxSub">오늘 급식실 특식</span></div>
+      <div class="hero" id="mHero"><p class="bonus" id="heroTag" hidden>＋ 덤으로 하나 더</p><img class="spimg" id="wxImg" alt="" onerror="this.style.display='none'"><span id="wxWhy"></span><b id="wxName"></b><span id="wxSub">오늘 급식실 특식</span><button class="nextbtn" id="wxNext">🔄 다른 메뉴 볼래요</button></div>
       <details id="mNutri"><summary>칼로리·영양 정보</summary><ul id="mNutriList"></ul></details>
       <button class="btn" id="enter" style="width:100%">이 식판 들고 급식실 가기</button>
     </div>
@@ -845,10 +850,16 @@ async function serveWithBk(){bkFocus=true;setAct('<p class="say" style="margin:0
   say(ck,'내년부턴 부모님 소득 증빙 서류가 필요해. 기준 넘으면 한 끼 2,000원이고.',3400);thud();await wait(2200);won(bk);
   await wait(1300);say(bk,'…',1800);
   bkAct();}
-function bkAct(){setAct(`<p class="say">앞 친구가 멈칫했다<small>주황 가방 친구</small></p><div class="row">${storySeen?'':'<button class="btn gold" id="whatHappened">무슨 일이야?</button>'}<button class="btn${storySeen?'':' sub'}" id="myTurn">내 특식 받기</button></div>`);
-  if(!storySeen)$('#whatHappened').onclick=()=>openStory(bkAct);
-  $('#myTurn').onclick=async()=>{bkDone=true;bkFocus=false;trayPut(bkTray,5,DISHES[5]);bkSit();
-    await walkPath(me,[[BIN_X[5],-7.75]],4);putMine(5);say(cookOf(5),'너도 맛있게 먹어~',1600);afterServe();};}
+async function bkAct(){bkDone=true;bkFocus=false;trayPut(bkTray,5,DISHES[5]);
+  setAct('<p class="say" style="margin:0">…뭐지? 저 친구 표정이 안 좋은데.</p>');say(me,'…뭐지?',1800);bkSit();
+  await walkPath(me,[[BIN_X[5],-7.75]],4);putMine(5);say(cookOf(5),'너도 맛있게 먹어~',1600);meQueue=false;
+  for(let t=0;t<40&&!(bk.userData.sitting&&SEATS.find(x=>x.taken===bk));t++)await wait(200);
+  state='carrying';
+  setAct(`<p class="say">아까 그 친구, 괜찮을까?<small>내 식판 약 ${trayKcal.toLocaleString('ko-KR')}kcal</small></p><div class="row"><button class="btn gold" id="sitBk">주황 가방 친구 옆에 앉기</button></div>`);
+  $('#sitBk').onclick=()=>{const ns=seatNear(SEATS.find(x=>x.taken===bk));if(ns)goSeat(ns);else carryAct();};}
+function seatNear(st){if(!st)return null;const f=SEATS.filter(t=>!t.taken&&t.tableZ===st.tableZ);
+  return f.find(t=>Math.abs(t.z-st.z)<.1&&Math.abs(Math.abs(t.x-st.x)-1.5)<.1)||f.find(t=>Math.abs(t.x-st.x)<.1)||f[0]||null;}
+function besideMe(k,seat){const o=SEATS.find(t=>t.taken===k);return o&&o.tableZ===seat.tableZ&&Math.abs(o.x-seat.x)<1.6&&(Math.abs(o.z-seat.z)<.1||Math.abs(o.x-seat.x)<.1);}
 async function bkSit(){const seat=freeSeat();if(!seat)return;seat.taken=bk;await walkPath(bk,routeTo(bk.position,{x:seat.x,z:seat.z}),2.2);sitDown(bk,seat);bk.userData.eating=true;}
 const KIND=[['그래, 많이 먹고 쑥쑥 커라~',1],['오늘도 애썼다, 든든히 먹어~',1],['맛있게 먹어 줘서 고마워~',1],['더 필요하면 또 와, 얼마든지!',1],['너는 특별히 두 국자!',2],['잘 먹는 모습이 제일 예쁘다~',1]];
 const SKIP=['그래, 대신 다른 거 많이 먹어~','괜찮아, 먹고 싶은 것만 먹어도 돼~','다음엔 한 입만 먹어 볼까?'];
@@ -890,7 +901,7 @@ function carryAct(){setAct(`<p class="say">빈자리를 찾아 보자<small>의�
 /* 의자 가까이 가면 '앉기' */
 let nearSeat=null;
 function checkSeat(){
-  if(state!=='carrying'||movers.has(me))return;
+  if(state!=='carrying'||movers.has(me)||$('#sitBk'))return;
   let best=null,bd=1.4;
   for(const st of SEATS){if(st.taken)continue;const d=Math.hypot(st.x-me.position.x,st.z-me.position.z);if(d<bd){bd=d;best=st;}}
   if(best===nearSeat)return;nearSeat=best;
@@ -898,7 +909,7 @@ function checkSeat(){
   else carryAct();
 }
 function orangeKid(){return qInst==='bangka'&&bkDone?bk:(bks.visible?bks:null);}
-async function joinMe(seat){const k=orangeKid();if(!k||storySeen)return;
+async function joinMe(seat){const k=orangeKid();if(!k||storySeen||besideMe(k,seat))return;
   const cand=SEATS.filter(t=>!t.taken&&t.tableZ===seat.tableZ&&Math.abs(t.z-seat.z)<.1&&Math.abs(Math.abs(t.x-seat.x)-1.5)<.1)
     .concat(SEATS.filter(t=>!t.taken&&t.tableZ===seat.tableZ&&Math.abs(t.x-seat.x)<.1&&Math.abs(t.z-seat.z)>.5));
   const ns=cand[0];if(!ns)return;const old=SEATS.find(t=>t.taken===k);
@@ -911,7 +922,7 @@ async function goSeat(seat){
   nearSeat=null;state='walking';seat.taken=me;setAct('');
   await walkPath(me,routeTo(me.position,{x:seat.x,z:seat.z}));
   mySeat=seat;sitDown(me,seat);state='seated';bites=0;joinMe(seat);
-  setAct(`<p class="say">맛있게 먹자!${milk?'<small>'+milk+'까지 챙겼다</small>':''}</p><div class="row"><button class="btn gold" id="eat">냠냠</button>${moodBtn()}</div>`);
+  setAct(`<p class="say">맛있게 먹자!${milk?'<small>'+milk+'까지 챙겼다</small>':''}</p><div class="row">${moodBtn()?moodBtn().replace('btn sub','btn gold'):''}<button class="btn${moodBtn()?' sub':' gold'}" id="eat">냠냠</button></div>`);
   $('#eat').onclick=eat;bindMood();
 }
 function eat(){
@@ -1078,11 +1089,18 @@ function setSpecial(pick){const [n,c,k]=SPECIALS[pick.i];const img='img/'+String
 const WX_SETS={rain:[[13,'비 오는 날엔 칼국수'],[9,'비 오는 날엔 짬뽕'],[10,'비 오는 날엔 부대찌개'],[5,'비 오는 날엔 순두부']],snow:[[10,'눈 오는 날엔 부대찌개'],[16,'눈 오는 날엔 뚝배기'],[12,'눈 오는 날엔 순댓국']],
   cold:[[6,'쌀쌀한 날엔 국밥'],[12,'쌀쌀한 날엔 순댓국'],[0,'쌀쌀한 날엔 김치찌개'],[16,'쌀쌀한 날엔 뚝배기']],cool:[[8,'선선한 날엔 된장찌개'],[1,'선선한 날엔 제육'],[4,'선선한 날엔 돈가스'],[3,'선선한 날엔 생선구이'],[17,'선선한 날엔 갈치구이']],
   mild:[[7,'맑은 날엔 비빔밥'],[2,'맑은 날엔 짜장면'],[14,'맑은 날엔 파스타'],[19,'맑은 날엔 크림 파스타'],[1,'맑은 날엔 제육']],hot:[[18,'더운 날엔 쌀국수'],[7,'더운 날엔 비빔밥'],[14,'더운 날엔 파스타']]};
+let WX_LAST={key:'mild',temp:null};
+function nextSpecial(){const set=WX_SETS[WX_LAST.key];const cur=set.findIndex(x=>SPECIALS[x[0]][0]===SP.n);
+  let i,why;if(cur>=0&&set.length>1){[i,why]=set[(cur+1)%set.length];}else{do{i=rand(SPECIALS.length);}while(SPECIALS[i][0]===SP.n);why='이것도 괜찮아요';}
+  if(set.length>1&&cur>=0&&(cur+1)%set.length===0){do{i=rand(SPECIALS.length);}while(SPECIALS[i][0]===SP.n);why='이것도 괜찮아요';}
+  setSpecial({i,why:(WX_LAST.temp!=null?`지금 ${Math.round(WX_LAST.temp)}° · `:'')+why});
+  if(SRC==='오늘의 점심 추천')$('#mTitle').textContent=`오늘 점심, ${SP.n} 어때요?`;drawBoard();}
+$('#wxNext').onclick=nextSpecial;$('#heroTag').onclick=nextSpecial;
 async function weatherPick(region){const [la,lo]=REGION[region]||REGION['부산광역시'];let key='mild',temp=null;
   try{const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${la}&longitude=${lo}&current=temperature_2m,weather_code&timezone=Asia%2FSeoul`);const d=await r.json();
     temp=d.current.temperature_2m;const w=d.current.weather_code;
     key=(w>=71&&w<=77)||w===85||w===86?'snow':((w>=51&&w<=67)||(w>=80&&w<=82)||w>=95?'rain':(temp<5?'cold':temp<15?'cool':temp<26?'mild':'hot'));}catch(e){}
-  const set=WX_SETS[key];const doy=Math.floor((today-new Date(today.getFullYear(),0,0))/864e5);const [i,why]=set[doy%set.length];
+  WX_LAST={key,temp};const set=WX_SETS[key];const doy=Math.floor((today-new Date(today.getFullYear(),0,0))/864e5);const [i,why]=set[doy%set.length];
   return{i,why:(temp!=null?`지금 ${Math.round(temp)}° · `:'')+why};}
 function renderMealList(list,cal,nutri){
   $('#mDishes').innerHTML=list.map(x=>`<div class="dish"><span>${x.name}</span><small>${(x.allergy||[]).map(a=>ALLERGY[a]).filter(Boolean).join(' ')}</small></div>`).join('');
