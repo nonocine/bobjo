@@ -55,7 +55,20 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-off
 @keyframes ring{from{transform:rotate(-22deg)}to{transform:rotate(22deg)}}
 .ldbtns{margin-top:26px;display:flex;flex-direction:column;align-items:center;gap:4px}
 .ldbtns .btn{flex:none;min-width:240px;font-size:17px;padding:15px 18px}
-.ldbtns.hide{visibility:hidden}
+.ldbtns.hide{visibility:visible}
+.tkwrap{filter:drop-shadow(0 6px 10px rgba(120,80,10,.22))}
+.ticket{display:flex;align-items:stretch;width:290px;padding:0;border:0;border-radius:14px;background:#FFE7AE;color:#3B2B05;text-align:left;
+  -webkit-mask:radial-gradient(circle 11px at 73% 0,#0000 98%,#000) top/100% 51% no-repeat,radial-gradient(circle 11px at 73% 100%,#0000 98%,#000) bottom/100% 51% no-repeat;
+  mask:radial-gradient(circle 11px at 73% 0,#0000 98%,#000) top/100% 51% no-repeat,radial-gradient(circle 11px at 73% 100%,#0000 98%,#000) bottom/100% 51% no-repeat;
+  transition:transform .15s}
+.ticket:hover{transform:translateY(-2px)}
+.ticket:active{transform:scale(.98)}
+.tk-main{flex:1;padding:14px 16px 13px 18px;display:flex;flex-direction:column;gap:2px;background:repeating-linear-gradient(135deg,transparent 0 10px,rgba(232,116,59,.06) 10px 20px)}
+.tk-main small{font-size:11px;letter-spacing:.18em;color:#B07A1E}
+.tk-main b{font-family:var(--title);font-weight:400;font-size:21px;line-height:1.15;white-space:nowrap}
+.tk-main em{font-style:normal;font-size:12px;color:#8A6A2E}
+.tk-stub{flex:0 0 27%;display:grid;place-items:center;text-align:center;font-family:var(--title);font-size:19px;line-height:1.15;color:#FFFFFF;background:#E8743B;border-left:2px dashed #FFE7AE;transition:transform .5s cubic-bezier(.5,0,.8,.4),opacity .5s}
+.ticket.torn .tk-stub{transform:translate(18px,40px) rotate(24deg);opacity:0}
 .ding{font-family:var(--title);font-size:26px;color:#E8743B;margin:0 0 18px}
 .ding small{display:block;font-family:var(--body);font-size:13px;color:#A49A8B;letter-spacing:.2em;margin-bottom:2px}
 .ld p{margin:8px 0 0;font-size:15px;color:#8A8276}
@@ -239,7 +252,7 @@ details ul{padding-left:16px}
     <p class="bbak">빡.만.앱</p><p class="bsub">청소년지도사가 빡쳐서 만든 앱</p>
     <svg class="bell" id="bellSvg" viewBox="0 0 96 110" aria-hidden="true"><rect x="44" y="0" width="8" height="12" rx="3" fill="#8A6A45"/><path d="M48 10 C22 10 18 40 18 62 C18 74 12 80 8 86 L88 86 C84 80 78 74 78 62 C78 40 74 10 48 10Z" fill="#E6B53C" stroke="#B88A1E" stroke-width="3"/><rect x="6" y="84" width="84" height="8" rx="4" fill="#C9961F"/><circle cx="48" cy="100" r="9" fill="#B88A1E"/><path d="M30 40 C32 28 40 22 48 22" stroke="#FFF2C4" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
     <h1>모두의 급식?</h1><ul class="who3"><li><b class="w1">청소년</b>우리 학교 급식 찾기</li><li><b class="w2">학부모</b>우리 아이 급식 찾기</li><li><b class="w3">직장인</b>오늘 뭐 먹지? 추천</li></ul>
-    <div class="ldbtns" id="ldBtns"><button class="btn" id="ring">🔔 종 치고 들어가기</button><button class="linkbtn" id="silent">소리 없이 들어가기</button></div><p class="why">하다 보면 왜 빡쳤는지 알게 돼요.</p><p class="sorry">불편하게 했다면 죄송합니다 🙏</p></div></div>
+    <div class="ldbtns" id="ldBtns"><div class="tkwrap"><button class="ticket" id="ring" aria-label="식권 내고 들어가기 (종소리가 나요)"><span class="tk-main"><small id="tkNo">식권</small><b>식권 내고 들어가기</b><em>🔔 종이 울려요</em></span><span class="tk-stub">1인<br>1식</span></button></div></div><p class="why">하다 보면 왜 빡쳤는지 알게 돼요.</p><p class="sorry">불편하게 했다면 죄송합니다 🙏</p></div></div>
 
   <header class="top">
     <div class="ttl"><span class="logo">모두의 급식?</span>
@@ -414,7 +427,7 @@ const LABELS=['밥','국','반찬','반찬','김치','오늘의 특식'];
 const DISHES=M.map((d,i)=>({...d,label:LABELS[i]}));
 let SP=DISHES[5];
 
-$('#doorDate').textContent=dateStr;
+$('#doorDate').textContent=dateStr;$('#tkNo').textContent=`식권 · ${today.getMonth()+1}월 ${today.getDate()}일 · No.${String(1+rand(999)).padStart(3,'0')}`;
 function buildMonth(){const start=new Date(today);start.setDate(start.getDate()-((start.getDay()+6)%7));
   let h='<tr><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr>';
   for(let w=0;w<4;w++){h+='<tr>';for(let i=0;i<5;i++){const d=new Date(start);d.setDate(start.getDate()+w*7+i);const m=menuOf(d);const now=d.toDateString()===today.toDateString();
@@ -1166,9 +1179,8 @@ $('#teaser').onclick=()=>{$('#exit').classList.remove('on');openStory(()=>{$('#e
 $('#enter').onclick=async()=>{logVisit();let seen=null;try{seen=localStorage.getItem('gs-help');localStorage.setItem('gs-help','1');}catch(e){}if(!seen)setTimeout(()=>$('#helpOv').classList.add('on'),2600);$('#door').classList.remove('on');state='walking';setAct('<p class="say" style="margin:0">급식실로 들어가는 중…</p>');
   await walkPath(me,[[-5.4,8.4]]);state='idle';idleAct();setTimeout(()=>$('#hintTap').style.opacity=0,6000);};
 updNav();
-$('#ring').onclick=()=>{unlockAudio();setSound(true);chime();$('#bellSvg').classList.add('ringing');$('#ldBtns').classList.add('hide');
+$('#ring').onclick=()=>{unlockAudio();setSound(true);chime();$('#bellSvg').classList.add('ringing');$('#ring').classList.add('torn');$('#ring').disabled=true;
   setTimeout(()=>{$('#bellSvg').classList.remove('ringing');$('#loading').classList.add('gone');},3400);};
-$('#silent').onclick=()=>{$('#loading').classList.add('gone');};
 })();
 
 /* 방문자 수: 1,000명 넘으면 공개 */
