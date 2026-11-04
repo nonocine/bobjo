@@ -348,6 +348,7 @@ details ul{padding-left:16px}
     <button class="teaser" id="teaser"><b>아까 그 주황 가방 친구,</b>무슨 일이었는지 볼래요?</button>
     <div id="exitCampaign">
     <p class="fact" id="visitors" style="text-align:center;display:none"></p>
+    <p class="big" style="text-align:center">2,000원보다 무거운 건,<br>밥 먹기 전에 듣는<br>“너희 집 형편은?”이라는 질문이에요.</p><p class="math" style="text-align:center">주 5일이면 한 달 약 4만 원, 형제 둘이면 8만 원.</p>
     <div class="note">저는 방과후아카데미에서 아이들과 함께 활동하는 청소년지도사입니다.<br>내년부터 몇몇 아이들은 이 밥값으로 2,000원을 내야 합니다.<br>같은 식탁에서 같은 밥을 먹는데, 집 형편을 물어보고 계산서를 줍니다.<br>말로 설명하기가 너무 억울해서, 직접 급식실을 만들었습니다.<div class="sig">한 청소년지도사가</div></div>
     <p class="fact">2027년 정부 예산 가내시(안)는 청소년방과후아카데미 한 곳당 예산을 1,564만 원(7.86%) 줄이고, 기준중위소득 150% 초과 가구 학생에게 한 끼 2,000원의 급식비 자부담을 새로 만들었습니다(소득 증빙 필요). 학교 돌봄, 지역아동센터, 다함께돌봄센터의 저녁 급식은 소득을 묻지 않습니다.</p>
     <a class="petition" href="https://petitions.assembly.go.kr/proceed/onGoingAll/5CB51C03131E1ED4E064ECE7A7064E8B" target="_blank" rel="noopener">이 밥값이 바뀌길 바라신다면, 청원에 동의하기</a>
@@ -1174,11 +1175,7 @@ function openStory(back){const card=$('#storyCard');let i=0;
     storySeen=true;card.innerHTML=`${SP.img?`<img class="spimg sm" src="${SP.img}" alt="${SP.n}" onerror="this.remove()">`:''}<p class="big" style="text-align:center">같은 ${SP.n}인데,<br>계산서는 달라요.</p><div class="receipt" role="table" aria-label="기관별 저녁 급식비"><h4>오늘 저녁 계산서</h4><p class="rd">2027년부터 · 같은 메뉴, 같은 급식실</p>
       <div class="rrow"><span>학교 돌봄</span><b>0원</b></div><div class="rrow"><span>지역아동센터</span><b>0원</b></div><div class="rrow"><span>다함께돌봄</span><b>0원</b></div>
       <div class="rrow hit"><span>청소년방과후아카데미</span><b>2,000원*</b></div><p class="rnote">* 기준중위소득 150% 초과 가구 학생. 해당 여부 판단을 위해 부모님 소득 증빙 서류를 내야 합니다.</p></div>
-      <p class="big">2,000원보다 무거운 건, 밥 먹기 전에 듣는 “너희 집 형편은?”이라는 질문이에요.</p><p class="math">주 5일이면 한 달 약 4만 원, 형제 둘이면 8만 원.</p>
-      <div class="note">저는 방과후아카데미에서 아이들과 함께 활동하는 청소년지도사입니다. 같은 식탁에서 같은 밥을 먹는데, 우리 아이들에게만 집 형편을 묻고 계산서를 주게 됩니다.<div class="sig">한 청소년지도사가</div></div>
-      <a class="petition" href="https://petitions.assembly.go.kr/proceed/onGoingAll/5CB51C03131E1ED4E064ECE7A7064E8B" target="_blank" rel="noopener">청원에 동의하기</a>
-      <p class="fact" style="text-align:center">국회 국민동의청원은 30일 안에 5만 명이 모이면 위원회로 넘어갑니다.</p>
-      <button class="btn sub" id="sBack" style="width:100%">급식실로 돌아가기</button>`;card.scrollTop=0;
+      <button class="btn" id="sBack" style="width:100%">급식실로 돌아가기</button>`;card.scrollTop=0;
     $('#sBack').onclick=()=>{$('#storyOv').classList.remove('on');back&&back();};};
   $('#storyOv').classList.add('on');step();}
 $('#teaser').onclick=()=>{$('#exit').classList.remove('on');openStory(()=>{$('#exit').classList.add('on');$('#teaser').hidden=true;$('#exitCampaign').hidden=false;});};
