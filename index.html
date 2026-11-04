@@ -307,7 +307,7 @@ details ul{padding-left:16px}
       <li><b>📋 식단표</b>아래 버튼. 학교를 골랐다면 그 학교의 다음 급식들이 보여요.</li>
       <li><b>🍽 한 그릇 더</b>다 먹고 다시 줄 설 수 있어요.</li>
       <li><b>🗑 퇴식구</b>식판 반납하면 끝. 다음 달 특식 투표가 기다려요.</li>
-      <li><b>💬 주황 가방</b>급식실 어딘가의 주황 가방 친구, 눌러 보면 이야기가 있어요.</li>
+      <li><b>🎒 주황 가방</b>줄 앞에 선 주황 가방 친구, 표정이 안 좋아요. 옆에 앉아서 밥 먹고 물어봐 주세요.</li>
     </ul>
     <button class="btn" id="closeHelp" style="width:100%">알겠어요, 밥 먹으러!</button>
   </div></div>
@@ -789,7 +789,9 @@ let state='door',myTray=null,mySeat=null,paidCount=0,milk=null,bites=0,ate=false
 function setAct(html){if(state==='door'&&html)return;act.innerHTML=html;act.classList.toggle('on',!!html);updNav();}
 function updNav(){
   $('#navMore').disabled=!(state==='seated'||(state==='idle'&&ate));
-  $('#navExit').disabled=!(state==='seated'||state==='carrying'||(state==='idle'&&ate));
+  let lock=false;try{lock=!storySeen&&!!orangeKid();}catch(e){}
+  $('#navExit').disabled=lock||!(state==='seated'||state==='carrying'||(state==='idle'&&ate));
+  if(lock)$('#navMore').disabled=true;
 }
 $('#navMenu').onclick=()=>{
   if(SCHOOL_MEALS&&SCHOOL_MEALS.length){$('#monthH').textContent=SRC+' 급식';$('#monthSub').textContent='나이스 교육정보 개방포털 · 앞으로 열흘';
@@ -822,7 +824,7 @@ async function goQueue(){
   if(state==='serving')return;
   if(mySeat){standUp(me,mySeat);mySeat.taken=null;mySeat=null;if(me.userData.carry){setCarry(me,null);}}
   const first=!bkDone;
-  if(first){qInst=(!storySeen&&Math.random()<.4)?'bangka':['school','center','dahamke'][rand(3)];const I=INST[qInst];
+  if(first){qInst=storySeen?['school','center','dahamke'][rand(3)]:'bangka';const I=INST[qInst];
     bkBag.material.color.setHex(I[1]);if(qInst==='bangka')hideBks();
     bk.visible=true;bk.position.set(BIN_X[0],0,-7.75);bk.rotation.y=Math.PI/2;bkTray=makeTray();setCarry(bk,bkTray);
     bkLbl=qInst==='bangka'?addLabel(bk,'주황 가방','tag-bk',0,1.62):null;}
@@ -915,21 +917,24 @@ async function joinMe(seat){const k=orangeKid();if(!k||storySeen||besideMe(k,sea
   const ns=cand[0];if(!ns)return;const old=SEATS.find(t=>t.taken===k);
   if(old){k.userData.eating=false;standUp(k,old);old.taken=null;}if(k===bks)bksSeat=ns;ns.taken=k;
   await walkPath(k,routeTo(k.position,{x:ns.x,z:ns.z}),2.6);sitDown(k,ns);say(k,'…',1600);}
+function exitAct(){setAct(`<p class="say">잘 먹었다!<small>식판 반납하러 가자</small></p><div class="row"><button class="btn" id="toExit">퇴식구로 가기</button></div>`);$('#toExit').onclick=goExit;}
 function moodBtn(){return (!storySeen&&orangeKid())?'<button class="btn sub" id="askMood">친구 기분 물어보기</button>':'';}
-function bindMood(){const b=$('#askMood');if(!b)return;b.onclick=async()=>{const k=orangeKid();say(me,'너 왜 기분이 안 좋아?',1800);await wait(1700);if(k)say(k,'…그냥. 내년부터 밥 먹을 때 좀 그래.',2200);await wait(1900);openStory(()=>{$('#askMood')&&$('#askMood').remove();});};}
+function bindMood(){const b=$('#askMood');if(!b)return;b.onclick=async()=>{const k=orangeKid();say(me,'너 왜 기분이 안 좋아?',1800);await wait(1700);if(k)say(k,'…그냥. 내년부터 밥 먹을 때 좀 그래.',2200);await wait(1900);openStory(()=>{const k=orangeKid();if(k)say(k,'…들어 줘서 고마워.',2000);ate?exitAct():setAct(`<p class="say">마저 먹자.</p><div class="row"><button class="btn gold" id="eat">냠냠</button></div>`);$('#eat')&&($('#eat').onclick=eat);});};}
 async function goSeat(seat){
   if(!seat||seat.taken)return;
   nearSeat=null;state='walking';seat.taken=me;setAct('');
   await walkPath(me,routeTo(me.position,{x:seat.x,z:seat.z}));
   mySeat=seat;sitDown(me,seat);state='seated';bites=0;joinMe(seat);
-  setAct(`<p class="say">맛있게 먹자!${milk?'<small>'+milk+'까지 챙겼다</small>':''}</p><div class="row">${moodBtn()?moodBtn().replace('btn sub','btn gold'):''}<button class="btn${moodBtn()?' sub':' gold'}" id="eat">냠냠</button></div>`);
-  $('#eat').onclick=eat;bindMood();
+  setAct(`<p class="say">맛있게 먹자!<small>${moodBtn()?'옆 친구는 말없이 숟가락만 들고 있다':(milk?milk+'까지 챙겼다':'냠냠 다섯 번이면 끝')}</small></p><div class="row"><button class="btn gold" id="eat">냠냠</button></div>`);
+  $('#eat').onclick=eat;
 }
 function eat(){
   bites++;me.userData.eating=true;setTimeout(()=>me.userData.eating=false,600);
   say(me,['냠','냠냠','꿀맛','국물 최고','특식 최고'][Math.min(4,bites-1)],900);
   const t=me.userData.tableTray;if(t){const it=t.userData.items.filter(Boolean);const f=it[(bites-1)%Math.max(1,it.length)];if(f)f.scale.multiplyScalar(.6);if(bites>=5)it.forEach(x=>x.visible=false);}
-  if(bites>=5){ate=true;setAct(`<p class="say" style="margin:0">다 먹었다! 식판이 깨끗해요.<small>아래 🍽 한 그릇 더, 또는 🗑 퇴식구</small></p>${moodBtn()?'<div class="row" style="margin-top:6px">'+moodBtn()+'</div>':''}`);bindMood();}
+  if(bites>=5){ate=true;
+    if(moodBtn()){setAct(`<p class="say">다 먹었다.<small>그런데 옆 친구는 반도 못 먹었네…</small></p><div class="row">${moodBtn().replace('btn sub','btn gold')}</div>`);bindMood();}
+    else exitAct();}
 }
 async function goExit(){
   if(mySeat){standUp(me,mySeat);mySeat.taken=null;mySeat=null;}
@@ -1136,6 +1141,7 @@ let bksSeat=SEATS.filter(st=>!st.taken).sort((a,b)=>Math.abs(a.x)-Math.abs(b.x))
 if(bksSeat){bksSeat.taken=bks;const tr=makeTray();DISHES.forEach((d,j)=>j<5&&trayPut(tr,j,d));u_seatOnly(bks,bksSeat,tr);}
 function u_seatOnly(k,seat,tr){k.userData.carry=tr;k.userData.body.add(tr);sitDown(k,seat);k.userData.eating=false;}
 const bksLbl=addLabel(bks,'💬 주황 가방','tag-bk tap',0,1.5);bksLbl.el.onclick=()=>{if(storySeen)return say(bks,'…고마워, 들어 줘서.',2000);openStory();};
+hideBks();
 setInterval(()=>{if(bks.visible&&!storySeen&&state!=='exit')say(bks,'…',1400);},9000);
 function hideBks(){bks.visible=false;removeLabel(bksLbl);if(bksSeat){bksSeat.taken=null;if(bks.userData.tableTray){scene.remove(bks.userData.tableTray);bks.userData.tableTray=null;}}}
 const BKSVG='<svg class="bkid" viewBox="0 0 120 120" aria-hidden="true"><rect x="28" y="70" width="64" height="50" rx="14" fill="#E07A1F"/><circle cx="60" cy="52" r="34" fill="#EFC9A4"/><path d="M26 50 C24 18 96 18 94 50 C86 36 76 30 60 30 C44 30 34 36 26 50Z" fill="#4A3426"/><circle cx="48" cy="56" r="3.5" fill="#2A2620"/><circle cx="72" cy="56" r="3.5" fill="#2A2620"/><path d="M50 72 q10 -6 20 0" stroke="#2A2620" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg>';
