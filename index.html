@@ -216,6 +216,7 @@ details ul{padding-left:16px}
   <header class="top">
     <div class="ttl"><span class="logo">모두의 급식?</span>
     <span class="me">나는 <b id="myname"></b></span></div>
+    <button class="icon-btn" id="home" aria-label="처음으로">🏠</button>
     <button class="icon-btn" id="help" aria-label="이용 방법">?</button>
     <button class="icon-btn" id="reroll" aria-label="이름 다시 뽑기">🔄</button>
     <button class="icon-btn" id="sound" aria-label="소리 켜기">🔇</button>
@@ -312,7 +313,7 @@ details ul{padding-left:16px}
     </div>
     <div class="row"><button class="btn sub" id="shareBtn">오늘의 급식 공유하기</button></div>
     <div class="toast" id="toast" role="status"></div>
-    <button class="btn sub" id="again" style="width:100%">다시 급식실로</button>
+    <div class="row"><button class="btn sub" id="again">다시 급식실로</button><button class="btn" id="goHome">처음으로</button></div>
     <details><summary>근거 자료</summary><ul>
       <li>성평등가족부 청소년활동진흥과-2361(2026. 8. 24.) 2027년 예산안 가내시 지침</li>
       <li>「2027년 예산안 가내시를 위한 청소년방과후아카데미 운영 변경 사항 조사」(2026. 8. 25.)</li>
@@ -415,10 +416,18 @@ function startAmb(){
     if(Math.random()<.12){tone(180+rand(80),0,.08,'square',.02);}}})();
   amb={stop(){alive=false;clearInterval(iv);layers.forEach(l=>{l.g.gain.linearRampToValueAtTime(0,ac.currentTime+.4);setTimeout(()=>{try{l.s.stop();}catch(e){}},500);});amb=null;}};
 }
-function unlockAudio(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();const b=ac.createBuffer(1,1,22050),s=ac.createBufferSource();s.buffer=b;s.connect(ac.destination);s.start(0);}catch(e){}}
+/* 아이폰: 무음 스위치가 켜져 있어도 소리가 나도록 '미디어 재생'으로 전환 */
+let keepAlive=null;
+function silentWav(){const n=4000,b=new Uint8Array(44+n),v=new DataView(b.buffer);const w=(o,t)=>{for(let i=0;i<t.length;i++)b[o+i]=t.charCodeAt(i);};
+  w(0,'RIFF');v.setUint32(4,36+n,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,8000,true);v.setUint32(28,8000,true);v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,'data');v.setUint32(40,n,true);b.fill(128,44);
+  let bin='';b.forEach(x=>bin+=String.fromCharCode(x));return 'data:audio/wav;base64,'+btoa(bin);}
+function iosMediaMode(){try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(e){}
+  try{if(!keepAlive){keepAlive=new Audio(silentWav());keepAlive.loop=true;keepAlive.setAttribute('playsinline','');keepAlive.preload='auto';}keepAlive.play().catch(()=>{});}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(!keepAlive)return;if(document.hidden)keepAlive.pause();else if(soundOn)keepAlive.play().catch(()=>{});});
+function unlockAudio(){iosMediaMode();try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();const b=ac.createBuffer(1,1,22050),s=ac.createBufferSource();s.buffer=b;s.connect(ac.destination);s.start(0);}catch(e){}}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&ac&&soundOn&&ac.state!=='running')ac.resume();});
 document.addEventListener('pointerdown',()=>{if(soundOn&&ac&&ac.state!=='running')ac.resume();});
-function setSound(on){if(on)unlockAudio();soundOn=on;$('#sound').textContent=on?'🔊':'🔇';if(on){if(ac&&ac.state==='suspended')ac.resume();startAmb();}else if(amb)amb.stop();}
+function setSound(on){if(on)unlockAudio();soundOn=on;$('#sound').textContent=on?'🔊':'🔇';if(on){if(ac&&ac.state==='suspended')ac.resume();startAmb();}else{if(amb)amb.stop();if(keepAlive)keepAlive.pause();}}
 const clink=()=>{tone(1800,0,.18,'triangle',.05);tone(2400,.03,.12,'triangle',.03);};
 const thud=()=>tone(110,0,.25,'square',.06);
 $('#sound').onclick=()=>{setSound(!soundOn);if(soundOn)chime();};
@@ -618,14 +627,38 @@ function stepMovers(dt){
 }
 // 가운데 통로(x=0)와 배식대 앞(z=-7.6)을 따라 이동하는 경로
 const AISLE_Z=-6.3;
+/* 길찾기: 격자 A* 로 식탁·의자·배식대를 피해서 걷기 */
+const GS=.4,GX0=-7.6,GZ0=-7.9,GW=39,GH=50;
+const BLOCK=[];
+function blocked(x,z){for(const r of BLOCK)if(x>r[0]&&x<r[1]&&z>r[2]&&z<r[3])return true;return false;}
+function buildGrid(){BLOCK.length=0;
+  for(const t of TABLES)BLOCK.push([t.x-2.75,t.x+2.75,t.z-1.3,t.z+1.3]);
+  BLOCK.push([5.3,6.5,-8.6,-7.2]);// 우유 상자
+  BLOCK.push([RX-.9,RX,-4.1,-2.9]);// 정수기
+}
+const cellX=i=>GX0+i*GS,cellZ=j=>GZ0+j*GS;
+const toI=x=>Math.max(0,Math.min(GW-1,Math.round((x-GX0)/GS))),toJ=z=>Math.max(0,Math.min(GH-1,Math.round((z-GZ0)/GS)));
+function clearLine(ax,az,bx,bz){const n=Math.ceil(Math.hypot(bx-ax,bz-az)/.15);for(let k=1;k<n;k++){const t=k/n;if(blocked(ax+(bx-ax)*t,az+(bz-az)*t))return false;}return true;}
 function routeTo(from,to){
-  const pts=[];const fz=from.z,tz=to.z;
-  const inTables=z=>z>-5.2&&z<6.4;
-  if(inTables(fz)||inTables(tz)){
-    if(Math.abs(from.x)>.4&&inTables(fz))pts.push([from.x>0?.0:.0,fz]);
-    pts.push([0,tz]);
-  }
-  pts.push([to.x,to.z]);return pts;
+  if(!BLOCK.length)buildGrid();
+  if(clearLine(from.x,from.z,to.x,to.z))return[[to.x,to.z]];
+  const si=toI(from.x),sj=toJ(from.z);
+  // 목적지가 막힌 칸(의자 등)이면 가장 가까운 열린 칸으로
+  let gi=toI(to.x),gj=toJ(to.z);
+  if(blocked(cellX(gi),cellZ(gj))){let best=null,bd=1e9;for(let i=0;i<GW;i++)for(let j=0;j<GH;j++){if(blocked(cellX(i),cellZ(j)))continue;const d=Math.hypot(cellX(i)-to.x,cellZ(j)-to.z);if(d<bd){bd=d;best=[i,j];}}if(best)[gi,gj]=best;}
+  const key=(i,j)=>j*GW+i;const g=new Map(),came=new Map(),open=[[0,si,sj]];g.set(key(si,sj),0);
+  const H=(i,j)=>Math.hypot(i-gi,j-gj);let found=false,guard=0;
+  while(open.length&&guard++<4000){open.sort((a,b)=>a[0]-b[0]);const [,ci,cj]=open.shift();if(ci===gi&&cj===gj){found=true;break;}
+    for(const [di,dj] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){const ni=ci+di,nj=cj+dj;if(ni<0||nj<0||ni>=GW||nj>=GH)continue;
+      if(blocked(cellX(ni),cellZ(nj))&&!(ni===si&&nj===sj))continue;if(di&&dj&&(blocked(cellX(ci+di),cellZ(cj))||blocked(cellX(ci),cellZ(cj+dj))))continue;
+      const ng=g.get(key(ci,cj))+Math.hypot(di,dj);if(ng<(g.get(key(ni,nj))??1e9)){g.set(key(ni,nj),ng);came.set(key(ni,nj),[ci,cj]);open.push([ng+H(ni,nj),ni,nj]);}}}
+  if(!found)return[[to.x,to.z]];
+  let path=[];let c=[gi,gj];while(c&&!(c[0]===si&&c[1]===sj)){path.unshift([cellX(c[0]),cellZ(c[1])]);c=came.get(key(c[0],c[1]));}
+  path.push([to.x,to.z]);
+  // 다듬기: 보이는 곳까지 건너뛰기
+  const out=[];let px=from.x,pz=from.z,i=0;
+  while(i<path.length){let j=path.length-1;while(j>i&&!clearLine(px,pz,path[j][0],path[j][1]))j--;out.push(path[j]);px=path[j][0];pz=path[j][1];i=j+1;}
+  return out;
 }
 
 /* ───────── 라벨 (말풍선) ───────── */
@@ -707,7 +740,7 @@ function placeCam(instant){
 /* ───────── 내 상태 ───────── */
 const act=$('#act');
 let state='door',myTray=null,mySeat=null,paidCount=0,milk=null,bites=0,ate=false;
-function setAct(html){act.innerHTML=html;act.classList.toggle('on',!!html);updNav();}
+function setAct(html){if(state==='door'&&html)return;act.innerHTML=html;act.classList.toggle('on',!!html);updNav();}
 function updNav(){
   $('#navMore').disabled=!(state==='seated'||(state==='idle'&&ate));
   $('#navExit').disabled=!(state==='seated'||state==='carrying'||(state==='idle'&&ate));
@@ -718,6 +751,12 @@ $('#navMenu').onclick=()=>{
   else{$('#monthH').textContent='이번 달 식단표';$('#monthSub').textContent='★ 오늘의 특식 = 직장인 추천 점심 메뉴 (데이터 통계 기반)';buildMonth();}
   $('#monthOv').classList.add('on');};
 $('#help').onclick=()=>$('#helpOv').classList.add('on');
+function goHome(){['#exit','#storyOv','#helpOv','#monthOv','#orgOv'].forEach(id=>$(id)&&$(id).classList.remove('on'));
+  movers.delete(me);if(mySeat){standUp(me,mySeat);mySeat.taken=null;mySeat=null;}
+  if(me.userData.tableTray){scene.remove(me.userData.tableTray);me.userData.tableTray=null;}setCarry(me,null);
+  meQueue=false;bkFocus=false;milk=null;ate=false;me.position.set(-6.4,0,10);state='door';setAct('');updNav();
+  showPane('dPick');$('#door').classList.add('on');}
+$('#home').onclick=goHome;$('#goHome').onclick=goHome;
 $('#closeHelp').onclick=()=>$('#helpOv').classList.remove('on');
 $('#navMore').onclick=()=>{if(me.userData.tableTray){scene.remove(me.userData.tableTray);me.userData.tableTray=null;}goQueue();};
 $('#navExit').onclick=()=>goExit();
@@ -740,7 +779,7 @@ async function goQueue(){
   if(first){qInst=(!storySeen&&Math.random()<.4)?'bangka':['school','center','dahamke'][rand(3)];const I=INST[qInst];
     bkBag.material.color.setHex(I[1]);if(qInst==='bangka')hideBks();
     bk.visible=true;bk.position.set(BIN_X[0],0,-7.75);bk.rotation.y=Math.PI/2;bkTray=makeTray();setCarry(bk,bkTray);
-    bkLbl=addLabel(bk,qInst==='bangka'?'주황 가방':I[0],'tag-bk',0,1.62);bkLbl.el.style.background=I[2];}
+    bkLbl=qInst==='bangka'?addLabel(bk,'주황 가방','tag-bk',0,1.62):null;}
   meQueue=true;state='walking';setAct('<p class="say" style="margin:0">배식대로 가는 중…</p>');
   myTray=makeTray();setCarry(me,myTray);
   await walkPath(me,routeTo(me.position,{x:-5.2,z:-6.6}));
@@ -758,8 +797,8 @@ async function serveWithBk(){bkFocus=true;setAct('<p class="say" style="margin:0
   for(let i=0;i<6;i++){const ps=[walkPath(bk,[[BIN_X[i],-7.75]],2.4)];if(i>0)ps.push(walkPath(me,[[BIN_X[i-1],-7.75]],2.4));await Promise.all(ps);
     if(i<5)trayPut(bkTray,i,DISHES[i]);if(i>0){trayPut(myTray,i-1,DISHES[i-1]);clink();}await wait(220);}
   const ck=cookOf(5);
-  if(qInst!=='bangka'){say(bk,INST[qInst][0]+'에서 왔어요!',1500);await wait(900);say(ck,'그래, 맛있게 먹어~',1600);trayPut(bkTray,5,DISHES[5]);clink();await wait(900);
-    bkDone=true;bkFocus=false;bkSit();removeLabel(bkLbl);await walkPath(me,[[BIN_X[5],-7.75]],2.4);trayPut(myTray,5,DISHES[5]);clink();say(ck,'너도 맛있게 먹어~',1600);afterServe();return;}
+  if(qInst!=='bangka'){say(bk,['와, 맛있겠다!','특식이다!','많이 주세요~'][rand(3)],1500);await wait(900);say(ck,'그래, 맛있게 먹어~',1600);trayPut(bkTray,5,DISHES[5]);clink();await wait(900);
+    bkDone=true;bkFocus=false;bkSit();await walkPath(me,[[BIN_X[5],-7.75]],2.4);trayPut(myTray,5,DISHES[5]);clink();say(ck,'너도 맛있게 먹어~',1600);afterServe();return;}
   say(ck,'잠깐!',1200);await wait(1100);
   say(ck,'너는 어디서 왔니?',1500);await wait(1500);
   say(bk,'방과후아카데미요.',1500);await wait(1600);
@@ -818,19 +857,28 @@ function checkSeat(){
   if(best){setAct(`<p class="say">여기 앉을까?</p><div class="row"><button class="btn" id="sitHere">앉기</button></div>`);$('#sitHere').onclick=()=>goSeat(best);}
   else carryAct();
 }
+function orangeKid(){return qInst==='bangka'&&bkDone?bk:(bks.visible?bks:null);}
+async function joinMe(seat){const k=orangeKid();if(!k||storySeen)return;
+  const cand=SEATS.filter(t=>!t.taken&&t.tableZ===seat.tableZ&&Math.abs(t.z-seat.z)<.1&&Math.abs(Math.abs(t.x-seat.x)-1.5)<.1)
+    .concat(SEATS.filter(t=>!t.taken&&t.tableZ===seat.tableZ&&Math.abs(t.x-seat.x)<.1&&Math.abs(t.z-seat.z)>.5));
+  const ns=cand[0];if(!ns)return;const old=SEATS.find(t=>t.taken===k);
+  if(old){k.userData.eating=false;standUp(k,old);old.taken=null;}if(k===bks)bksSeat=ns;ns.taken=k;
+  await walkPath(k,routeTo(k.position,{x:ns.x,z:ns.z}),2.6);sitDown(k,ns);say(k,'…',1600);}
+function moodBtn(){return (!storySeen&&orangeKid())?'<button class="btn sub" id="askMood">친구 기분 물어보기</button>':'';}
+function bindMood(){const b=$('#askMood');if(!b)return;b.onclick=async()=>{const k=orangeKid();say(me,'너 왜 기분이 안 좋아?',1800);await wait(1700);if(k)say(k,'…그냥. 내년부터 밥 먹을 때 좀 그래.',2200);await wait(1900);openStory(()=>{$('#askMood')&&$('#askMood').remove();});};}
 async function goSeat(seat){
   if(!seat||seat.taken)return;
   nearSeat=null;state='walking';seat.taken=me;setAct('');
   await walkPath(me,routeTo(me.position,{x:seat.x,z:seat.z}));
-  mySeat=seat;sitDown(me,seat);state='seated';bites=0;
-  setAct(`<p class="say">맛있게 먹자!${milk?'<small>'+milk+'까지 챙겼다</small>':''}</p><div class="row"><button class="btn gold" id="eat">냠냠</button></div>`);
-  $('#eat').onclick=eat;
+  mySeat=seat;sitDown(me,seat);state='seated';bites=0;joinMe(seat);
+  setAct(`<p class="say">맛있게 먹자!${milk?'<small>'+milk+'까지 챙겼다</small>':''}</p><div class="row"><button class="btn gold" id="eat">냠냠</button>${moodBtn()}</div>`);
+  $('#eat').onclick=eat;bindMood();
 }
 function eat(){
   bites++;me.userData.eating=true;setTimeout(()=>me.userData.eating=false,600);
   say(me,['냠','냠냠','꿀맛','국물 최고','특식 최고'][Math.min(4,bites-1)],900);
   const t=me.userData.tableTray;if(t){const it=t.userData.items.filter(Boolean);const f=it[(bites-1)%Math.max(1,it.length)];if(f)f.scale.multiplyScalar(.6);if(bites>=5)it.forEach(x=>x.visible=false);}
-  if(bites>=5){ate=true;setAct(`<p class="say" style="margin:0">다 먹었다! 식판이 깨끗해요.<small>아래에서 한 그릇 더, 또는 퇴식구</small></p>`);}
+  if(bites>=5){ate=true;setAct(`<p class="say" style="margin:0">다 먹었다! 식판이 깨끗해요.<small>아래 🍽 한 그릇 더, 또는 🗑 퇴식구</small></p>${moodBtn()?'<div class="row" style="margin-top:6px">'+moodBtn()+'</div>':''}`);bindMood();}
 }
 async function goExit(){
   if(mySeat){standUp(me,mySeat);mySeat.taken=null;mySeat=null;}
@@ -871,7 +919,7 @@ renderer.domElement.addEventListener('pointerup',e=>{
   const x=Math.max(-RX+.6,Math.min(RX-.6,hit.point.x)),z=Math.max(-7.6,Math.min(RZ-.6,hit.point.z));
   $('#hintTap').style.opacity=0;
   state=state==='carrying'?'carrying':'idle';
-  walkPath(me,[[x,z]]);updNav();
+  walkPath(me,routeTo(me.position,{x,z}));updNav();
 });
 
 /* 다음 달 특식 투표 (Supabase, 기기당 한 달 1표) */
