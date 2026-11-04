@@ -100,7 +100,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-off
 .hint-tap{position:absolute;left:50%;bottom:86px;transform:translateX(-50%);font-size:12px;background:rgba(42,38,32,.72);color:#FFFFFF;border-radius:999px;padding:5px 12px;pointer-events:none;transition:opacity .4s}
 
 .glass{background:rgba(255,255,255,.58);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);border:1px solid rgba(255,255,255,.75);box-shadow:0 8px 24px rgba(40,30,10,.14);color:#2A2620}
-.act{position:absolute;z-index:7;width:min(160px,42vw);padding:8px;border-radius:16px;transition:left .12s linear,top .12s linear;display:none}
+.act{position:absolute;z-index:7;width:min(190px,50vw);word-break:keep-all;padding:8px;border-radius:16px;transition:left .12s linear,top .12s linear;display:none}
 .act.on{display:block}
 .act .say{font-size:13px;line-height:1.4;margin:0 0 6px;color:#2A2620}
 .act .say small{display:block;font-size:12px;color:#6B6255}
@@ -316,7 +316,7 @@ details ul{padding-left:16px}
       <li><b>🍱 배식</b>배식대 앞에서 "식판 받기" 한 번이면 오늘 메뉴가 다 담겨요.</li>
       <li><b>🥛 우유 뽑기</b>흰우유·초코·바나나, 운 좋으면 딸기우유!</li>
       <li><b>🪑 앉기</b>의자 옆에 서면 "앉기" 버튼이 떠요. 귀찮으면 "아무 데나 앉기".</li>
-      <li><b>😋 먹기</b>"냠냠"을 다섯 번 누르면 식판이 깨끗해져요.</li>
+      <li><b>😋 먹기</b>"냠냠"을 세 번 누르면 식판이 깨끗해져요.</li>
       <li><b>📋 식단표</b>아래 버튼. 학교를 골랐다면 그 학교의 다음 급식들이 보여요.</li>
       <li><b>🍽 한 그릇 더</b>다 먹고 다시 줄 설 수 있어요.</li>
       <li><b>🗑 퇴식구</b>식판 반납하면 끝. 다음 달 특식 투표가 기다려요.</li>
@@ -499,16 +499,16 @@ function canvasTex(w,h,draw){const c=document.createElement('canvas');c.width=w;
 /* 방: 가로 16, 세로 24 */
 const RX=8,RZ=12;
 const floorTex=canvasTex(256,256,(g)=>{for(let y=0;y<4;y++)for(let x=0;x<4;x++){g.fillStyle=(x+y)%2?'#E6DCC4':'#D9CCB0';g.fillRect(x*64,y*64,64,64);}g.strokeStyle='rgba(0,0,0,.06)';for(let i=0;i<=4;i++){g.beginPath();g.moveTo(i*64,0);g.lineTo(i*64,256);g.moveTo(0,i*64);g.lineTo(256,i*64);g.stroke();}});
-floorTex.wrapS=floorTex.wrapT=THREE.RepeatWrapping;floorTex.repeat.set(8,12);
-const floor=new THREE.Mesh(new THREE.PlaneGeometry(RX*2,RZ*2),new THREE.MeshLambertMaterial({map:floorTex}));
+floorTex.wrapS=floorTex.wrapT=THREE.RepeatWrapping;floorTex.repeat.set(8,8);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(RX*2,16),new THREE.MeshLambertMaterial({map:floorTex}));floor.position.z=-4;
 floor.rotation.x=-Math.PI/2;floor.userData.kind='floor';scene.add(floor);
 // 벽
 const wallMat=lam(0xF0E7D0),lowMat=lam(0xB7D1C0);
 function wall(w,x,z,ry){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=ry;scene.add(g);
   box(w,4,.15,wallMat,0,2,0,g);box(w,1.1,.17,lowMat,0,.55,0.01,g);return g;}
-const backW=wall(RX*2,0,-RZ,0),leftW=wall(RZ*2,-RX,0,Math.PI/2),rightW=wall(RZ*2,RX,0,-Math.PI/2);
+const backW=wall(RX*2,0,-RZ,0),leftW=wall(16,-RX,-4,Math.PI/2),rightW=wall(16,RX,-4,-Math.PI/2);
 // 창문 (왼쪽 벽)
-for(const z of [-7,-1,5]){const fr=box(.12,1.7,2.3,0xFFFFFF,-RX+.1,2.3,z);const gl=box(.13,1.5,2.1,lam(0xCFE7F5,{emissive:0x9DC6DD,emissiveIntensity:.25}),-RX+.12,2.3,z);
+for(const z of [-9,-5,-1]){const fr=box(.12,1.7,2.3,0xFFFFFF,-RX+.1,2.3,z);const gl=box(.13,1.5,2.1,lam(0xCFE7F5,{emissive:0x9DC6DD,emissiveIntensity:.25}),-RX+.12,2.3,z);
   box(.14,1.5,.08,0xFFFFFF,-RX+.13,2.3,z);box(.14,.08,2.1,0xFFFFFF,-RX+.13,2.3,z);}
 // 칠판
 const boardTex=canvasTex(1024,560,(g,w,h)=>{});
@@ -558,16 +558,16 @@ const milkBox=new THREE.Group();milkBox.position.set(5.9,0,CTR_Z+.2);scene.add(m
 box(.9,.6,.6,0x3F7FC0,0,.3,0,milkBox);for(let i=0;i<4;i++)for(let j=0;j<2;j++){box(.15,.22,.15,0xFFFFFF,-.3+i*.2,.71,-.12+j*.24,milkBox);}
 milkBox.children.forEach(c=>c.userData.kind='milk');
 // 퇴식구 (오른쪽 앞)
-const ret=new THREE.Group();ret.position.set(RX-.1,0,8.5);scene.add(ret);
+const ret=new THREE.Group();ret.position.set(RX-.1,0,1.6);scene.add(ret);
 box(.4,1,2.4,0xA9B0B4,-.25,.5,0,ret);box(.05,1.1,2.2,0x3A3F42,-.02,1.6,0,ret);
 const retSign=new THREE.Mesh(new THREE.PlaneGeometry(1.6,.5),new THREE.MeshLambertMaterial({map:canvasTex(512,160,(g)=>{g.fillStyle='#2F5543';g.fillRect(0,0,512,160);g.fillStyle='#FFFFFF';g.font='64px Jua, sans-serif';g.textAlign='center';g.fillText('퇴식구',256,105);})}));
 retSign.position.set(-.06,2.45,0);retSign.rotation.y=-Math.PI/2;ret.add(retSign);
 // 입구 문 (왼쪽 앞)
-box(.1,2.4,1.8,0x9C7146,-RX+.08,1.2,10);box(.12,.12,.12,0xE6B53C,-RX+.15,1.2,9.4);
+box(.1,2.4,1.8,0x9C7146,-RX+.08,1.2,2.8);box(.12,.12,.12,0xE6B53C,-RX+.15,1.2,2.2);
 
 /* 식탁 + 의자 */
 const TABLES=[];const SEATS=[];
-for(const tz of [-3.6,.6,4.8])for(const tx of [-3.3,3.3]){
+for(const tz of [-3.6,.6])for(const tx of [-3.3,3.3]){
   const g=new THREE.Group();g.position.set(tx,0,tz);scene.add(g);
   box(4.8,.08,1.3,0xC9A36D,0,.78,0,g);for(const [lx,lz] of [[-2.2,-.5],[2.2,-.5],[-2.2,.5],[2.2,.5]])box(.1,.74,.1,0x8E979C,lx,.37,lz,g);
   TABLES.push({x:tx,z:tz});
@@ -742,7 +742,7 @@ const say=(k,t,ms=2200)=>addLabel(k,t,'bubble',ms,k.userData.sitting?1.55:1.85);
 const won=k=>addLabel(k,'2,000원','won',2400,1.05,.6);
 
 /* ───────── 등장인물 ───────── */
-const me=makeKid({skin:SKIN[0],hair:HAIR[0],suit:SUIT[0]});me.position.set(-6.4,0,10);me.rotation.y=Math.PI*.75;
+const me=makeKid({skin:SKIN[0],hair:HAIR[0],suit:SUIT[0]});me.position.set(-6.4,0,3);me.rotation.y=Math.PI*.75;
 addLabel(me,'나','tag-me',0,1.62);
 const COOK_X=[(BIN_X[0]+BIN_X[1])/2,(BIN_X[2]+BIN_X[3])/2,(BIN_X[4]+BIN_X[5])/2];
 const cooks=COOK_X.map((x,i)=>{const c=makeKid({skin:[0xF3D2B2,0xEFC9A4,0xF6D7B8][i],hair:[0x3A2C24,0x2B2522,0x4A3426][i],suit:0xFFFFFF,cook:true});c.position.set(x,0,CTR_Z-.85);c.scale.setScalar(1.12);return c;});
@@ -757,8 +757,8 @@ function freeSeat(){const f=SEATS.filter(s=>!s.taken);return f[rand(f.length)];}
 async function npcLife(k){
   const u=k.userData;
   while(true){
-    k.position.set(-6.4,0,10.5);k.visible=true;setCarry(k,null);
-    await walkPath(k,[[-5.6,8],[0,7],[0,AISLE_Z]],2.2);
+    k.position.set(-6.4,0,3.2);k.visible=true;setCarry(k,null);
+    await walkPath(k,[[-5.6,2.4],[0,2.2],[0,AISLE_Z]],2.2);
     while(meQueue)await wait(600);
     npcAtCounter++;await walkPath(k,[[-5.2,-7.7]],2.2);
     const tray=makeTray();setCarry(k,tray);
@@ -770,8 +770,8 @@ async function npcLife(k){
     const dur=12000+rand(18000);const end=performance.now()+dur;
     while(performance.now()<end){await wait(2500+rand(3000));if(Math.random()<.35)say(k,['냠냠','오늘 특식 대박','국물 최고','더 먹을까','우유 바꿔 먹자'][rand(5)],1500);}
     u.eating=false;standUp(k,seat);seat.taken=null;
-    await walkPath(k,[[0,seat.z],[0,8.5],[RX-.9,8.5]],2.2);setCarry(k,null);
-    await walkPath(k,[[0,9.5],[-6.4,10.5]],2.4);k.visible=false;await wait(1500+rand(4000));
+    await walkPath(k,[[0,seat.z],[0,2.4],[RX-.9,1.6]],2.2);setCarry(k,null);
+    await walkPath(k,[[0,3.2],[-6.4,3.2]],2.4);k.visible=false;await wait(1500+rand(4000));
   }
 }
 function sitDown(k,seat){const u=k.userData;k.position.set(seat.x,0,seat.z);k.rotation.y=seat.face;u.sitting=true;
@@ -779,22 +779,22 @@ function sitDown(k,seat){const u=k.userData;k.position.set(seat.x,0,seat.z);k.ro
 function standUp(k,seat){const u=k.userData;u.sitting=false;u.body.position.y=0;k.position.z=seat.z+(seat.face===0?-.4:.4);
   if(u.tableTray){scene.remove(u.tableTray);setCarry(k,u.tableTray);u.tableTray=null;}}
 // 처음부터 앉아 있는 친구들
-for(let i=0;i<7;i++){const k=makeKid({skin:SKIN[rand(3)],hair:HAIR[rand(4)],suit:SUIT[rand(5)]});npcs.push(k);
+for(let i=0;i<4;i++){const k=makeKid({skin:SKIN[rand(3)],hair:HAIR[rand(4)],suit:SUIT[rand(5)]});npcs.push(k);
   const seat=freeSeat();seat.taken=k;const tr=makeTray();DISHES.forEach((d,j)=>trayPut(tr,j,d));k.userData.carry=null;
   k.position.set(seat.x,0,seat.z);u_init(k,seat,tr);}
 function u_init(k,seat,tr){k.userData.carry=tr;k.userData.body.add(tr);sitDown(k,seat);k.userData.eating=true;
   setTimeout(async()=>{await wait(8000+rand(20000));k.userData.eating=false;standUp(k,seat);seat.taken=null;
-    await walkPath(k,[[0,seat.z],[0,8.5],[RX-.9,8.5]],2.2);setCarry(k,null);await walkPath(k,[[0,9.5],[-6.4,10.5]],2.4);k.visible=false;await wait(2000+rand(4000));npcLife(k);},10);}
+    await walkPath(k,[[0,seat.z],[0,2.4],[RX-.9,1.6]],2.2);setCarry(k,null);await walkPath(k,[[0,3.2],[-6.4,3.2]],2.4);k.visible=false;await wait(2000+rand(4000));npcLife(k);},10);}
 // 줄 서는 친구들
-for(let i=0;i<3;i++){const k=makeKid({skin:SKIN[rand(3)],hair:HAIR[rand(4)],suit:SUIT[rand(5)]});k.visible=false;npcs.push(k);setTimeout(()=>npcLife(k),i*4500);}
+for(let i=0;i<2;i++){const k=makeKid({skin:SKIN[rand(3)],hair:HAIR[rand(4)],suit:SUIT[rand(5)]});k.visible=false;npcs.push(k);setTimeout(()=>npcLife(k),i*4500);}
 
 /* ───────── 카메라 ───────── */
-const camOff=new THREE.Vector3(0,7.2,8.2);const camTarget=new THREE.Vector3();const FAR=new THREE.Vector3(0,7.2,8.2),NEAR_SERVE=new THREE.Vector3(0,3.1,3.6),NEAR_SEAT=new THREE.Vector3(1.6,3.1,3.5);
+const camOff=new THREE.Vector3(0,6.2,6.8);const camTarget=new THREE.Vector3();const FAR=new THREE.Vector3(0,6.2,6.8),NEAR_SERVE=new THREE.Vector3(0,3.1,3.6),NEAR_SEAT=new THREE.Vector3(1.6,3.1,3.5);
 function placeCam(instant){
-  if(bkFocus){const mid=me.position.clone().lerp(bk.position,.5);const want=mid.clone().add(new THREE.Vector3(0,3.9,5.3));if(instant)camera.position.copy(want);else camera.position.lerp(want,.06);camTarget.set(mid.x,1.0,mid.z-.9);camera.lookAt(camTarget);return;}const seatOff=mySeat&&mySeat.face!==0?new THREE.Vector3(1.6,3.1,-3.5):NEAR_SEAT;camOff.lerp(state==='serving'?NEAR_SERVE:(state==='seated'?seatOff:FAR),instant?1:.05);const want=me.position.clone().add(camOff);
-  want.x=Math.max(-6,Math.min(6,want.x));want.z=Math.max(-7,Math.min(18,want.z));
+  if(bkFocus){const mid=me.position.clone().lerp(bk.position,.5);const want=mid.clone().add(new THREE.Vector3(0,3.9,5.3));if(instant)camera.position.copy(want);else camera.position.lerp(want,.06);camTarget.set(mid.x,1.0,mid.z-.9);camera.lookAt(camTarget);return;}let F=me.position;if(state==='seated'){try{const k=orangeKid();if(k&&k.userData.sitting&&Math.hypot(k.position.x-F.x,k.position.z-F.z)<2.2)F=F.clone().lerp(k.position,.5);}catch(e){}}const seatOff=mySeat&&mySeat.face!==0?new THREE.Vector3(1.6,3.1,-3.5):NEAR_SEAT;camOff.lerp(state==='serving'?NEAR_SERVE:(state==='seated'?seatOff:FAR),instant?1:.05);const want=F.clone().add(camOff);
+  want.x=Math.max(-6,Math.min(6,want.x));want.z=Math.max(-7,Math.min(9,want.z));
   if(instant)camera.position.copy(want);else camera.position.lerp(want,.08);
-  const near=state==='serving'||state==='seated';camTarget.set(near?me.position.x:Math.max(-4,Math.min(4,me.position.x)),near?.85:.6,near?me.position.z-(state==='serving'?1.2:.2):Math.max(-11,Math.min(9.5,me.position.z-.6)));camera.lookAt(camTarget);}
+  const near=state==='serving'||state==='seated';camTarget.set(near?F.x:Math.max(-4,Math.min(4,F.x)),near?.85:.6,near?F.z-(state==='serving'?1.2:.2):Math.max(-11,Math.min(2,F.z-.6)));camera.lookAt(camTarget);}
 
 /* ───────── 내 상태 ───────── */
 const act=$('#act');
@@ -815,7 +815,7 @@ $('#help').onclick=()=>$('#helpOv').classList.add('on');
 function goHome(){['#exit','#storyOv','#helpOv','#monthOv','#orgOv'].forEach(id=>$(id)&&$(id).classList.remove('on'));
   movers.delete(me);if(mySeat){standUp(me,mySeat);mySeat.taken=null;mySeat=null;}
   if(me.userData.tableTray){scene.remove(me.userData.tableTray);me.userData.tableTray=null;}setCarry(me,null);
-  meQueue=false;bkFocus=false;milk=null;ate=false;me.position.set(-6.4,0,10);state='door';setAct('');updNav();
+  meQueue=false;bkFocus=false;milk=null;ate=false;me.position.set(-6.4,0,3);state='door';setAct('');updNav();
   showPane('dPick');$('#door').classList.add('on');}
 $('#home').onclick=goHome;$('#goHome').onclick=goHome;
 $('#closeHelp').onclick=()=>$('#helpOv').classList.remove('on');
@@ -862,7 +862,7 @@ async function serveWithBk(){bkFocus=true;setAct('<p class="say" style="margin:0
   say(ck,'잠깐!',1200);await wait(1100);
   say(ck,'너는 어디서 왔니?',1500);await wait(1500);
   say(bk,'방과후아카데미요.',1500);await wait(1600);
-  say(ck,'내년부턴 부모님 소득 증빙 서류가 필요해. 기준 넘으면 한 끼 2,000원이고.',3400);thud();await wait(2200);won(bk);
+  say(ck,'내년부터는 방과후아카데미 청소년은 소득 수준에 따라 급식비를 내야 한대.',3200);thud();await wait(2600);won(bk);say(ck,'부모님께 전달해 줘.',2200);await wait(1600);
   await wait(1300);say(bk,'…',1800);
   bkAct();}
 async function bkAct(){bkDone=true;bkFocus=false;trayPut(bkTray,5,DISHES[5]);
@@ -870,12 +870,12 @@ async function bkAct(){bkDone=true;bkFocus=false;trayPut(bkTray,5,DISHES[5]);
   await walkPath(me,[[BIN_X[5],-7.75]],4);putMine(5);say(cookOf(5),'너도 맛있게 먹어~',1600);meQueue=false;
   for(let t=0;t<40&&!(bk.userData.sitting&&SEATS.find(x=>x.taken===bk));t++)await wait(200);
   state='carrying';
-  setAct(`<p class="say">아까 그 친구, 괜찮을까?<small>내 식판 약 ${trayKcal.toLocaleString('ko-KR')}kcal</small></p><div class="row"><button class="btn gold" id="sitBk">주황 가방 친구 옆에 앉기</button></div>`);
+  setAct(`<p class="say">아까 그 친구, 괜찮을까?<small>내 식판 약 ${trayKcal.toLocaleString('ko-KR')}kcal</small></p><div class="row"><button class="btn gold" id="sitBk">친구 옆에 앉기</button></div>`);
   $('#sitBk').onclick=()=>{const ns=seatNear(SEATS.find(x=>x.taken===bk));if(ns)goSeat(ns);else carryAct();};}
 function seatNear(st){if(!st)return null;const f=SEATS.filter(t=>!t.taken&&t.tableZ===st.tableZ);
   return f.find(t=>Math.abs(t.z-st.z)<.1&&Math.abs(Math.abs(t.x-st.x)-1.5)<.1)||f.find(t=>Math.abs(t.x-st.x)<.1)||f[0]||null;}
 function besideMe(k,seat){const o=SEATS.find(t=>t.taken===k);return o&&o.tableZ===seat.tableZ&&Math.abs(o.x-seat.x)<1.6&&(Math.abs(o.z-seat.z)<.1||Math.abs(o.x-seat.x)<.1);}
-async function bkSit(){const seat=freeSeat();if(!seat)return;seat.taken=bk;await walkPath(bk,routeTo(bk.position,{x:seat.x,z:seat.z}),2.2);sitDown(bk,seat);bk.userData.eating=true;}
+async function bkSit(){const ok=SEATS.filter(t=>!t.taken&&SEATS.some(n=>n!==t&&!n.taken&&n.tableZ===t.tableZ&&Math.abs(n.z-t.z)<.1&&Math.abs(Math.abs(n.x-t.x)-1.5)<.1));const near=(a,b)=>Math.hypot(a.x-bk.position.x,a.z-bk.position.z)-Math.hypot(b.x-bk.position.x,b.z-bk.position.z);const seat=ok.length?ok.sort(near)[0]:freeSeat();if(!seat)return;seat.taken=bk;await walkPath(bk,routeTo(bk.position,{x:seat.x,z:seat.z}),5);sitDown(bk,seat);bk.userData.eating=true;}
 const KIND=[['그래, 많이 먹고 쑥쑥 커라~',1],['오늘도 애썼다, 든든히 먹어~',1],['맛있게 먹어 줘서 고마워~',1],['더 필요하면 또 와, 얼마든지!',1],['너는 특별히 두 국자!',2],['잘 먹는 모습이 제일 예쁘다~',1]];
 const SKIP=['그래, 대신 다른 거 많이 먹어~','괜찮아, 먹고 싶은 것만 먹어도 돼~','다음엔 한 입만 먹어 볼까?'];
 function serve(i){
@@ -936,23 +936,23 @@ function bindMood(){const b=$('#askMood');if(!b)return;b.onclick=async()=>{const
 async function goSeat(seat){
   if(!seat||seat.taken)return;
   nearSeat=null;state='walking';seat.taken=me;setAct('');
-  await walkPath(me,routeTo(me.position,{x:seat.x,z:seat.z}));
+  await walkPath(me,routeTo(me.position,{x:seat.x,z:seat.z}),6);
   mySeat=seat;sitDown(me,seat);state='seated';bites=0;joinMe(seat);
-  setAct(`<p class="say">맛있게 먹자!<small>${moodBtn()?'옆 친구는 말없이 숟가락만 들고 있다':(milk?milk+'까지 챙겼다':'냠냠 다섯 번이면 끝')}</small></p><div class="row"><button class="btn gold" id="eat">냠냠</button></div>`);
+  setAct(`<p class="say">맛있게 먹자!<small>${moodBtn()?'옆 친구는 말없이 숟가락만 들고 있다':(milk?milk+'까지 챙겼다':'냠냠 세 번이면 끝')}</small></p><div class="row"><button class="btn gold" id="eat">냠냠</button></div>`);
   $('#eat').onclick=eat;
 }
 function eat(){
   bites++;me.userData.eating=true;setTimeout(()=>me.userData.eating=false,600);
-  say(me,['냠','냠냠','꿀맛','국물 최고','특식 최고'][Math.min(4,bites-1)],900);
-  const t=me.userData.tableTray;if(t){const it=t.userData.items.filter(Boolean);const f=it[(bites-1)%Math.max(1,it.length)];if(f)f.scale.multiplyScalar(.6);if(bites>=5)it.forEach(x=>x.visible=false);}
-  if(bites>=5){ate=true;
+  say(me,['냠냠','꿀맛','특식 최고'][Math.min(2,bites-1)],900);
+  const t=me.userData.tableTray;if(t){const it=t.userData.items.filter(Boolean);const f=it[(bites-1)%Math.max(1,it.length)];if(f)f.scale.multiplyScalar(.6);if(bites>=3)it.forEach(x=>x.visible=false);}
+  if(bites>=3){ate=true;
     if(moodBtn()){setAct(`<p class="say">다 먹었다.<small>그런데 옆 친구는 반도 못 먹었네…</small></p><div class="row">${moodBtn().replace('btn sub','btn gold')}</div>`);bindMood();}
     else exitAct();}
 }
 async function goExit(){
   if(mySeat){standUp(me,mySeat);mySeat.taken=null;mySeat=null;}
   state='walking';setAct('<p class="say" style="margin:0">퇴식구로 쓩~</p>');
-  await walkPath(me,routeTo(me.position,{x:RX-.9,z:8.5}),11);
+  await walkPath(me,routeTo(me.position,{x:RX-.9,z:1.6}),11);
   setCarry(me,null);thud();setAct('');
   $('#result').innerHTML=`${SP.img?`<figure class="dishhero"><img src="${SP.img}" alt="${SP.n}" onerror="this.parentNode.remove()"><figcaption><small>${SRC==='모두의 급식실'?'오늘의 특식':SRC==='오늘의 점심 추천'?'오늘의 추천 메뉴':SRC+' 급식 + 보너스 특식'}</small><b>${SP.n}, 맛있었죠?</b></figcaption></figure>`:''}식판까지 싹싹, 한 그릇 뚝딱!`;
   $('#teaser').hidden=storySeen;$('#exitCampaign').hidden=!storySeen;
@@ -966,10 +966,10 @@ function placeAct(){
   const w=stage.clientWidth,h=stage.clientHeight,aw=act.offsetWidth,ah=act.offsetHeight;
   const x=(actV.x*.5+.5)*w,y=(-actV.y*.5+.5)*h;
   let left=x<w*.5?x+70:x-70-aw;left=Math.max(8,Math.min(w-aw-8,left));
-  let top=y-ah/2;top=Math.max(8,Math.min(h-ah-84,top));
+  let top=y-ah/2;top=Math.max(8,Math.min(h-ah-84,top));if(state==='seated'){left=(w-aw)/2;top=h-ah-84;}
   act.style.left=left+'px';act.style.top=top+'px';
 }
-$('#again').onclick=()=>{$('#exit').classList.remove('on');milk=null;ate=false;me.position.set(-6.4,0,10);state='idle';idleAct();};
+$('#again').onclick=()=>{$('#exit').classList.remove('on');milk=null;ate=false;me.position.set(-6.4,0,3);state='idle';idleAct();};
 
 /* 바닥·의자 누르기 */
 const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();let downAt=null;
@@ -985,7 +985,7 @@ renderer.domElement.addEventListener('pointerup',e=>{
     if(state!=='seated')say(me,'먼저 배식부터 받아 올까?',1500);return;}
   if(state==='seated')return;
   const hit=ray.intersectObject(floor)[0];if(!hit)return;
-  const x=Math.max(-RX+.6,Math.min(RX-.6,hit.point.x)),z=Math.max(-7.6,Math.min(RZ-.6,hit.point.z));
+  const x=Math.max(-RX+.6,Math.min(RX-.6,hit.point.x)),z=Math.max(-7.6,Math.min(3.4,hit.point.z));
   $('#hintTap').style.opacity=0;
   state=state==='carrying'?'carrying':'idle';
   walkPath(me,routeTo(me.position,{x,z}));updNav();
@@ -1176,8 +1176,7 @@ function openStory(back){const card=$('#storyCard');let i=0;
   $('#storyOv').classList.add('on');step();}
 $('#teaser').onclick=()=>{$('#exit').classList.remove('on');openStory(()=>{$('#exit').classList.add('on');$('#teaser').hidden=true;$('#exitCampaign').hidden=false;});};
 
-$('#enter').onclick=async()=>{logVisit();let seen=null;try{seen=localStorage.getItem('gs-help');localStorage.setItem('gs-help','1');}catch(e){}if(!seen)setTimeout(()=>$('#helpOv').classList.add('on'),2600);$('#door').classList.remove('on');state='walking';setAct('<p class="say" style="margin:0">급식실로 들어가는 중…</p>');
-  await walkPath(me,[[-5.4,8.4]]);state='idle';idleAct();setTimeout(()=>$('#hintTap').style.opacity=0,6000);};
+$('#enter').onclick=async()=>{logVisit();let seen=null;try{seen=localStorage.getItem('gs-help');localStorage.setItem('gs-help','1');}catch(e){}$('#door').classList.remove('on');state='idle';$('#hintTap').style.opacity=0;goQueue();};
 updNav();
 $('#ring').onclick=()=>{unlockAudio();setSound(true);chime();$('#bellSvg').classList.add('ringing');$('#ring').classList.add('torn');$('#ring').disabled=true;
   setTimeout(()=>{$('#bellSvg').classList.remove('ringing');$('#loading').classList.add('gone');},3400);};
