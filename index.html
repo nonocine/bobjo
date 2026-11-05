@@ -1648,7 +1648,8 @@ let stayT=0;const STAY=[30,60,120,180,300,600,900];setInterval(()=>{if(document.
 /* ───────── 멀티: 자리로 가는 순간부터 함께 (Supabase Realtime) ───────── */
 const MP={ch:null,on:false,others:new Map(),me:{},lastReact:0};
 const esc=t=>String(t||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function mySid(){if(!window.__sid)window.__sid=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+Date.now());return window.__sid;}
+let PID=null;function mySid(){if(PID)return PID;try{PID=localStorage.getItem('bap_pid');}catch(e){}
+  if(!PID||!/^[\w-]{8,64}$/.test(PID)){PID=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+Date.now());try{localStorage.setItem('bap_pid',PID);}catch(e){}}return PID;}
 const INV=(()=>{try{const u=new URL(location.href);const w=u.searchParams.get('with');if(!w||!/^[\w-]{8,64}$/.test(w))return null;return{sid:w,name:(u.searchParams.get('from')||'급식 친구').slice(0,24)};}catch(e){return null;}})();
 if(INV){$('#invBan').innerHTML=`<i class="tr"></i> <b>${esc(INV.name)}</b>이(가) 같이 먹자고 불렀어요!<br>식판 받고 그 친구 옆자리로 가요.`;$('#invBan').hidden=false;}
 const hashN=(t,n)=>{let h=0;for(const c of String(t))h=(h*31+c.charCodeAt(0))>>>0;return h%n;};
@@ -1666,7 +1667,9 @@ let mvT=null,mvLast=0;
 function mpMove(){if(!MP.on||!MP.ch)return;clearTimeout(mvT);mvT=setTimeout(()=>{mvLast=Date.now();try{const r=MP.ch.send({type:'broadcast',event:'move',payload:{sid:mySid(),x:MP.me.x,z:MP.me.z,t:MP.me.t}});r&&r.catch&&r.catch(()=>{});}catch(e){}},Math.max(0,450-(Date.now()-mvLast)));}
 function mpMoveIn(p){const o=MP.others.get(p.sid);if(!o||o.st!=='roam'||!Number.isFinite(p.x)||!Number.isFinite(p.z))return;if((p.t||0)<(o.mt||0))return;o.mt=p.t||0;
   const x=Math.max(-RX+.6,Math.min(RX-.6,p.x)),z=Math.max(-7.6,Math.min(11.2,p.z));if(o.tx===x&&o.tz===z)return;o.tx=x;o.tz=z;walkPath(o.kid,routeTo(o.kid.position,{x,z}),2.8);}
-setInterval(()=>{if(MP.posDirty&&MP.me.st==='roam')mpPush();},12000);
+setInterval(()=>{if(MP.posDirty&&(MP.me.st==='roam'||MP.me.st==='pre'))mpPush();},12000);
+setInterval(()=>{const st=MP.me.st;if(st!=='roam'&&st!=='pre')return;const x=+me.position.x.toFixed(2),z=+me.position.z.toFixed(2);
+  if(Math.hypot((MP.me.x||0)-x,(MP.me.z||0)-z)<.5)return;MP.me.x=x;MP.me.z=z;MP.me.t=Date.now();MP.posDirty=true;mpMove();},900);
 function mpSet(o){const prev={...MP.me};Object.assign(MP.me,o,{name:myName(),bowls:REC.today,with:INV?INV.sid:null,sc:CUR_SC?shortSc(CUR_SC.name).slice(0,16):''});
   const moved=prev.x!==MP.me.x||prev.z!==MP.me.z;if(moved)MP.me.t=Date.now();
   if(!prev.st||['st','seat','bowls','sc','name','with'].some(k=>prev[k]!==MP.me[k]))mpPush();else if(moved&&MP.me.st==='roam'){MP.posDirty=true;mpMove();}
@@ -1681,7 +1684,8 @@ function mpRemove(id){const o=MP.others.get(id);if(!o)return;removeLabel(o.lbl);
   if(o.seat&&o.seat.taken===k)o.seat.taken=null;if(k.userData.tableTray)scene.remove(k.userData.tableTray);scene.remove(k);
   const ix=npcs.indexOf(k);if(ix>=0)npcs.splice(ix,1);MP.others.delete(id);}
 function mpSync(){if(!MP.ch)return;let st={};try{st=MP.ch.presenceState();}catch(e){}
-  const live=new Map();for(const [id,arr] of Object.entries(st)){if(id===mySid()||!arr||!arr.length)continue;const m=arr[arr.length-1];if(!m)continue;if(m.st==='seated'&&Number.isInteger(m.seat))live.set(id,m);else if(m.st==='roam'&&Number.isFinite(m.x)&&Number.isFinite(m.z))live.set(id,Object.assign({},m,{x:Math.max(-RX+.6,Math.min(RX-.6,m.x)),z:Math.max(-7.6,Math.min(11.2,m.z))}));}
+  const live=new Map();for(const [id,arr] of Object.entries(st)){if(id===mySid()||!arr||!arr.length)continue;let m=arr[arr.length-1];if(!m)continue;const rel=m.with===mySid()||(INV&&id===INV.sid);if(m.st==='pre'&&rel&&Number.isFinite(m.x)&&Number.isFinite(m.z))m=Object.assign({},m,{st:'roam'});
+    if(m.st==='seated'&&Number.isInteger(m.seat))live.set(id,m);else if(m.st==='roam'&&Number.isFinite(m.x)&&Number.isFinite(m.z))live.set(id,Object.assign({},m,{x:Math.max(-RX+.6,Math.min(RX-.6,m.x)),z:Math.max(-7.6,Math.min(11.2,m.z))}));}
   for(const id of [...MP.others.keys()])if(!live.has(id))mpRemove(id);
   let n=0;
   for(const [id,m] of live){if(n>=16)break;n++;
@@ -1693,7 +1697,7 @@ function mpSync(){if(!MP.ch)return;let st={};try{st=MP.ch.presenceState();}catch
       const tr=makeTray();setCarry(kid,tr);kid.position.set(from?from.x:m.x,0,from?from.z:m.z);scene.add(kid);npcs.push(kid);
       const lbl=addLabel(kid,mpTag(m),'tag-mp',0,1.62);
       MP.others.set(id,{kid,lbl,seat:null,name:m.name,st:'roam',tx:m.x,tz:m.z});
-      walkPath(kid,routeTo(kid.position,{x:m.x,z:m.z}),2.8);continue;}
+      walkPath(kid,routeTo(kid.position,{x:m.x,z:m.z}),2.8);if(!from&&(m.with===mySid()||(INV&&id===INV.sid)))setTimeout(()=>say(kid,m.with===mySid()?'왔어! 같이 먹자 😋':'나 여기 있어! 👋',2400),500);continue;}
     const pal=mySeat&&(m.with===mySid()||(INV&&id===INV.sid&&MP.me.st));
     if(MP.others.has(id)&&MP.others.get(id).st==='roam')mpRemove(id);
     if(MP.others.has(id)){const o=MP.others.get(id);
@@ -1724,7 +1728,7 @@ $('#doorSave').onclick=async()=>{if(await saveMenu())$('#doorMsg').hidden=false;
 $('#doorBye').onclick=()=>{track('door_bye');$('#byeMenu').textContent=(typeof SP!=='undefined'&&SP&&SP.n)?`오늘 메뉴: ${SP.n}`:'';showPane('dBye');const c=document.querySelector('#door .card');if(c)c.scrollTop=0;};
 $('#byeEnter').onclick=()=>{track('bye_enter');showPane('dMeal');$('#enter').click();};
 $('#byeHome').onclick=()=>showPane('dPick');
-$('#enter').onclick=async()=>{track('enter',SRC);mpStart();logVisit();let seen=null;try{seen=localStorage.getItem('gs-help');localStorage.setItem('gs-help','1');}catch(e){}$('#door').classList.remove('on');state='idle';$('#hintTap').style.opacity=0;goQueue();};
+$('#enter').onclick=async()=>{track('enter',SRC);mpStart();setTimeout(()=>{if(!MP.me.st&&state!=='door')mpSet({st:'pre',seat:null,x:+me.position.x.toFixed(2),z:+me.position.z.toFixed(2)});},1200);logVisit();let seen=null;try{seen=localStorage.getItem('gs-help');localStorage.setItem('gs-help','1');}catch(e){}$('#door').classList.remove('on');state='idle';$('#hintTap').style.opacity=0;goQueue();};
 updNav();
 $('#ring').onclick=()=>{unlockAudio();setSound(true);chime();$('#bellSvg').classList.add('ringing');$('#ring').classList.add('torn');$('#ring').disabled=true;
   setTimeout(()=>{$('#bellSvg').classList.remove('ringing');$('#loading').classList.add('gone');},3400);};
