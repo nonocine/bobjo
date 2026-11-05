@@ -1640,13 +1640,22 @@ const hashN=(t,n)=>{let h=0;for(const c of String(t))h=(h*31+c.charCodeAt(0))>>>
 function mpStart(){if(MP.ch||!window.supabase)return;
   try{const cl=window.supabase.createClient('https://seiparhicrqnpxlyheqn.supabase.co','sb_publishable_mc0iEdUwKAKJwmFG-iIOIQ_PpMXpYTk',{realtime:{params:{eventsPerSecond:5}}});
     MP.ch=cl.channel('geupsik-hall',{config:{presence:{key:mySid()},broadcast:{self:false}}});
-    MP.ch.on('presence',{event:'sync'},mpSync).on('broadcast',{event:'react'},({payload})=>mpReact(payload||{}));
+    MP.ch.on('presence',{event:'sync'},mpSync).on('broadcast',{event:'react'},({payload})=>mpReact(payload||{})).on('broadcast',{event:'move'},({payload})=>mpMoveIn(payload||{}));
     MP.cl=cl;MP.ch.subscribe(st=>{if(st==='SUBSCRIBED'){MP.on=true;MP.retry=0;mpPush();mpSync();}
       else if(st==='CHANNEL_ERROR'||st==='TIMED_OUT'||st==='CLOSED'){MP.on=false;clearTimeout(MP.rt);MP.rt=setTimeout(()=>{try{MP.cl.removeChannel(MP.ch);}catch(e){}MP.ch=null;mpStart();},Math.min(30000,3000*(1+(MP.retry=(MP.retry||0)+1))));}});}catch(e){}}
 /* 접속 정보 보내기는 1.5초에 한 번만 (서버 제한) */
 let mpT=null,mpLastT=0;
-function mpPush(){if(!MP.on||!MP.ch)return;clearTimeout(mpT);mpT=setTimeout(()=>{mpLastT=Date.now();try{const r=MP.me.st?MP.ch.track({...MP.me}):MP.ch.untrack();r&&r.catch&&r.catch(()=>{});}catch(e){}},Math.max(0,1500-(Date.now()-mpLastT)));}
-function mpSet(o){Object.assign(MP.me,o,{name:myName(),bowls:REC.today,with:INV?INV.sid:null,sc:CUR_SC?shortSc(CUR_SC.name).slice(0,16):''});mpPush();mpSync();}
+function mpPush(){if(!MP.on||!MP.ch)return;clearTimeout(mpT);mpT=setTimeout(()=>{mpLastT=Date.now();MP.posDirty=false;try{const r=MP.me.st?MP.ch.track({...MP.me}):MP.ch.untrack();r&&r.catch&&r.catch(()=>{});}catch(e){}},Math.max(0,3000-(Date.now()-mpLastT)));}
+/* 걷는 위치는 가벼운 방송으로 (접속 정보는 상태가 바뀔 때만) */
+let mvT=null,mvLast=0;
+function mpMove(){if(!MP.on||!MP.ch)return;clearTimeout(mvT);mvT=setTimeout(()=>{mvLast=Date.now();try{const r=MP.ch.send({type:'broadcast',event:'move',payload:{sid:mySid(),x:MP.me.x,z:MP.me.z,t:MP.me.t}});r&&r.catch&&r.catch(()=>{});}catch(e){}},Math.max(0,450-(Date.now()-mvLast)));}
+function mpMoveIn(p){const o=MP.others.get(p.sid);if(!o||o.st!=='roam'||!Number.isFinite(p.x)||!Number.isFinite(p.z))return;if((p.t||0)<(o.mt||0))return;o.mt=p.t||0;
+  const x=Math.max(-RX+.6,Math.min(RX-.6,p.x)),z=Math.max(-7.6,Math.min(3.4,p.z));if(o.tx===x&&o.tz===z)return;o.tx=x;o.tz=z;walkPath(o.kid,routeTo(o.kid.position,{x,z}),2.8);}
+setInterval(()=>{if(MP.posDirty&&MP.me.st==='roam')mpPush();},12000);
+function mpSet(o){const prev={...MP.me};Object.assign(MP.me,o,{name:myName(),bowls:REC.today,with:INV?INV.sid:null,sc:CUR_SC?shortSc(CUR_SC.name).slice(0,16):''});
+  const moved=prev.x!==MP.me.x||prev.z!==MP.me.z;if(moved)MP.me.t=Date.now();
+  if(!prev.st||['st','seat','bowls','sc','name','with'].some(k=>prev[k]!==MP.me[k]))mpPush();else if(moved&&MP.me.st==='roam'){MP.posDirty=true;mpMove();}
+  mpSync();}
 function mpLeave(){MP.me={};mpPush();}
 function seatBeside(st){if(!st)return null;const f=SEATS.filter(t=>t.tableZ===st.tableZ&&t!==st);
   return f.find(t=>!t.taken&&Math.abs(t.z-st.z)<.1&&Math.abs(Math.abs(t.x-st.x)-1.5)<.1)||f.find(t=>!t.taken&&Math.abs(t.x-st.x)<.1)||f.find(t=>!t.taken)||null;}
@@ -1663,7 +1672,7 @@ function mpSync(){if(!MP.ch)return;let st={};try{st=MP.ch.presenceState();}catch
   for(const [id,m] of live){if(n>=16)break;n++;
     {const o0=MP.others.get(id);if(o0){const t=mpTag(m);if(o0.tag!==t){o0.tag=t;o0.lbl.el.innerHTML=t;}}}
     if(m.st==='roam'){const o=MP.others.get(id);
-      if(o&&o.st==='roam'){if(o.tx!==m.x||o.tz!==m.z){o.tx=m.x;o.tz=m.z;walkPath(o.kid,routeTo(o.kid.position,{x:m.x,z:m.z}),2.8);}continue;}
+      if(o&&o.st==='roam'){if((m.t||0)>=(o.mt||0)&&(o.tx!==m.x||o.tz!==m.z)){o.mt=m.t||0;o.tx=m.x;o.tz=m.z;walkPath(o.kid,routeTo(o.kid.position,{x:m.x,z:m.z}),2.8);}continue;}
       let from=null;if(o){from={x:o.kid.position.x,z:o.kid.position.z+(o.seat&&o.seat.face===0?-.4:.4)};mpRemove(id);}
       const kid=makeKid({skin:SKIN[hashN(id,3)],hair:HAIR[hashN(id+'h',4)],suit:SUIT[hashN(id+'s',5)]});
       const tr=makeTray();setCarry(kid,tr);kid.position.set(from?from.x:m.x,0,from?from.z:m.z);scene.add(kid);npcs.push(kid);
