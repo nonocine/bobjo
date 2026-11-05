@@ -100,10 +100,22 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-off
 .road span.pulse{animation:roadP 1.4s ease-in-out infinite}
 .road i{font-style:normal;color:#C9BFAE;font-weight:700}
 @keyframes roadP{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.recp{position:absolute;right:10px;top:8px;z-index:6;border-radius:999px;padding:5px 11px;font-size:13px;font-weight:700;cursor:pointer}
+.recstat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.recstat div{background:#FFF6E8;border-radius:14px;padding:10px 4px;text-align:center}
+.recstat b{display:block;font-family:var(--title);font-size:26px;color:var(--accent);font-weight:400}
+.recstat small{font-size:12px;color:var(--ink-soft)}
+.stamps{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 16px}
+.stamps span{border:2px solid #D23A2E;color:#D23A2E;border-radius:12px;padding:4px 9px;font-size:13px;font-weight:700;transform:rotate(-3deg);background:#FFFFFF}
+.stamps span:nth-child(2n){transform:rotate(2deg)}
+.stamps span small{display:block;font-size:10.5px;font-weight:400;color:#B8655E}
+.recline{text-align:center;font-size:14px;color:var(--ink-soft);margin:8px 0 0}
+.recline{display:block}.recline em{font-style:normal;font-weight:700;color:var(--accent)}
 .tag-mp{font-size:11.5px;font-weight:700;background:#FFFFFF;color:#2A2620;border:2px solid #2E9A62;border-radius:999px;padding:1px 8px;white-space:nowrap}
 .mpc{position:absolute;left:10px;top:8px;z-index:6;background:rgba(46,154,98,.92);color:#FFFFFF;font-size:12.5px;font-weight:700;border-radius:999px;padding:4px 10px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
-.emobar{position:absolute;right:10px;bottom:84px;z-index:8;display:flex;flex-direction:column;gap:6px;padding:6px;border-radius:999px}
-.emobar button{width:44px;height:44px;border:0;border-radius:50%;background:#FFFFFF;font-size:22px;box-shadow:0 2px 6px rgba(0,0,0,.12);cursor:pointer}
+.emobar{position:absolute;left:50%;transform:translateX(-50%);bottom:84px;z-index:8;display:flex;flex-direction:row;gap:4px;padding:5px 8px;border-radius:999px}
+.emobar button{width:42px;height:42px;border:1px solid rgba(255,255,255,.7);border-radius:50%;background:rgba(255,255,255,.35);font-size:21px;cursor:pointer;padding:0}
+.bq{display:inline-block;font-size:22px;animation:roadP 1.6s ease-in-out infinite;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2))}
 .emobar button:active{transform:scale(.88)}
 .invban{background:#E8F6EE;border:2px solid #2E9A62;color:#1F5E3E;border-radius:14px;padding:10px 12px;font-size:14px;margin:0 0 10px;line-height:1.45}
 .invban b{color:#2E9A62}
@@ -121,8 +133,10 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-off
 .act .say{font-size:13px;line-height:1.4;margin:0 0 6px;color:#2A2620}
 .act .say small{display:block;font-size:12px;color:#6B6255}
 .act .row{flex-direction:column;gap:5px}
-.act .btn{font-size:14px;padding:8px 6px}
-.act .btn.sub{color:#2A2620;border-color:#2A2620;background:rgba(255,255,255,.5)}
+.act .btn{font-size:14px;padding:9px 6px;border-radius:999px;background:rgba(36,48,40,.62);color:#FFFFFF;border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.act .btn.gold{background:rgba(230,181,60,.88);color:#3B2B05;border-color:rgba(255,255,255,.6)}
+.act .btn.sub{color:#2A2620;border:1px solid rgba(255,255,255,.75);background:rgba(255,255,255,.42)}
+.act .row.two{flex-direction:row}
 .act .btn.ghost{background:transparent;border:0;color:#6B6255;font-size:13px;padding:4px}
 .gnav{position:absolute;left:10px;right:10px;bottom:10px;z-index:8;display:flex;gap:4px;padding:6px;border-radius:20px}
 .gnav button{flex:1;border:0;background:transparent;border-radius:14px;padding:6px 2px;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:1px;color:#2A2620}
@@ -383,6 +397,7 @@ details ul{padding-left:16px}
     <div class="hint-tap" id="hintTap">바닥을 누르면 걸어가요</div>
     <div class="err" id="err">3D 화면을 불러오지 못했어요. 새로고침해 주세요.</div>
     <div class="mpc" id="mpCount" hidden></div>
+    <button class="recp glass" id="recPill" hidden></button>
     <div class="emobar glass" id="emoBar" hidden><button data-e="😋" aria-label="냠냠">😋</button><button data-e="👍" aria-label="맛있다">👍</button><button data-e="🥛" aria-label="우유 건배">🥛</button><button data-e="🙌" aria-label="같이 먹자">🙌</button></div>
     <div class="act glass" id="act" aria-live="polite"></div>
     <nav class="gnav glass" id="gnav">
@@ -442,6 +457,20 @@ details ul{padding-left:16px}
 
   <div class="zpop" id="zeroPop" role="status"><div class="zcard"><div class="zconf" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <p class="zt">퇴식구 특별 혜택</p><s id="zpWas"></s><b>0kcal</b><p class="zs">모두의 급식실에서 먹은 건<br>전부 0칼로리예요 😋</p></div></div>
+  <div class="overlay" id="moreOv"><div class="card">
+    <h2>한 그릇 더! 🍱</h2><p class="date">다른 학교 오늘 급식을 먹어 봐요</p>
+    <button class="btn gold" id="mRand" style="width:100%">🎲 아무 학교나</button>
+    <div class="sbox" style="margin-top:10px"><input id="mInput" type="search" enterkeyhint="search" autocomplete="off" placeholder="학교 이름으로 찾기"><button class="btn" id="mGo">찾기</button></div>
+    <p class="fact" id="mMsg" style="margin:8px 0"></p><ul class="slist" id="mList"></ul>
+    <div class="row" style="margin-top:12px"><button class="btn sub" id="mSame">지금 메뉴 그대로</button><button class="btn sub" id="mClose">닫기</button></div>
+  </div></div>
+  <div class="overlay" id="recOv"><div class="card">
+    <h2>내 급식 기록 🍱</h2><p class="date">이 휴대폰에만 저장돼요</p>
+    <div class="recstat" id="recStat"></div>
+    <p style="margin:0;font-weight:700">먹어 본 학교 <span id="recScN"></span></p>
+    <div class="stamps" id="recStamps"></div>
+    <button class="btn" id="recClose" style="width:100%">닫기</button>
+  </div></div>
   <div class="overlay" id="helpOv"><div class="card">
     <h2>이렇게 놀아요</h2><p class="date">2분이면 충분해요.</p>
     <ul class="howto">
@@ -972,7 +1001,7 @@ const act=$('#act');
 let state='door',myTray=null,mySeat=null,paidCount=0,milk=null,bites=0,ate=false;
 function setAct(html){if(state==='door'&&html)return;act.innerHTML=html;act.classList.toggle('on',!!html);updNav();}
 function updNav(){
-  $('#navMore').disabled=!(state==='seated'||(state==='idle'&&ate));
+  $('#navMore').disabled=!(state==='seated'||state==='roam'||(state==='idle'&&ate));
   let lock=false;
   $('#navExit').disabled=lock||!(state==='seated'||state==='carrying'||state==='roam'||(state==='idle'&&ate));
   const eb=document.getElementById('emoBar');if(eb)eb.hidden=!(state==='seated'||state==='roam');
@@ -987,11 +1016,11 @@ $('#help').onclick=()=>$('#helpOv').classList.add('on');
 function goHome(){mpLeave();['#exit','#storyOv','#helpOv','#monthOv','#orgOv'].forEach(id=>$(id)&&$(id).classList.remove('on'));
   movers.delete(me);if(mySeat){standUp(me,mySeat);mySeat.taken=null;mySeat=null;}
   if(me.userData.tableTray){scene.remove(me.userData.tableTray);me.userData.tableTray=null;}setCarry(me,null);
-  meQueue=false;bkFocus=false;milk=null;ate=false;me.position.set(-6.4,0,3);state='door';setAct('');updNav();
+  dropQ();bowlN=0;lastSeat=null;['#moreOv','#recOv'].forEach(i=>$(i).classList.remove('on'));meQueue=false;bkFocus=false;milk=null;ate=false;me.position.set(-6.4,0,3);state='door';setAct('');updNav();
   showPane('dPick');$('#door').classList.add('on');}
 $('#home').onclick=goHome;$('#goHome').onclick=goHome;
 $('#closeHelp').onclick=()=>$('#helpOv').classList.remove('on');
-$('#navMore').onclick=()=>{if(me.userData.tableTray){scene.remove(me.userData.tableTray);me.userData.tableTray=null;}goQueue();};
+$('#navMore').onclick=()=>openMore();
 $('#navExit').onclick=()=>goExit();
 function idleAct(){setAct(`<p class="say">배식대에 줄을 서 볼까?<small>바닥을 누르면 걸어가요</small></p><div class="row"><button class="btn" id="queue">배식대로 가기</button></div>`);$('#queue').onclick=walkCounter;}
 async function walkCounter(){
@@ -1018,8 +1047,9 @@ async function goQueue(){
   await walkPath(me,routeTo(me.position,{x:-5.2,z:-6.6}),4.2);
   await walkPath(me,[[-5.2,-7.7]],3.2);
   state='serving';
-  setAct(`<p class="say">${first?'앞 친구 다음이 내 차례!':'다시 줄 섰다'}<small>오늘 메뉴 ${DISHES.length}가지</small></p><div class="row"><button class="btn" id="takeAll">식판 받기</button></div>`);
-  $('#takeAll').onclick=()=>first?serveWithBk():serveAll(0);
+  if(first){setAct(`<p class="say">앞 친구 다음이 내 차례!<small>오늘 메뉴 ${DISHES.length}가지</small></p><div class="row"><button class="btn" id="takeAll">식판 받기</button></div>`);$('#takeAll').onclick=serveWithBk;return;}
+  setAct(`<p class="say">${CUR_SC?esc(shortSc(CUR_SC.name))+' 급식':'한 그릇 더'}<small>${DISHES.slice(0,5).map(d=>esc(d.n)).join(', ')}</small></p><div class="row"><button class="btn gold" id="takeAll">다 받기</button></div><div class="row"><button class="btn sub" id="pickEach">하나씩 고르기</button></div>`);
+  $('#takeAll').onclick=serveQuick;$('#pickEach').onclick=()=>serveAll(0);
 }
 function pickDish(i,here=false){return new Promise(async res=>{const d=DISHES[i],ck=cookOf(i);
   if(!here)await walkPath(me,[[BIN_X[i],-7.75]],2.8);say(ck,d.t==='sp'?`오늘 특식 ${d.n}!`:`${d.n} 줄게~`,1500);
@@ -1029,7 +1059,7 @@ function pickDish(i,here=false){return new Promise(async res=>{const d=DISHES[i]
   $('#pSkip').onclick=()=>{say(ck,SKIP[rand(SKIP.length)],1700);res();};});}
 async function serveMine(){trayKcal=0;for(let i=0;i<DISHES.length;i++){await pickDish(i);await wait(350);}}
 async function serveAll(from){setAct('<p class="say" style="margin:0">배식 받는 중…</p>');
-  await serveMine();say(cookOf(5),'맛있게 먹어~',1600);afterServe();}
+  await serveMine();say(cookOf(5),'맛있게 먹어~',1600);bowlN?afterMore():afterServe();}
 function afterServe(){meQueue=false;setAct(`${SP.img?`<img class="actimg" src="${SP.img}" alt="${SP.n}" onerror="this.remove()">`:''}<p class="say">내 식판 약 <b>${trayKcal.toLocaleString('ko-KR')}kcal</b><small>${MEAL_CAL?'학교 공식 '+MEAL_CAL+' + 보너스 특식':'특식 '+SP.n+' 포함'} · 우유도 챙길까?</small></p>${invBtn()}<div class="row"><button class="btn" id="milkBtn">우유 챙기기</button></div>`);$('#milkBtn').onclick=getMilk;bindInv();}
 async function serveWithBk(){bkFocus=false;trayKcal=0;const bang=qInst==='bangka';
   await walkPath(bk,[[BIN_X[0],-7.75]],3);trayPut(bkTray,0,DISHES[0]);
@@ -1038,17 +1068,16 @@ async function serveWithBk(){bkFocus=false;trayKcal=0;const bang=qInst==='bangka
     if(i<DISHES.length-1)ps.push(walkPath(bk,[[BIN_X[i+1],-7.75]],2.8).then(()=>{trayPut(bkTray,i+1,DISHES[i+1]);clink();}));
     await Promise.all(ps);
     if(i===DISHES.length-2){
-      if(bang){setAct('');wideCam=true;await wait(900);say(cookOf(5),'(속닥속닥…)',2800);await wait(3000);say(bk,'…',2000);await wait(1300);}
+      if(bang){say(cookOf(5),'(속닥속닥…)',1800);await wait(700);say(bk,'…',1500);}
       else{say(bk,['와, 맛있겠다!','특식이다!','많이 주세요~'][rand(3)],1500);await wait(900);}
-      bkDone=true;bkSit();if(bang){say(me,'…뭐지?',1600);await wait(900);wideCam=false;}}
+      bkDone=true;bkSit();}
     await pickDish(i,true);await wait(300);}
   say(cookOf(5),'너도 맛있게 먹어~',1600);meQueue=false;
   if(!bang){afterServe();return;}
-  for(let t=0;t<40&&!(bk.userData.sitting&&SEATS.find(x=>x.taken===bk));t++)await wait(200);
   state='carrying';choiceAct();}
 let CHOICE=false;
 function choiceAct(){CHOICE=true;
-  setAct(`<p class="say">조리사님이 뭐라고 속닥이신 걸까?<small>내 식판 약 ${trayKcal.toLocaleString('ko-KR')}kcal${milk?' · '+milk:''}</small></p>${invBtn()}<div class="row"><button class="btn gold" id="sitBk">앞 친구 옆에 앉기</button></div><div class="row"><button class="btn sub" id="soloEat">혼자 먹기</button>${milk?'':'<button class="btn sub" id="milkBtn">우유 챙기기</button>'}</div>`);
+  setAct(`<p class="say">어디 앉을까?<small>내 식판 약 ${trayKcal.toLocaleString('ko-KR')}kcal${milk?' · '+milk:''}</small></p>${invBtn()}<div class="row two"><button class="btn" id="sitBk">앞 친구 옆</button><button class="btn" id="soloEat">아무 데나</button></div>${milk?'':'<div class="row"><button class="btn sub" id="milkBtn">🥛 우유 챙기기</button></div>'}`);
   $('#soloEat').onclick=()=>{track('solo');CHOICE=false;if(HOLD&&HOLD.taken==='hold'){HOLD.taken=null;HOLD=null;}nearSeat=undefined;carryAct();};
   if($('#milkBtn'))$('#milkBtn').onclick=getMilk;bindInv();
   $('#sitBk').onclick=()=>{track('sit_friend');CHOICE=false;if(HOLD&&HOLD.taken==='hold'){HOLD.taken=null;const h=HOLD;HOLD=null;return goSeat(h);}const ns=seatNear(SEATS.find(x=>x.taken===bk));if(ns)goSeat(ns);else carryAct();};}
@@ -1056,7 +1085,15 @@ function seatNear(st){if(!st)return null;const f=SEATS.filter(t=>!t.taken&&t.tab
   return f.find(t=>Math.abs(t.z-st.z)<.1&&Math.abs(Math.abs(t.x-st.x)-1.5)<.1)||f.find(t=>Math.abs(t.x-st.x)<.1)||f[0]||null;}
 function besideMe(k,seat){const o=SEATS.find(t=>t.taken===k);return o&&o.tableZ===seat.tableZ&&Math.abs(o.x-seat.x)<1.6&&(Math.abs(o.z-seat.z)<.1||Math.abs(o.x-seat.x)<.1);}
 async function bkSit(){const ok=SEATS.filter(t=>!t.taken&&SEATS.some(n=>n!==t&&!n.taken&&n.tableZ===t.tableZ&&Math.abs(n.z-t.z)<.1&&Math.abs(Math.abs(n.x-t.x)-1.5)<.1));const near=(a,b)=>Math.hypot(a.x-bk.position.x,a.z-bk.position.z)-Math.hypot(b.x-bk.position.x,b.z-bk.position.z);const seat=ok.length?ok.sort(near)[0]:freeSeat();if(!seat)return;seat.taken=bk;
-  HOLD=SEATS.find(n=>n!==seat&&!n.taken&&n.tableZ===seat.tableZ&&Math.abs(n.z-seat.z)<.1&&Math.abs(Math.abs(n.x-seat.x)-1.5)<.1)||null;if(HOLD)HOLD.taken='hold';await walkPath(bk,routeTo(bk.position,{x:seat.x,z:seat.z}),2.8);sitDown(bk,seat);bk.userData.eating=true;}
+  HOLD=SEATS.find(n=>n!==seat&&!n.taken&&n.tableZ===seat.tableZ&&Math.abs(n.z-seat.z)<.1&&Math.abs(Math.abs(n.x-seat.x)-1.5)<.1)||null;if(HOLD)HOLD.taken='hold';await walkPath(bk,routeTo(bk.position,{x:seat.x,z:seat.z}),2.8);sitDown(bk,seat);bk.userData.eating=true;
+  if(qInst==='bangka'&&!storySeen&&!bkQ)bkQ=addLabel(bk,'<span class="bq">💬</span>','',0,1.95);}
+let bkQ=null;function dropQ(){if(bkQ){removeLabel(bkQ);bkQ=null;}}
+function seatByBk(){if(HOLD&&HOLD.taken==='hold'){HOLD.taken=null;const h=HOLD;HOLD=null;return h;}return seatNear(SEATS.find(x=>x.taken===bk));}
+function talkBk(){
+  if(state==='seated'&&mySeat&&besideMe(bk,mySeat)){const b=$('#askMood');if(b)b.click();else say(bk,'…',1200);return;}
+  if(state==='carrying'){CHOICE=false;const ns=seatByBk();if(ns){track('sit_friend');goSeat(ns);}return;}
+  if(state==='roam'||state==='seated'){const ns=seatByBk();if(!ns){say(bk,'…',1200);return;}if(mySeat){standUp(me,mySeat);mySeat.taken=null;mySeat=null;}return sitAgain(ns);}
+  say(me,'밥 먼저 받아 올까?',1500);}
 let HOLD=null;
 const KIND=[['그래, 많이 먹고 쑥쑥 커라~',1],['오늘도 애썼다, 든든히 먹어~',1],['맛있게 먹어 줘서 고마워~',1],['더 필요하면 또 와, 얼마든지!',1],['너는 특별히 두 국자!',2],['잘 먹는 모습이 제일 예쁘다~',1]];
 const SKIP=['그래, 대신 다른 거 많이 먹어~','괜찮아, 먹고 싶은 것만 먹어도 돼~','다음엔 한 입만 먹어 볼까?'];
@@ -1115,27 +1152,29 @@ async function joinMe(seat){return;
   if(old){k.userData.eating=false;standUp(k,old);old.taken=null;}if(k===bks)bksSeat=ns;ns.taken=k;
   await walkPath(k,routeTo(k.position,{x:ns.x,z:ns.z}),2.6);sitDown(k,ns);say(k,'…',1600);}
 function exitAct(){
-  if(mySeat){setAct(`<p class="say">잘 먹었다!<small>일어나서 돌아다녀도 돼요 🚶</small></p><div class="row"><button class="btn gold" id="roamGo">돌아다니기</button><button class="btn sub" id="toExit">퇴식구로</button></div>`);
-    $('#roamGo').onclick=startRoam;$('#toExit').onclick=goExit;return;}
+  if(mySeat){const mb=moodBtn();setAct(`<p class="say">잘 먹었다!<small>${mb?'옆 친구는 아직 반도 못 먹었네':(REC.today<2?'다른 학교 급식도 맛볼 수 있어요 🍱':'일어나서 돌아다녀도 돼요 🚶')}</small></p><div class="row"><button class="btn gold" id="moreGo">🍱 다른 학교 급식 한 그릇 더</button></div><div class="row two"><button class="btn" id="roamGo">돌아다니기</button><button class="btn" id="toExit">퇴식구로</button></div>${mb?'<div class="row">'+mb+'</div>':''}`);
+    $('#moreGo').onclick=openMore;$('#roamGo').onclick=startRoam;$('#toExit').onclick=goExit;bindMood();return;}
   roamAct();}
-function roamAct(){setAct(`<p class="say">🚶 산책 중<small>바닥을 누르면 걸어가요</small></p><div class="row"><button class="btn" id="toExit">퇴식구로 가기</button></div>`);$('#toExit').onclick=goExit;}
+function roamAct(){setAct(`<p class="say">🚶 산책 중<small>바닥을 누르면 걸어가요</small></p><div class="row two"><button class="btn gold" id="moreGo">🍱 한 그릇 더</button><button class="btn" id="toExit">퇴식구로</button></div>`);$('#moreGo').onclick=openMore;$('#toExit').onclick=goExit;}
 function startRoam(){if(mySeat){standUp(me,mySeat);mySeat.taken=null;mySeat=null;}
   const t=me.userData.carry;if(t&&t.userData.items)t.userData.items.forEach(x=>x&&(x.visible=false));
   state='roam';roamAct();updNav();const h=$('#hintTap');h.textContent='바닥을 누르면 걸어가요';h.style.opacity=1;setTimeout(()=>{h.style.opacity=0;},3500);
   say(me,'어디 가 볼까?',1400);track('roam');mpSet({st:'roam',seat:null,x:+me.position.x.toFixed(2),z:+me.position.z.toFixed(2)});}
 async function sitAgain(seat){if(!seat||seat.taken)return;seat.taken=me;state='walking';setAct('');
   await walkPath(me,routeTo(me.position,{x:seat.x,z:seat.z}),3.2);mySeat=seat;sitDown(me,seat);state='seated';
-  mpSet({st:'seated',seat:SEATS.indexOf(seat),x:null,z:null});exitAct();updNav();}
-function moodBtn(){const k=(!storySeen&&mySeat)?orangeKid():null;return (k&&besideMe(k,mySeat))?'<button class="btn sub" id="askMood">친구 기분 물어보기</button>':'';}
-function bindMood(){const b=$('#askMood');if(!b)return;b.onclick=async()=>{setAct('<p class="say" style="margin:0">…</p>');const k=orangeKid();say(me,'너 왜 기분이 안 좋아?',1800);await wait(1700);if(k)say(k,'…그냥. 내년부터 밥 먹을 때 좀 그래.',2200);await wait(1900);openStory(()=>{const k=orangeKid();if(k)say(k,'…들어 줘서 고마워.',2000);ate?exitAct():setAct(`<p class="say">마저 먹자.</p><div class="row"><button class="btn gold" id="eat">냠냠</button></div>`);$('#eat')&&($('#eat').onclick=eat);});};}
+  mpSet({st:'seated',seat:SEATS.indexOf(seat),x:null,z:null});ate?exitAct():seatedAct();updNav();}
+function moodBtn(){const k=(!storySeen&&mySeat)?orangeKid():null;return (k&&besideMe(k,mySeat))?'<button class="btn sub" id="askMood">💬 옆 친구한테 말 걸기</button>':'';}
+function bindMood(){const b=$('#askMood');if(!b)return;b.onclick=async()=>{dropQ();setAct('<p class="say" style="margin:0">…</p>');const k=orangeKid();say(me,'너 왜 기분이 안 좋아?',1800);await wait(1700);if(k)say(k,'…그냥. 내년부터 밥 먹을 때 좀 그래.',2200);await wait(1900);openStory(()=>{const k=orangeKid();if(k)say(k,'…들어 줘서 고마워.',2000);ate?exitAct():seatedAct();});};}
 async function goSeat(seat){
-  if(!seat||seat.taken)return;
+  if(!seat||seat.taken){seat=awaySeat();if(!seat){say(me,'빈자리가 없네…',1400);return;}}
   nearSeat=null;state='walking';seat.taken=me;setAct('');
   await walkPath(me,routeTo(me.position,{x:seat.x,z:seat.z}),3.2);
   mySeat=seat;sitDown(me,seat);state='seated';bites=0;joinMe(seat);mpSet({st:'seated',seat:SEATS.indexOf(seat)});
-  setAct(`<p class="say">맛있게 먹자!<small>${moodBtn()?'옆 친구는 말없이 숟가락만 들고 있다':(milk?milk+'까지 챙겼다':'냠냠 세 번이면 끝')}</small></p><div class="row"><button class="btn gold" id="eat">냠냠</button></div>`);
-  $('#eat').onclick=eat;
+  seatedAct();
 }
+function seatedAct(){const mb=moodBtn();
+  setAct(`<p class="say">${CUR_SC&&bowlN?esc(shortSc(CUR_SC.name))+' 급식, ':''}맛있게 먹자!<small>${mb?'옆 친구는 말없이 숟가락만 들고 있다':(milk&&!bowlN?milk+'까지 챙겼다':'냠냠 세 번이면 끝')}</small></p><div class="row"><button class="btn gold" id="eat">냠냠</button></div>${mb?'<div class="row">'+mb+'</div>':''}`);
+  $('#eat').onclick=eat;bindMood();}
 function eat(){
   bites++;const b=$('#eat');if(b){b.disabled=true;setTimeout(()=>{if($('#eat'))$('#eat').disabled=false;},1500);}
   const tt=me.userData.tableTray,its=tt?tt.userData.items.filter(Boolean):[];const fd=its[(bites-1)%Math.max(1,its.length)];
@@ -1144,9 +1183,8 @@ function eat(){
   [0,950].forEach((d,j)=>setTimeout(()=>{addLabel(me,['냠','쩝','오물오물','😋','꿀꺽','냠냠'][(bites*2+j)%6],'yum',1100,1.55,.9);clink();},d+480));
   say(me,['냠냠','꿀맛','특식 최고'][Math.min(2,bites-1)],900);
   const t=me.userData.tableTray;if(t){const it=t.userData.items.filter(Boolean);const f=it[(bites-1)%Math.max(1,it.length)];if(f)f.scale.multiplyScalar(.6);if(bites>=3)it.forEach(x=>x.visible=false);}
-  if(bites>=3){ate=true;
-    if(moodBtn()){setAct(`<p class="say">다 먹었다.<small>그런데 옆 친구는 반도 못 먹었네…</small></p><div class="row">${moodBtn().replace('btn sub','btn gold')}</div>`);bindMood();}
-    else exitAct();}
+  if(bites>=3){ate=true;recBowl();
+    exitAct();}
 }
 function zeroPop(){return new Promise(res=>{const p=$('#zeroPop');
   $('#zpWas').textContent=trayKcal?`약 ${trayKcal.toLocaleString('ko-KR')}kcal`:'';p.classList.add('on');chime&&setTimeout(()=>{try{chime();}catch(e){}},150);
@@ -1156,7 +1194,7 @@ async function goExit(){track('exit');mpLeave();
   state='walking';setAct('<p class="say" style="margin:0">퇴식구로 쓩~</p>');
   await walkPath(me,routeTo(me.position,{x:RX-.9,z:1.6}),4.5);
   setCarry(me,null);thud();setAct('');await zeroPop();
-  $('#result').innerHTML=`${SP.img?`<figure class="dishhero"><img src="${SP.img}" alt="${SP.n}" onerror="this.parentNode.remove()"><figcaption><small>${SRC==='모두의 급식실'?'오늘의 특식':SRC==='오늘의 점심 추천'?'오늘의 추천 메뉴':SRC+' 급식 + 보너스 특식'}</small><b>${SP.n}, 맛있었죠?</b></figcaption></figure>`:''}식판까지 싹싹, 한 그릇 뚝딱!`;
+  $('#result').innerHTML=`${SP.img?`<figure class="dishhero"><img src="${SP.img}" alt="${SP.n}" onerror="this.parentNode.remove()"><figcaption><small>${SRC==='모두의 급식실'?'오늘의 특식':SRC==='오늘의 점심 추천'?'오늘의 추천 메뉴':SRC+' 급식 + 보너스 특식'}</small><b>${SP.n}, 맛있었죠?</b></figcaption></figure>`:''}${REC.today>1?'식판까지 싹싹, '+REC.today+'그릇 뚝딱!':'식판까지 싹싹, 한 그릇 뚝딱!'}<span class="recline">오늘 <em>${REC.today}그릇</em>${REC.todaySc.length?' · 학교 <em>'+REC.todaySc.length+'곳</em>':''} · 최고 기록 <em>${REC.best}그릇</em></span>`;
   $('#teaser').hidden=false;$('#exitCampaign').hidden=true;
   loadOrgs().then(()=>{const b=$('#orgBtn');if(b&&ORG_N)b.textContent=`참여 기관 보기 (${ORG_N}곳)`;});renderVote.loaded=false;renderVote();showVisitors();$('#exit').classList.add('on');const st=$('#stamp');st.style.animation='none';void st.offsetWidth;st.style.animation='';$('#exitCard').scrollTop=0;state='exit';updNav();
 }
@@ -1168,7 +1206,7 @@ function placeAct(){
   const w=stage.clientWidth,h=stage.clientHeight,aw=act.offsetWidth,ah=act.offsetHeight;
   const x=(actV.x*.5+.5)*w,y=(-actV.y*.5+.5)*h;
   let left=x<w*.5?x+70:x-70-aw;left=Math.max(8,Math.min(w-aw-8,left));
-  let top=y-ah/2;top=Math.max(8,Math.min(h-ah-84,top));left=(w-aw)/2;top=h-ah-84;
+  let top=y-ah/2;top=Math.max(8,Math.min(h-ah-84,top));const ebh=(document.getElementById('emoBar')&&!document.getElementById('emoBar').hidden)?56:0;left=(w-aw)/2;top=h-ah-84-ebh;
   act.style.left=left+'px';act.style.top=top+'px';
 }
 $('#again').onclick=()=>{$('#exit').classList.remove('on');milk=null;ate=false;me.position.set(-6.4,0,3);state='idle';idleAct();};
@@ -1181,6 +1219,7 @@ renderer.domElement.addEventListener('pointerup',e=>{
   if(state==='serving'||state==='walking'||state==='door'||state==='exit')return;
   const r=renderer.domElement.getBoundingClientRect();ndc.set(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1);
   ray.setFromCamera(ndc,camera);
+  if(qInst==='bangka'&&bkDone&&!storySeen&&bk.visible&&bk.userData.sitting&&ray.intersectObject(bk,true)[0])return talkBk();
   const seatHit=ray.intersectObjects(SEATS.map(s=>s.mesh))[0];
   if(seatHit){const seat=seatHit.object.userData.seat;
     if(state==='carrying')return goSeat(seat);
@@ -1354,7 +1393,7 @@ function heroMode(school,name){const h=$('#mHero'),t=$('#heroTag');$('#wxBar').h
   $('#mDishesH').hidden=!school;$('#mDishesH').innerHTML=school?`${name} 실제 급식<small>나이스 교육정보 개방포털</small>`:'';
   $('#wxSub').textContent=school?'학교 급식이 아니라, 이 앱 급식실에서만 나오는 보너스 특식이에요.':'오늘 급식실 특식';
   const parent=h.parentNode;if(school)parent.insertBefore(h,$('#enter'));else parent.insertBefore(h,$('#mDishesH'));}
-async function loadMeal(sc){MEAL_CAL='';heroMode(true,sc.name);showPane('dMeal');$('#mTitle').textContent=sc.name;$('#mDate').textContent='오늘 급식 불러오는 중…';$('#mDishes').innerHTML='';$('#mNutri').hidden=true;
+async function loadMeal(sc){MEAL_CAL='';CUR_SC={name:sc.name,region:sc.region||''};heroMode(true,sc.name);showPane('dMeal');$('#mTitle').textContent=sc.name;$('#mDate').textContent='오늘 급식 불러오는 중…';$('#mDishes').innerHTML='';$('#mNutri').hidden=true;
   const wxP=weatherPick(sc.region);
   const end=new Date(today);end.setDate(end.getDate()+10);
   let meal=null;try{const r=await fetch(`${NEIS_FN}?office=${sc.office}&school=${sc.school}&from=${ymd(today)}&to=${ymd(end)}`);const d=await r.json();
@@ -1365,7 +1404,7 @@ async function loadMeal(sc){MEAL_CAL='';heroMode(true,sc.name);showPane('dMeal')
   $('#mDate').textContent=(isToday?'오늘':'다음 급식일')+` · ${dd.getMonth()+1}월 ${dd.getDate()}일 ${DAYS[dd.getDay()]}요일 ${meal.type}`+(MODE==='kid'?' · 알레르기 성분 표시':'');
   renderMealList(meal.dishes,meal.cal,meal.nutrition);
   SRC=sc.name;MEAL_CAL=(meal.cal||'').replace(/\s*kcal/i,'kcal');applyDishes(schoolDishes(meal.dishes));}
-async function showLunch(){SCHOOL_MEALS=null;MEAL_CAL='';heroMode(false);showPane('dMeal');$('#mTitle').textContent='오늘 점심, 이거 어때요?';$('#mDate').textContent=dateStr+' · 직장인 점심 선호 통계 + 날씨';
+async function showLunch(){CUR_SC=null;SCHOOL_MEALS=null;MEAL_CAL='';heroMode(false);showPane('dMeal');$('#mTitle').textContent='오늘 점심, 이거 어때요?';$('#mDate').textContent=dateStr+' · 직장인 점심 선호 통계 + 날씨';
   SRC='오늘의 점심 추천';$('#mNutri').hidden=true;$('#wxBar').hidden=false;await lunchPick(LUNCH_REGION);}
 $('#wxRegion').innerHTML=Object.keys(REGION).filter(r=>!/^(강원도|전라북도)$/.test(r)).map(r=>`<option value="${r}">${REGION_SHORT(r)}</option>`).join('');
 $('#wxRegion').onchange=e=>lunchPick(e.target.value);
@@ -1441,6 +1480,55 @@ async function shareApp(){track('share_app');const url=`https://bap.youthforten.
   try{await navigator.clipboard.writeText(text+' '+url);$('#toast').textContent='링크를 복사했어요. 급식 친구에게 붙여 넣어 주세요 🍱';}catch(e){$('#toast').textContent=url;}}
 $('#appShare').onclick=shareApp;
 
+/* ───────── 내 급식 기록 · 한 그릇 더 = 다른 학교 ───────── */
+const REC_K='bap_rec';let CUR_SC=null,bowlN=0,lastSeat=null;
+function recLoad(){let r={};try{r=JSON.parse(localStorage.getItem(REC_K)||'{}')||{};}catch(e){}
+  if(r.day!==ymd(today)){r.day=ymd(today);r.today=0;r.todaySc=[];}r.best=r.best||0;r.total=r.total||0;r.schools=Array.isArray(r.schools)?r.schools:[];r.todaySc=Array.isArray(r.todaySc)?r.todaySc:[];return r;}
+let REC=recLoad();
+function recSave(){try{localStorage.setItem(REC_K,JSON.stringify(REC));}catch(e){}}
+const shortSc=n=>String(n||'').replace('초등학교','초').replace('중학교','중').replace('고등학교','고');
+function recPill(){const p=$('#recPill');if(!REC.today){p.hidden=true;return;}p.textContent=`🍱 ${REC.today}그릇${REC.todaySc.length?' · '+REC.todaySc.length+'곳':''}`;p.hidden=false;}
+function recBowl(){bowlN++;REC.today++;REC.total++;const best=REC.today>REC.best;if(best)REC.best=REC.today;
+  if(CUR_SC){if(!REC.todaySc.includes(CUR_SC.name))REC.todaySc.push(CUR_SC.name);if(!REC.schools.find(x=>x.n===CUR_SC.name)){REC.schools.push({n:CUR_SC.name,r:CUR_SC.region||'',d:ymd(today)});if(REC.schools.length>300)REC.schools.shift();}}
+  recSave();recPill();setTimeout(()=>addLabel(me,`🍱 오늘 ${REC.today}그릇째${best&&REC.today>1?' · 최고 기록!':''}`,'yum',2000,1.95,1),900);track('bowl',String(REC.today));}
+recPill();
+$('#recPill').onclick=()=>{$('#recStat').innerHTML=`<div><b>${REC.today}</b><small>오늘</small></div><div><b>${REC.best}</b><small>최고 기록</small></div><div><b>${REC.total}</b><small>누적</small></div>`;
+  $('#recScN').textContent=REC.schools.length+'곳';
+  $('#recStamps').innerHTML=REC.schools.length?REC.schools.slice().reverse().map(x=>`<span>${esc(shortSc(x.n))}<small>${esc(x.r||'')}</small></span>`).join(''):'<p class="fact" style="margin:0">아직 없어요. "한 그릇 더"로 다른 학교 급식을 먹어 보세요.</p>';
+  $('#recOv').classList.add('on');};
+$('#recClose').onclick=()=>$('#recOv').classList.remove('on');
+async function fetchLunch(sc){const end=new Date(today);end.setDate(end.getDate()+10);
+  const r=await fetch(`${NEIS_FN}?office=${sc.office}&school=${sc.school}&from=${ymd(today)}&to=${ymd(end)}`);const d=await r.json();const ms=d.meals||[];
+  return ms.find(m=>m.type==='중식'&&m.date===ymd(today))||ms.find(m=>m.type==='중식')||ms[0]||null;}
+const RQ=['서울','부산','대구','인천','광주','대전','울산','세종','수원','청주','전주','창원','제주','춘천','포항','김해','천안','강릉','목포','안동','여수','경주','원주','군산','진주','순천','구미','평택'];
+async function randomSchool(){for(let t=0;t<5;t++){try{const q=RQ[rand(RQ.length)]+['초등학교','중학교','고등학교'][rand(3)];
+  const r=await fetch(NEIS_FN+'?q='+encodeURIComponent(q));const d=await r.json();const L=(d.schools||[]).filter(x=>!REC.todaySc.includes(x.name));if(!L.length)continue;
+  const sc=L[rand(L.length)];const meal=await fetchLunch(sc);if(meal&&meal.dishes&&meal.dishes.length)return{sc,meal};}catch(e){}}return null;}
+function openMore(){$('#mMsg').textContent='';$('#mList').innerHTML='';$('#mInput').value='';$('#moreOv').classList.add('on');}
+function startMore(){$('#moreOv').classList.remove('on');if(me.userData.tableTray){scene.remove(me.userData.tableTray);me.userData.tableTray=null;}
+  lastSeat=mySeat;if(MP.me.st)mpSet({st:'roam',seat:null,x:-5.2,z:-6.6});goQueue();}
+async function moreWith(sc,meal){$('#mMsg').textContent=`${shortSc(sc.name)} 급식 받아 오는 중…`;
+  if(!meal){try{meal=await fetchLunch(sc);}catch(e){}}
+  if(!meal||!meal.dishes||!meal.dishes.length){$('#mMsg').textContent='그 학교는 열흘 안에 올라온 급식이 없어요. 다른 학교를 골라 볼까요?';return;}
+  CUR_SC={name:sc.name,region:sc.region||''};SRC=sc.name;MEAL_CAL=(meal.cal||'').replace(/\s*kcal/i,'kcal');applyDishes(schoolDishes(meal.dishes));
+  track('more_school',sc.name);startMore();}
+$('#mRand').onclick=async()=>{const b=$('#mRand');b.disabled=true;$('#mMsg').textContent='전국 학교 뽑는 중… 🎲';const r=await randomSchool();b.disabled=false;
+  if(!r){$('#mMsg').textContent='지금은 학교를 못 뽑았어요. 이름으로 찾아 볼까요?';return;}$('#mMsg').textContent=`🎲 ${r.sc.name}${r.sc.region?' ('+r.sc.region+')':''}!`;await wait(700);moreWith(r.sc,r.meal);};
+async function moreSearch(){const q=$('#mInput').value.trim();const msg=$('#mMsg');$('#mList').innerHTML='';
+  if(q.length<2){msg.textContent='학교 이름을 두 글자 이상 입력해 주세요.';return;}msg.textContent='찾는 중…';
+  try{const r=await fetch(NEIS_FN+'?q='+encodeURIComponent(q));const d=await r.json();
+    if(!d.schools||!d.schools.length){msg.textContent='찾는 학교가 없어요. "중학교", "초등학교"까지 붙여 보세요.';return;}
+    msg.textContent='';$('#mList').innerHTML=d.schools.slice(0,30).map((x,i)=>`<li><button data-i="${i}">${esc(x.name)}<small>${esc(x.kind||'')} · ${esc(x.addr||x.region||'')}</small></button></li>`).join('');
+    $('#mList').querySelectorAll('button').forEach(b=>b.onclick=()=>moreWith(d.schools[+b.dataset.i]));}catch(e){msg.textContent='학교 목록을 불러오지 못했어요.';}}
+$('#mGo').onclick=moreSearch;$('#mInput').addEventListener('keydown',e=>{if(e.key==='Enter')moreSearch();});
+$('#mSame').onclick=()=>startMore();$('#mClose').onclick=()=>$('#moreOv').classList.remove('on');
+async function serveQuick(){setAct('<p class="say" style="margin:0">배식 받는 중…</p>');trayKcal=0;
+  for(let i=0;i<DISHES.length;i++){await walkPath(me,[[BIN_X[i],-7.75]],3.8);putMine(i);await wait(140);}
+  say(cookOf(5),['또 왔구나! 맛있게 먹어~','잘 먹는구나, 많이 먹어~','이번 학교 급식은 어때?'][rand(3)],1700);afterMore();}
+function afterMore(){meQueue=false;state='carrying';CHOICE=false;const ok=lastSeat&&!lastSeat.taken;
+  setAct(`<p class="say">${bowlN+1}그릇째 받았다!<small>${CUR_SC?esc(shortSc(CUR_SC.name))+' 급식 · ':''}어디서 먹을까?</small></p>${invBtn()}<div class="row two">${ok?'<button class="btn" id="backSeat">아까 자리</button>':''}<button class="btn" id="anySeat">아무 데나</button></div>`);
+  if(ok)$('#backSeat').onclick=()=>goSeat(lastSeat);$('#anySeat').onclick=()=>goSeat(awaySeat());bindInv();}
+let stayT=0;const STAY=[30,60,120,180,300,600,900];setInterval(()=>{if(document.hidden)return;stayT+=5;if(STAY.includes(stayT))track('stay',String(stayT));},5000);
 /* ───────── 멀티: 자리로 가는 순간부터 함께 (Supabase Realtime) ───────── */
 const MP={ch:null,on:false,others:new Map(),me:{},lastReact:0};
 const esc=t=>String(t||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1453,7 +1541,7 @@ function mpStart(){if(MP.ch||!window.supabase)return;
     MP.ch=cl.channel('geupsik-hall',{config:{presence:{key:mySid()},broadcast:{self:false}}});
     MP.ch.on('presence',{event:'sync'},mpSync).on('broadcast',{event:'react'},({payload})=>mpReact(payload||{}));
     MP.ch.subscribe(st=>{if(st==='SUBSCRIBED'){MP.on=true;if(MP.me.st)MP.ch.track(MP.me).catch(()=>{});mpSync();}});}catch(e){}}
-function mpSet(o){Object.assign(MP.me,o,{name:myName(),with:INV?INV.sid:null});if(MP.on)MP.ch.track(MP.me).catch(()=>{});mpSync();}
+function mpSet(o){Object.assign(MP.me,o,{name:myName(),with:INV?INV.sid:null,sc:CUR_SC?shortSc(CUR_SC.name).slice(0,16):''});if(MP.on)MP.ch.track(MP.me).catch(()=>{});mpSync();}
 function mpLeave(){MP.me={};if(MP.on)MP.ch.untrack().catch(()=>{});}
 function seatBeside(st){if(!st)return null;const f=SEATS.filter(t=>t.tableZ===st.tableZ&&t!==st);
   return f.find(t=>!t.taken&&Math.abs(t.z-st.z)<.1&&Math.abs(Math.abs(t.x-st.x)-1.5)<.1)||f.find(t=>!t.taken&&Math.abs(t.x-st.x)<.1)||f.find(t=>!t.taken)||null;}
@@ -1472,7 +1560,7 @@ function mpSync(){if(!MP.ch)return;let st={};try{st=MP.ch.presenceState();}catch
       let from=null;if(o){from={x:o.kid.position.x,z:o.kid.position.z+(o.seat&&o.seat.face===0?-.4:.4)};mpRemove(id);}
       const kid=makeKid({skin:SKIN[hashN(id,3)],hair:HAIR[hashN(id+'h',4)],suit:SUIT[hashN(id+'s',5)]});
       const tr=makeTray();setCarry(kid,tr);kid.position.set(from?from.x:m.x,0,from?from.z:m.z);scene.add(kid);npcs.push(kid);
-      const lbl=addLabel(kid,'🟢 '+esc(String(m.name||'급식 친구').slice(0,24)),'tag-mp',0,1.62);
+      const lbl=addLabel(kid,'🟢 '+esc(String(m.name||'급식 친구').slice(0,24))+(m.sc?' · '+esc(String(m.sc).slice(0,16)):''),'tag-mp',0,1.62);
       MP.others.set(id,{kid,lbl,seat:null,name:m.name,st:'roam',tx:m.x,tz:m.z});
       walkPath(kid,routeTo(kid.position,{x:m.x,z:m.z}),2.8);continue;}
     const pal=mySeat&&(m.with===mySid()||(INV&&id===INV.sid&&MP.me.st));
@@ -1486,7 +1574,7 @@ function mpSync(){if(!MP.ch)return;let st={};try{st=MP.ch.presenceState();}catch
     if(!seat){const f=SEATS.filter(t=>!t.taken);if(!f.length)continue;const w=SEATS[m.seat]||f[0];seat=f.sort((a,b)=>Math.hypot(a.x-w.x,a.z-w.z)-Math.hypot(b.x-w.x,b.z-w.z))[0];}
     const kid=makeKid({skin:SKIN[hashN(id,3)],hair:HAIR[hashN(id+'h',4)],suit:SUIT[hashN(id+'s',5)]});
     const tr=makeTray();DISHES.forEach((d,i)=>trayPut(tr,i,d));setCarry(kid,tr);seat.taken=kid;sitDown(kid,seat);kid.userData.eating=true;npcs.push(kid);
-    const lbl=addLabel(kid,'🟢 '+esc(String(m.name||'급식 친구').slice(0,24)),'tag-mp',0,1.62);
+    const lbl=addLabel(kid,'🟢 '+esc(String(m.name||'급식 친구').slice(0,24))+(m.sc?' · '+esc(String(m.sc).slice(0,16)):''),'tag-mp',0,1.62);
     MP.others.set(id,{kid,lbl,seat,name:m.name,st:'seated'});
     if(m.with===mySid())setTimeout(()=>say(kid,'불러 줘서 고마워! 같이 먹자 🍱',2400),400);}
   const cnt=MP.others.size+(MP.me.st?1:0);const pill=$('#mpCount');
