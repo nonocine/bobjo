@@ -93,6 +93,13 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-off
 .stage canvas{display:block;width:100%;height:100%}
 .labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
 .lbl{position:absolute;transform:translate(-50%,-100%);white-space:nowrap}
+.road{display:flex;align-items:center;justify-content:center;gap:3px;margin:6px 0 12px;flex-wrap:nowrap}
+.road span{padding:5px 9px;border-radius:999px;background:#F3EEE6;color:#8A7F70;font-size:12.5px;font-weight:700;white-space:nowrap}
+.road span.on{background:var(--accent);color:#FFFFFF}
+.road span.done{background:#E8F6EE;color:#2E9A62}
+.road span.pulse{animation:roadP 1.4s ease-in-out infinite}
+.road i{font-style:normal;color:#C9BFAE;font-weight:700}
+@keyframes roadP{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .tag-mp{font-size:11.5px;font-weight:700;background:#FFFFFF;color:#2A2620;border:2px solid #2E9A62;border-radius:999px;padding:1px 8px;white-space:nowrap}
 .mpc{position:absolute;left:10px;top:8px;z-index:6;background:rgba(46,154,98,.92);color:#FFFFFF;font-size:12.5px;font-weight:700;border-radius:999px;padding:4px 10px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .emobar{position:absolute;right:10px;bottom:84px;z-index:8;display:flex;flex-direction:column;gap:6px;padding:6px;border-radius:999px}
@@ -393,6 +400,7 @@ details ul{padding-left:16px}
   <div class="overlay on" id="door"><div class="card">
     <div id="dPick">
       <div class="invban" id="invBan" hidden></div><p class="date" style="margin:0 0 2px;color:var(--red)">빡.만.앱</p><h2>오늘 뭐 나와?</h2><p class="date" id="doorDate"></p>
+      <div class="road" aria-label="순서"><span class="on">① 오늘 메뉴</span><i>›</i><span>② 급식실</span><i>›</i><span>③ 비밀 🤫</span></div>
       <div class="picks">
         <button class="pick" data-m="me"><span class="e">🎒</span><span><i class="wtag w1">청소년</i>우리 학교 급식<small>학교 이름으로 오늘 메뉴 보기</small></span></button>
         <button class="pick" data-m="kid"><span class="e">👨‍👩‍👧</span><span><i class="wtag w2">학부모</i>우리 아이 학교 급식<small>아이 학교 오늘 메뉴와 알레르기</small></span></button>
@@ -414,7 +422,8 @@ details ul{padding-left:16px}
       <div id="mDishes"></div>
       <div class="hero" id="mHero"><div class="wxfx" id="wxFx" aria-hidden="true"></div><div class="wxbar" id="wxBar" hidden><span id="wxLabel">날씨</span><select id="wxRegion" aria-label="지역"></select><button type="button" id="wxGeo">📍 내 위치</button></div><p class="bonus" id="heroTag" hidden>＋ 덤으로 하나 더</p><img class="spimg" id="wxImg" alt="" onerror="this.style.display='none'"><span id="wxWhy"></span><b id="wxName"></b><span id="wxSub">오늘 급식실 특식</span><button class="nextbtn" id="wxNext">🔄 다른 메뉴 볼래요</button></div>
       <details id="mNutri"><summary>칼로리·영양 정보</summary><ul id="mNutriList"></ul></details>
-      <button class="btn" id="enter" style="width:100%">이 식판 들고 급식실 가기</button>
+      <div class="road" aria-label="순서"><span class="done">① 메뉴 ✓</span><i>›</i><span class="on pulse">② 급식실</span><i>›</i><span>③ 비밀 🤫</span></div>
+      <button class="btn" id="enter" style="width:100%">이 식판 들고 급식실 가기 →</button>
       <div class="row" style="margin-top:8px"><button class="btn sub" id="doorSave">메뉴만 저장하기</button><button class="btn sub" id="doorBye">여기까지 볼게요</button></div>
       <button class="linkbtn" id="doorShare" style="display:block;margin:10px auto 0">🍱 같이 먹을 급식 친구 부르기</button>
       <p class="fact" id="doorMsg" style="text-align:center;margin:8px 0 0" hidden>저장했어요. 급식실은 언제든 구경 오세요 🙂</p>
@@ -424,19 +433,14 @@ details ul{padding-left:16px}
   <div class="zpop" id="zeroPop" role="status"><div class="zcard"><div class="zconf" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <p class="zt">퇴식구 특별 혜택</p><s id="zpWas"></s><b>0kcal</b><p class="zs">모두의 급식실에서 먹은 건<br>전부 0칼로리예요 😋</p></div></div>
   <div class="overlay" id="helpOv"><div class="card">
-    <h2>이렇게 놀아요</h2><p class="date">급식실 한 바퀴, 2분이면 충분해요.</p>
+    <h2>이렇게 놀아요</h2><p class="date">2분이면 충분해요.</p>
     <ul class="howto">
-      <li><b>👆 걷기</b>바닥을 누르면 그쪽으로 걸어가요.</li>
-      <li><b>🍱 배식</b>반찬마다 "먹을래요", "더 주세요", "안 먹을래요"를 고를 수 있어요.</li>
-      <li><b>🥛 우유 뽑기</b>흰우유·초코·바나나, 운 좋으면 딸기우유!</li>
-      <li><b>🪑 앉기</b>의자 옆에 서면 "앉기" 버튼이 떠요. 귀찮으면 "아무 데나 앉기".</li>
-      <li><b>😋 먹기</b>"냠냠"을 세 번 누르면 식판이 깨끗해져요.</li>
-      <li><b>📋 식단표</b>아래 버튼. 학교를 골랐다면 그 학교의 다음 급식들이 보여요.</li>
-      <li><b>🍽 한 그릇 더</b>다 먹고 다시 줄 설 수 있어요.</li>
-      <li><b>🗑 퇴식구</b>식판 반납하면 끝. 다음 달 특식 투표가 기다려요.</li>
-      <li><b>🚶 돌아다니기</b>다 먹으면 일어나서 급식실을 걸어 다닐 수 있어요. 바닥을 누르면 걷고, 빈 의자를 누르면 다시 앉아요. 다른 사람 화면에도 내가 걷는 모습이 보여요.</li>
-      <li><b>🟢 함께 먹기</b>자리에 앉으면 지금 들어와 있는 진짜 사람들이 초록 이름표로 보여요. 오른쪽 😋👍🥛🙌 버튼으로 인사해요. "급식 친구 부르기"로 보낸 링크로 들어온 친구는 내 맞은편에 앉아요. 내 옆자리는 그대로 방과후아카데미 친구 자리예요.</li>
-      <li><b>🎒 방과후아카데미 친구</b>조리사님이 그 친구에게만 뭔가 속닥여요. 궁금하면 옆에 앉아 봐도 되고, 혼자 먹어도 돼요.</li>
+      <li><b>👆 걷기</b>바닥을 누르면 걸어가요.</li>
+      <li><b>🍱 배식</b>반찬마다 먹을래요 · 더 주세요 · 안 먹을래요.</li>
+      <li><b>😋 먹기</b>앉아서 "냠냠" 세 번.</li>
+      <li><b>🚶 다 먹으면</b>돌아다녀도 되고, 퇴식구로 가면 끝.</li>
+      <li><b>🟢 초록 이름표</b>지금 같이 들어온 진짜 사람이에요. 😋👍 버튼으로 인사해요.</li>
+      <li><b>🎒 방과후아카데미 친구</b>조리사님이 그 친구에게만 뭔가 속닥여요.</li>
     </ul>
     <button class="btn" id="closeHelp" style="width:100%">알겠어요, 밥 먹으러!</button>
   </div></div>
@@ -1101,10 +1105,10 @@ async function joinMe(seat){return;
   if(old){k.userData.eating=false;standUp(k,old);old.taken=null;}if(k===bks)bksSeat=ns;ns.taken=k;
   await walkPath(k,routeTo(k.position,{x:ns.x,z:ns.z}),2.6);sitDown(k,ns);say(k,'…',1600);}
 function exitAct(){
-  if(mySeat){setAct(`<p class="say">잘 먹었다! 🚶<small>이제 일어나서 급식실을 돌아다닐 수 있어요.<br>다른 식탁 친구한테 가서 😋👍 인사해도 돼요.</small></p><div class="row"><button class="btn gold" id="roamGo">일어나서 돌아다니기</button></div><div class="row"><button class="btn sub" id="toExit">바로 퇴식구로 가기</button></div>`);
+  if(mySeat){setAct(`<p class="say">잘 먹었다!<small>일어나서 돌아다녀도 돼요 🚶</small></p><div class="row"><button class="btn gold" id="roamGo">돌아다니기</button><button class="btn sub" id="toExit">퇴식구로</button></div>`);
     $('#roamGo').onclick=startRoam;$('#toExit').onclick=goExit;return;}
   roamAct();}
-function roamAct(){setAct(`<p class="say">급식실 산책 중 🚶<small>바닥을 누르면 걸어가요 · 빈 의자를 누르면 앉아요</small></p><div class="row"><button class="btn" id="toExit">퇴식구로 가기</button></div>`);$('#toExit').onclick=goExit;}
+function roamAct(){setAct(`<p class="say">🚶 산책 중<small>바닥을 누르면 걸어가요</small></p><div class="row"><button class="btn" id="toExit">퇴식구로 가기</button></div>`);$('#toExit').onclick=goExit;}
 function startRoam(){if(mySeat){standUp(me,mySeat);mySeat.taken=null;mySeat=null;}
   const t=me.userData.carry;if(t&&t.userData.items)t.userData.items.forEach(x=>x&&(x.visible=false));
   state='roam';roamAct();updNav();const h=$('#hintTap');h.textContent='바닥을 누르면 걸어가요';h.style.opacity=1;setTimeout(()=>{h.style.opacity=0;},3500);
