@@ -434,7 +434,7 @@ details ul{padding-left:16px}
       <li><b>📋 식단표</b>아래 버튼. 학교를 골랐다면 그 학교의 다음 급식들이 보여요.</li>
       <li><b>🍽 한 그릇 더</b>다 먹고 다시 줄 설 수 있어요.</li>
       <li><b>🗑 퇴식구</b>식판 반납하면 끝. 다음 달 특식 투표가 기다려요.</li>
-      <li><b>🟢 함께 먹기</b>자리에 앉으면 지금 들어와 있는 진짜 사람들이 초록 이름표로 보여요. 오른쪽 😋👍🥛🙌 버튼으로 인사해요. "급식 친구 부르기"로 보낸 링크로 들어온 친구는 내 옆자리에 앉아요.</li>
+      <li><b>🟢 함께 먹기</b>자리에 앉으면 지금 들어와 있는 진짜 사람들이 초록 이름표로 보여요. 오른쪽 😋👍🥛🙌 버튼으로 인사해요. "급식 친구 부르기"로 보낸 링크로 들어온 친구는 내 맞은편에 앉아요. 내 옆자리는 그대로 방과후아카데미 친구 자리예요.</li>
       <li><b>🎒 방과후아카데미 친구</b>조리사님이 그 친구에게만 뭔가 속닥여요. 궁금하면 옆에 앉아 봐도 되고, 혼자 먹어도 돼요.</li>
     </ul>
     <button class="btn" id="closeHelp" style="width:100%">알겠어요, 밥 먹으러!</button>
@@ -941,7 +941,13 @@ const camOff=new THREE.Vector3(0,6.2,6.8);const camTarget=new THREE.Vector3();co
 let wideCam=false;
 function placeCam(instant){
   if(wideCam){const c=cookOf(5).position;const mid=me.position.clone().add(bk.position).add(c).multiplyScalar(1/3);const want=mid.clone().add(new THREE.Vector3(0,5.4,9));if(instant)camera.position.copy(want);else camera.position.lerp(want,.1);camTarget.set(mid.x,1.1,mid.z-.4);camera.lookAt(camTarget);return;}
-  if(bkFocus){const mid=me.position.clone().lerp(bk.position,.5);const want=mid.clone().add(new THREE.Vector3(0,3.9,5.3));if(instant)camera.position.copy(want);else camera.position.lerp(want,.06);camTarget.set(mid.x,1.0,mid.z-.9);camera.lookAt(camTarget);return;}let F=me.position;if(state==='seated'){try{let k=orangeKid();if(!(k&&k.userData.sitting&&Math.hypot(k.position.x-F.x,k.position.z-F.z)<2.2)){const o=INV&&MP.others.get(INV.sid);k=o?o.kid:null;}if(k&&k.userData.sitting&&Math.hypot(k.position.x-F.x,k.position.z-F.z)<2.2)F=F.clone().lerp(k.position,.5);}catch(e){}}const pair=F!==me.position;const seatOff=mySeat&&mySeat.face!==0?new THREE.Vector3(pair?0:1.1,pair?3.3:2.6,pair?-4.8:-3.3):(pair?new THREE.Vector3(0,3.3,4.8):new THREE.Vector3(1.1,2.6,3.3));camOff.lerp(state==='serving'?NEAR_SERVE:(state==='seated'?seatOff:FAR),instant?1:(state==='seated'?.09:.05));const want=F.clone().add(camOff);
+  if(bkFocus){const mid=me.position.clone().lerp(bk.position,.5);const want=mid.clone().add(new THREE.Vector3(0,3.9,5.3));if(instant)camera.position.copy(want);else camera.position.lerp(want,.06);camTarget.set(mid.x,1.0,mid.z-.9);camera.lookAt(camTarget);return;}if(state==='seated'&&mySeat){try{const o=INV&&MP.others.get(INV.sid);let pk=o?o.kid:null;if(!pk)for(const v of MP.others.values())if(Math.abs(v.seat.x-mySeat.x)<.1&&v.seat.tableZ===mySeat.tableZ){pk=v.kid;break;}
+    if(pk&&pk.userData.sitting&&Math.abs(pk.position.x-me.position.x)<.2&&Math.abs(pk.position.z-me.position.z)<2.2){
+      const ok=orangeKid();const ps=[me.position,pk.position];if(ok&&ok.userData.sitting&&Math.hypot(ok.position.x-me.position.x,ok.position.z-me.position.z)<2.2)ps.push(ok.position);
+      const C=new THREE.Vector3();ps.forEach(v=>C.add(v));C.multiplyScalar(1/ps.length);const tx=mySeat.x>0?3.3:-3.3;const sg=(C.x-tx)>=0?1:-1;
+      const want=C.clone().add(new THREE.Vector3(sg*1.6,5.2,(mySeat.face!==0?-1:1)*3.4));want.x=Math.max(-6.2,Math.min(6.2,want.x));
+      if(instant)camera.position.copy(want);else camera.position.lerp(want,.07);camTarget.set(C.x,.95,C.z+(mySeat.face!==0?-1:1)*.7);camera.lookAt(camTarget);return;}}catch(e){}}
+  let F=me.position;if(state==='seated'){try{let k=orangeKid();if(!(k&&k.userData.sitting&&Math.hypot(k.position.x-F.x,k.position.z-F.z)<2.2)){const o=INV&&MP.others.get(INV.sid);k=o?o.kid:null;}if(k&&k.userData.sitting&&Math.hypot(k.position.x-F.x,k.position.z-F.z)<2.2)F=F.clone().lerp(k.position,.5);}catch(e){}}const pair=F!==me.position;const seatOff=mySeat&&mySeat.face!==0?new THREE.Vector3(pair?0:1.1,pair?3.3:2.6,pair?-4.8:-3.3):(pair?new THREE.Vector3(0,3.3,4.8):new THREE.Vector3(1.1,2.6,3.3));camOff.lerp(state==='serving'?NEAR_SERVE:(state==='seated'?seatOff:FAR),instant?1:(state==='seated'?.09:.05));const want=F.clone().add(camOff);
   want.x=Math.max(-6,Math.min(6,want.x));want.z=Math.max(-7,Math.min(9,want.z));
   if(instant)camera.position.copy(want);else camera.position.lerp(want,.08);
   const near=state==='serving'||state==='seated';camTarget.set(near?F.x:Math.max(-4,Math.min(4,F.x)),near?(state==='seated'?1.0:.85):.6,near?F.z-(state==='serving'?1.2:.2):Math.max(-11,Math.min(2,F.z-.6)));camera.lookAt(camTarget);}
@@ -1423,6 +1429,8 @@ function mpSet(o){Object.assign(MP.me,o,{name:myName(),with:INV?INV.sid:null});i
 function mpLeave(){MP.me={};if(MP.on)MP.ch.untrack().catch(()=>{});}
 function seatBeside(st){if(!st)return null;const f=SEATS.filter(t=>t.tableZ===st.tableZ&&t!==st);
   return f.find(t=>!t.taken&&Math.abs(t.z-st.z)<.1&&Math.abs(Math.abs(t.x-st.x)-1.5)<.1)||f.find(t=>!t.taken&&Math.abs(t.x-st.x)<.1)||f.find(t=>!t.taken)||null;}
+function seatAcross(st){if(!st)return null;const a=SEATS.find(t=>t!==st&&t.tableZ===st.tableZ&&Math.abs(t.x-st.x)<.1);
+  if(a&&!a.taken)return a;const f=SEATS.filter(t=>!t.taken&&t.tableZ===st.tableZ&&Math.abs(t.z-st.z)>.5);return f.sort((p,q)=>Math.abs(p.x-st.x)-Math.abs(q.x-st.x))[0]||seatBeside(st);}
 function mpRemove(id){const o=MP.others.get(id);if(!o)return;removeLabel(o.lbl);const k=o.kid;
   if(o.seat&&o.seat.taken===k)o.seat.taken=null;if(k.userData.tableTray)scene.remove(k.userData.tableTray);scene.remove(k);
   const ix=npcs.indexOf(k);if(ix>=0)npcs.splice(ix,1);MP.others.delete(id);}
@@ -1431,9 +1439,12 @@ function mpSync(){if(!MP.ch)return;let st={};try{st=MP.ch.presenceState();}catch
   for(const id of [...MP.others.keys()])if(!live.has(id))mpRemove(id);
   let n=0;
   for(const [id,m] of live){if(n>=16)break;n++;
-    if(MP.others.has(id))continue;
-    let seat=null;const toMe=m.with===mySid()&&mySeat;
-    if(toMe)seat=seatBeside(mySeat);
+    const pal=mySeat&&(m.with===mySid()||(INV&&id===INV.sid&&MP.me.st));
+    if(MP.others.has(id)){const o=MP.others.get(id);
+      if(pal&&o.seat.tableZ===mySeat.tableZ&&Math.abs(o.seat.x-mySeat.x)<.1)continue;
+      if(pal){const a=SEATS.find(t=>t!==mySeat&&t.tableZ===mySeat.tableZ&&Math.abs(t.x-mySeat.x)<.1);if(a&&(!a.taken||a.taken===o.kid)){mpRemove(id);}else continue;}else continue;}
+    let seat=null;
+    if(pal)seat=seatAcross(mySeat);
     if(!seat){const want=SEATS[m.seat];seat=want&&!want.taken?want:null;}
     if(!seat){const f=SEATS.filter(t=>!t.taken);if(!f.length)continue;const w=SEATS[m.seat]||f[0];seat=f.sort((a,b)=>Math.hypot(a.x-w.x,a.z-w.z)-Math.hypot(b.x-w.x,b.z-w.z))[0];}
     const kid=makeKid({skin:SKIN[hashN(id,3)],hair:HAIR[hashN(id+'h',4)],suit:SUIT[hashN(id+'s',5)]});
@@ -1447,8 +1458,11 @@ const EMO=['😋','👍','🥛','🙌'];
 function mpReact(p){if(!EMO.includes(p.e))return;const o=MP.others.get(p.sid);if(o)addLabel(o.kid,p.e,'yum',1500,1.5,.9);}
 document.querySelectorAll('#emoBar button').forEach(b=>b.onclick=()=>{const e=b.dataset.e;const now=Date.now();if(now-MP.lastReact<700)return;MP.lastReact=now;
   addLabel(me,e,'yum',1500,1.5,.9);try{clink();}catch(err){}if(MP.on)MP.ch.send({type:'broadcast',event:'react',payload:{sid:mySid(),e}}).catch(()=>{});});
-function invBtn(){const o=INV&&MP.others.get(INV.sid);return o?`<div class="row"><button class="btn gold" id="sitInv">🟢 ${esc(INV.name)} 옆에 앉기</button></div>`:'';}
-function bindInv(){const b=$('#sitInv');if(!b)return;b.onclick=()=>{CHOICE=false;const o=MP.others.get(INV.sid);const s=o?seatBeside(o.seat):null;if(s)goSeat(s);else carryAct();};}
+function invBtn(){const o=INV&&MP.others.get(INV.sid);return o?`<div class="row"><button class="btn gold" id="sitInv">🟢 ${esc(INV.name)}랑 같이 먹기</button></div>`:'';}
+function bindInv(){const b=$('#sitInv');if(!b)return;b.onclick=()=>{track('sit_friend');CHOICE=false;
+  if(HOLD&&HOLD.taken==='hold'){HOLD.taken=null;const h=HOLD;HOLD=null;return goSeat(h);}
+  const bs=SEATS.find(x=>x.taken===bk);const ns=bs&&seatNear(bs);if(ns)return goSeat(ns);
+  const o=MP.others.get(INV.sid);const s=o?seatAcross(o.seat):null;if(s)goSeat(s);else carryAct();};}
 $('#doorShare').onclick=async()=>{await shareApp();const t=$('#toast').textContent;if(t){$('#doorMsg').textContent=t;$('#doorMsg').hidden=false;$('#toast').textContent='';}};
 $('#doorSave').onclick=async()=>{if(await saveMenu())$('#doorMsg').hidden=false;};
 $('#doorBye').onclick=()=>{track('door_bye');$('#doorMsg').textContent='오늘도 맛있게 드세요! 급식실은 언제든 구경 오세요 🙂';$('#doorMsg').hidden=false;};
