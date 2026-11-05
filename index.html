@@ -981,7 +981,7 @@ function u_init(k,seat,tr){k.userData.carry=tr;k.userData.body.add(tr);sitDown(k
 for(let i=0;i<2;i++){const k=makeKid({skin:SKIN[rand(3)],hair:HAIR[rand(4)],suit:SUIT[rand(5)]});k.visible=false;npcs.push(k);setTimeout(()=>npcLife(k),i*4500);}
 
 /* ───────── 카메라 ───────── */
-const camOff=new THREE.Vector3(0,6.2,6.8);const camTarget=new THREE.Vector3();const FAR=new THREE.Vector3(0,6.2,6.8),NEAR_SERVE=new THREE.Vector3(0,3.1,3.6),NEAR_SEAT=new THREE.Vector3(1.6,3.1,3.5);
+const camOff=new THREE.Vector3(0,6.2,6.8);const camTarget=new THREE.Vector3();const FAR=new THREE.Vector3(0,6.2,6.8),NEAR_SERVE=new THREE.Vector3(0,4.4,5.8),NEAR_SEAT=new THREE.Vector3(1.6,3.1,3.5);
 let wideCam=false;
 function placeCam(instant){
   if(wideCam){const c=cookOf(5).position;const mid=me.position.clone().add(bk.position).add(c).multiplyScalar(1/3);const want=mid.clone().add(new THREE.Vector3(0,5.4,9));if(instant)camera.position.copy(want);else camera.position.lerp(want,.1);camTarget.set(mid.x,1.1,mid.z-.4);camera.lookAt(camTarget);return;}
@@ -1068,7 +1068,7 @@ async function serveWithBk(){bkFocus=false;trayKcal=0;const bang=qInst==='bangka
     if(i<DISHES.length-1)ps.push(walkPath(bk,[[BIN_X[i+1],-7.75]],2.8).then(()=>{trayPut(bkTray,i+1,DISHES[i+1]);clink();}));
     await Promise.all(ps);
     if(i===DISHES.length-2){
-      if(bang){say(cookOf(5),'(속닥속닥…)',1800);await wait(700);say(bk,'…',1500);}
+      if(bang){wideCam=true;await wait(500);say(cookOf(5),'(속닥속닥…)',2200);await wait(1000);say(bk,'…',1600);await wait(1300);wideCam=false;}
       else{say(bk,['와, 맛있겠다!','특식이다!','많이 주세요~'][rand(3)],1500);await wait(900);}
       bkDone=true;bkSit();}
     await pickDish(i,true);await wait(300);}
