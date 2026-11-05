@@ -470,7 +470,7 @@ details ul{padding-left:16px}
     <p class="big" style="text-align:center">2,000원보다 무거운 건,<br>밥 먹기 전에 듣는<br>“너희 집 형편은?”이라는 질문이에요.</p><p class="math" style="text-align:center">주 5일이면 한 달 약 4만 원, 형제 둘이면 8만 원.</p>
     <div class="note">저는 방과후아카데미에서 아이들과 함께 활동하는 청소년지도사입니다.<br>내년부터 몇몇 아이들은 이 밥값으로 2,000원을 내야 합니다.<br>같은 식탁에서 같은 밥을 먹는데, 집 형편을 물어보고 계산서를 줍니다.<br>말로 설명하기가 너무 억울해서, 직접 급식실을 만들었습니다.<div class="sig">한 청소년지도사가</div></div>
     <p class="fact">2027년 정부 예산 가내시(안)는 청소년방과후아카데미 한 곳당 예산을 1,564만 원(7.86%) 줄이고, 기준중위소득 150% 초과 가구 학생에게 한 끼 2,000원의 급식비 자부담을 새로 만들었습니다(소득 증빙 필요). 학교 돌봄, 지역아동센터, 다함께돌봄센터의 저녁 급식은 소득을 묻지 않습니다.</p>
-    <a class="petition" href="https://petitions.assembly.go.kr/proceed/onGoingAll/5CB51C03131E1ED4E064ECE7A7064E8B" target="_blank" rel="noopener">급식으로 차별하는 건 문제라고 생각하신다면,<br>청원에 힘을 보태 주세요</a>
+    <a class="petition" onclick="track('petition')" href="https://petitions.assembly.go.kr/proceed/onGoingAll/5CB51C03131E1ED4E064ECE7A7064E8B" target="_blank" rel="noopener">급식으로 차별하는 건 문제라고 생각하신다면,<br>청원에 힘을 보태 주세요</a>
     <p class="fact" style="text-align:center;margin:0 0 10px">국회 국민동의청원은 30일 안에 5만 명이 모이면 국회 위원회로 넘어갑니다.</p>
     </div>
     <div class="vote" id="vote"></div>
@@ -1016,9 +1016,9 @@ async function serveWithBk(){bkFocus=false;trayKcal=0;const bang=qInst==='bangka
 let CHOICE=false;
 function choiceAct(){CHOICE=true;
   setAct(`<p class="say">조리사님이 뭐라고 속닥이신 걸까?<small>내 식판 약 ${trayKcal.toLocaleString('ko-KR')}kcal${milk?' · '+milk:''}</small></p><div class="row"><button class="btn gold" id="sitBk">앞 친구 옆에 앉기</button></div><div class="row"><button class="btn sub" id="soloEat">혼자 먹기</button>${milk?'':'<button class="btn sub" id="milkBtn">우유 챙기기</button>'}</div>`);
-  $('#soloEat').onclick=()=>{CHOICE=false;if(HOLD&&HOLD.taken==='hold'){HOLD.taken=null;HOLD=null;}nearSeat=undefined;carryAct();};
+  $('#soloEat').onclick=()=>{track('solo');CHOICE=false;if(HOLD&&HOLD.taken==='hold'){HOLD.taken=null;HOLD=null;}nearSeat=undefined;carryAct();};
   if($('#milkBtn'))$('#milkBtn').onclick=getMilk;
-  $('#sitBk').onclick=()=>{CHOICE=false;if(HOLD&&HOLD.taken==='hold'){HOLD.taken=null;const h=HOLD;HOLD=null;return goSeat(h);}const ns=seatNear(SEATS.find(x=>x.taken===bk));if(ns)goSeat(ns);else carryAct();};}
+  $('#sitBk').onclick=()=>{track('sit_friend');CHOICE=false;if(HOLD&&HOLD.taken==='hold'){HOLD.taken=null;const h=HOLD;HOLD=null;return goSeat(h);}const ns=seatNear(SEATS.find(x=>x.taken===bk));if(ns)goSeat(ns);else carryAct();};}
 function seatNear(st){if(!st)return null;const f=SEATS.filter(t=>!t.taken&&t.tableZ===st.tableZ);
   return f.find(t=>Math.abs(t.z-st.z)<.1&&Math.abs(Math.abs(t.x-st.x)-1.5)<.1)||f.find(t=>Math.abs(t.x-st.x)<.1)||f[0]||null;}
 function besideMe(k,seat){const o=SEATS.find(t=>t.taken===k);return o&&o.tableZ===seat.tableZ&&Math.abs(o.x-seat.x)<1.6&&(Math.abs(o.z-seat.z)<.1||Math.abs(o.x-seat.x)<.1);}
@@ -1107,7 +1107,7 @@ function eat(){
 function zeroPop(){return new Promise(res=>{const p=$('#zeroPop');
   $('#zpWas').textContent=trayKcal?`약 ${trayKcal.toLocaleString('ko-KR')}kcal`:'';p.classList.add('on');chime&&setTimeout(()=>{try{chime();}catch(e){}},150);
   let done=false;const go=()=>{if(done)return;done=true;p.classList.remove('on');setTimeout(res,250);};p.onclick=go;setTimeout(go,3200);});}
-async function goExit(){
+async function goExit(){track('exit');
   if(mySeat){standUp(me,mySeat);mySeat.taken=null;mySeat=null;}
   state='walking';setAct('<p class="say" style="margin:0">퇴식구로 쓩~</p>');
   await walkPath(me,routeTo(me.position,{x:RX-.9,z:1.6}),4.5);
@@ -1182,12 +1182,12 @@ $('#closeOrg').onclick=()=>$('#orgOv').classList.remove('on');
 async function castVote(menu){const el=$('#vote');el.querySelectorAll('button').forEach(b=>b.disabled=true);
   try{const r=await fetch(SB_URL+'/rest/v1/menu_votes',{method:'POST',headers:{...SB_H,'Prefer':'return=minimal'},body:JSON.stringify({vote_month:VOTE_MONTH,menu,device_id:devId()})});
     if(!r.ok&&r.status!==409)throw new Error(r.status);}catch(e){$('#toast').textContent='투표가 저장되지 않았어요. 잠시 후 다시 눌러 주세요.';el.querySelectorAll('button').forEach(b=>b.disabled=false);return;}
-  myVote=menu;VOTE_RES[menu]=(VOTE_RES[menu]||0)+1;
+  myVote=menu;track('vote',menu);VOTE_RES[menu]=(VOTE_RES[menu]||0)+1;
   await loadVotes();VOTE_RES[menu]=Math.max(VOTE_RES[menu]||0,1);const rk=Object.entries(VOTE_RES).sort((a,b)=>b[1]-a[1]).findIndex(x=>x[0]===menu)+1;
   $('#toast').textContent=`${menu}에 한 표! 지금 ${rk}위예요 🎉`;renderVote(true);}
 
 /* 공유 카드 */
-$('#shareBtn').onclick=async()=>{
+$('#shareBtn').onclick=async()=>{track('share_card');
   const url=location.href.split('#')[0];const text=`오늘의 급식: ${SRC==='모두의 급식실'||SRC==='오늘의 점심 추천'?'':SRC+' 급식 + 보너스 '}특식 ${SP.n}. 우리 학교 급식도 찾아봐! #빡만앱`;
   try{const blob=await drawCard();const file=blob?new File([blob],'모두의급식.png',{type:'image/png'}):null;
     if(file&&navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'모두의 급식?',text:text+' '+url});return;}
@@ -1371,7 +1371,7 @@ function openStory(back){const card=$('#storyCard');let i=0;
   const step=()=>{if(i<STORY.length){const st=STORY[i];card.innerHTML=`<div class="sline">${bkFace(i)}<p class="who">${st.who}</p><h3>${st.h}</h3></div><button class="btn" id="sNext">${st.btn}</button>`;$('#sNext').onclick=()=>{i++;step();};card.scrollTop=0;return;}
     storySeen=true;$('#storyOv').classList.remove('on');back&&back();};
   $('#storyOv').classList.add('on');step();}
-$('#teaser').onclick=()=>{$('#teaser').hidden=true;$('#exitCampaign').hidden=false;setTimeout(()=>$('#exitCampaign').scrollIntoView({behavior:'smooth',block:'start'}),60);};
+$('#teaser').onclick=()=>{track('eaves');$('#teaser').hidden=true;$('#exitCampaign').hidden=false;setTimeout(()=>$('#exitCampaign').scrollIntoView({behavior:'smooth',block:'start'}),60);};
 /* 오늘 메뉴 저장 (이미지) */
 async function drawMenu(){try{await document.fonts.ready;}catch(e){}
   const W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
@@ -1386,19 +1386,19 @@ async function drawMenu(){try{await document.fonts.ready;}catch(e){}
   if(MEAL_CAL){g.fillStyle='#8A7F70';g.font='34px "Noto Sans KR", sans-serif';g.fillText('학교 공식 '+MEAL_CAL,W/2,y+110);}
   g.fillStyle='#A49A8B';g.font='32px "Noto Sans KR", sans-serif';g.fillText('모두의 급식? · bap.youthforten.kr',W/2,H-110);
   return new Promise(r=>c.toBlob(r,'image/png'));}
-async function saveMenu(){const b=await drawMenu();if(!b)return;const f=new File([b],'오늘의급식.png',{type:'image/png'});
+async function saveMenu(){track('save_menu');const b=await drawMenu();if(!b)return;const f=new File([b],'오늘의급식.png',{type:'image/png'});
   try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'오늘의 급식'});return true;}}catch(e){return false;}
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='오늘의급식.png';document.body.appendChild(a);a.click();a.remove();return true;}
 $('#saveMenu').onclick=saveMenu;
-async function shareApp(){const url='https://bap.youthforten.kr/';const text='우리 학교 급식 찾고, 급식실에서 밥 한 끼 먹고 가요. 모두의 급식? #빡만앱';
+async function shareApp(){track('share_app');const url='https://bap.youthforten.kr/';const text='우리 학교 급식 찾고, 급식실에서 밥 한 끼 먹고 가요. 모두의 급식? #빡만앱';
   try{if(navigator.share){await navigator.share({title:'모두의 급식?',text,url});return;}}catch(e){if(e&&e.name==='AbortError')return;}
   try{await navigator.clipboard.writeText(text+' '+url);$('#toast').textContent='링크를 복사했어요. 원하는 곳에 붙여 넣어 주세요.';}catch(e){$('#toast').textContent=url;}}
 $('#appShare').onclick=shareApp;
 
 $('#doorShare').onclick=async()=>{await shareApp();const t=$('#toast').textContent;if(t){$('#doorMsg').textContent=t;$('#doorMsg').hidden=false;$('#toast').textContent='';}};
 $('#doorSave').onclick=async()=>{if(await saveMenu())$('#doorMsg').hidden=false;};
-$('#doorBye').onclick=()=>{$('#doorMsg').textContent='오늘도 맛있게 드세요! 급식실은 언제든 구경 오세요 🙂';$('#doorMsg').hidden=false;};
-$('#enter').onclick=async()=>{logVisit();let seen=null;try{seen=localStorage.getItem('gs-help');localStorage.setItem('gs-help','1');}catch(e){}$('#door').classList.remove('on');state='idle';$('#hintTap').style.opacity=0;goQueue();};
+$('#doorBye').onclick=()=>{track('door_bye');$('#doorMsg').textContent='오늘도 맛있게 드세요! 급식실은 언제든 구경 오세요 🙂';$('#doorMsg').hidden=false;};
+$('#enter').onclick=async()=>{track('enter',SRC);logVisit();let seen=null;try{seen=localStorage.getItem('gs-help');localStorage.setItem('gs-help','1');}catch(e){}$('#door').classList.remove('on');state='idle';$('#hintTap').style.opacity=0;goQueue();};
 updNav();
 $('#ring').onclick=()=>{unlockAudio();setSound(true);chime();$('#bellSvg').classList.add('ringing');$('#ring').classList.add('torn');$('#ring').disabled=true;
   setTimeout(()=>{$('#bellSvg').classList.remove('ringing');$('#loading').classList.add('gone');},3400);};
@@ -1408,6 +1408,11 @@ $('#ring').onclick=()=>{unlockAudio();setSound(true);chime();$('#bellSvg').class
 const $=s=>document.querySelector(s);
 const SB_URL='https://seiparhicrqnpxlyheqn.supabase.co',SB_KEY='sb_publishable_mc0iEdUwKAKJwmFG-iIOIQ_PpMXpYTk';
 const SB_H={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'};
+/* 관리자 전용 통계: 단계별 이벤트 (개인정보 없음, 앱에서는 읽을 수 없음) */
+function track(ev,meta){setTimeout(()=>{try{if(!window.__sid)window.__sid=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+Date.now());
+  const k=ev+'|'+(meta||'');window.__sent=window.__sent||{};if(ev!=='vote'&&window.__sent[k])return;window.__sent[k]=1;
+  fetch(SB_URL+'/rest/v1/events',{method:'POST',headers:{...SB_H,'Prefer':'return=minimal'},body:JSON.stringify({session:window.__sid,event:ev,meta:meta?String(meta).slice(0,40):null}),keepalive:true}).catch(()=>{});}catch(e){}},0);}
+track('open');
 let visitLogged=false;
 function logVisit(){if(visitLogged)return;visitLogged=true;
   fetch(SB_URL+'/rest/v1/visits',{method:'POST',headers:{...SB_H,'Prefer':'return=minimal'},body:JSON.stringify({nickname:$('#myname').textContent.slice(0,30)})}).catch(()=>{});}
