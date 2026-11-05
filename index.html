@@ -434,6 +434,7 @@ details ul{padding-left:16px}
       <li><b>📋 식단표</b>아래 버튼. 학교를 골랐다면 그 학교의 다음 급식들이 보여요.</li>
       <li><b>🍽 한 그릇 더</b>다 먹고 다시 줄 설 수 있어요.</li>
       <li><b>🗑 퇴식구</b>식판 반납하면 끝. 다음 달 특식 투표가 기다려요.</li>
+      <li><b>🚶 돌아다니기</b>다 먹으면 일어나서 급식실을 걸어 다닐 수 있어요. 바닥을 누르면 걷고, 빈 의자를 누르면 다시 앉아요. 다른 사람 화면에도 내가 걷는 모습이 보여요.</li>
       <li><b>🟢 함께 먹기</b>자리에 앉으면 지금 들어와 있는 진짜 사람들이 초록 이름표로 보여요. 오른쪽 😋👍🥛🙌 버튼으로 인사해요. "급식 친구 부르기"로 보낸 링크로 들어온 친구는 내 맞은편에 앉아요. 내 옆자리는 그대로 방과후아카데미 친구 자리예요.</li>
       <li><b>🎒 방과후아카데미 친구</b>조리사님이 그 친구에게만 뭔가 속닥여요. 궁금하면 옆에 앉아 봐도 되고, 혼자 먹어도 돼요.</li>
     </ul>
@@ -959,8 +960,8 @@ function setAct(html){if(state==='door'&&html)return;act.innerHTML=html;act.clas
 function updNav(){
   $('#navMore').disabled=!(state==='seated'||(state==='idle'&&ate));
   let lock=false;
-  $('#navExit').disabled=lock||!(state==='seated'||state==='carrying'||(state==='idle'&&ate));
-  const eb=document.getElementById('emoBar');if(eb)eb.hidden=state!=='seated';
+  $('#navExit').disabled=lock||!(state==='seated'||state==='carrying'||state==='roam'||(state==='idle'&&ate));
+  const eb=document.getElementById('emoBar');if(eb)eb.hidden=!(state==='seated'||state==='roam');
   if(lock)$('#navMore').disabled=true;
 }
 $('#navMenu').onclick=()=>{
@@ -1099,7 +1100,18 @@ async function joinMe(seat){return;
   const ns=cand[0];if(!ns)return;const old=SEATS.find(t=>t.taken===k);
   if(old){k.userData.eating=false;standUp(k,old);old.taken=null;}if(k===bks)bksSeat=ns;ns.taken=k;
   await walkPath(k,routeTo(k.position,{x:ns.x,z:ns.z}),2.6);sitDown(k,ns);say(k,'…',1600);}
-function exitAct(){setAct(`<p class="say">잘 먹었다!<small>식판 반납하러 가자</small></p><div class="row"><button class="btn" id="toExit">퇴식구로 가기</button></div>`);$('#toExit').onclick=goExit;}
+function exitAct(){
+  if(mySeat){setAct(`<p class="say">잘 먹었다! 🚶<small>이제 일어나서 급식실을 돌아다닐 수 있어요.<br>다른 식탁 친구한테 가서 😋👍 인사해도 돼요.</small></p><div class="row"><button class="btn gold" id="roamGo">일어나서 돌아다니기</button></div><div class="row"><button class="btn sub" id="toExit">바로 퇴식구로 가기</button></div>`);
+    $('#roamGo').onclick=startRoam;$('#toExit').onclick=goExit;return;}
+  roamAct();}
+function roamAct(){setAct(`<p class="say">급식실 산책 중 🚶<small>바닥을 누르면 걸어가요 · 빈 의자를 누르면 앉아요</small></p><div class="row"><button class="btn" id="toExit">퇴식구로 가기</button></div>`);$('#toExit').onclick=goExit;}
+function startRoam(){if(mySeat){standUp(me,mySeat);mySeat.taken=null;mySeat=null;}
+  const t=me.userData.carry;if(t&&t.userData.items)t.userData.items.forEach(x=>x&&(x.visible=false));
+  state='roam';roamAct();updNav();const h=$('#hintTap');h.textContent='바닥을 누르면 걸어가요';h.style.opacity=1;setTimeout(()=>{h.style.opacity=0;},3500);
+  say(me,'어디 가 볼까?',1400);track('roam');mpSet({st:'roam',seat:null,x:+me.position.x.toFixed(2),z:+me.position.z.toFixed(2)});}
+async function sitAgain(seat){if(!seat||seat.taken)return;seat.taken=me;state='walking';setAct('');
+  await walkPath(me,routeTo(me.position,{x:seat.x,z:seat.z}),3.2);mySeat=seat;sitDown(me,seat);state='seated';
+  mpSet({st:'seated',seat:SEATS.indexOf(seat),x:null,z:null});exitAct();updNav();}
 function moodBtn(){const k=(!storySeen&&mySeat)?orangeKid():null;return (k&&besideMe(k,mySeat))?'<button class="btn sub" id="askMood">친구 기분 물어보기</button>':'';}
 function bindMood(){const b=$('#askMood');if(!b)return;b.onclick=async()=>{setAct('<p class="say" style="margin:0">…</p>');const k=orangeKid();say(me,'너 왜 기분이 안 좋아?',1800);await wait(1700);if(k)say(k,'…그냥. 내년부터 밥 먹을 때 좀 그래.',2200);await wait(1900);openStory(()=>{const k=orangeKid();if(k)say(k,'…들어 줘서 고마워.',2000);ate?exitAct():setAct(`<p class="say">마저 먹자.</p><div class="row"><button class="btn gold" id="eat">냠냠</button></div>`);$('#eat')&&($('#eat').onclick=eat);});};}
 async function goSeat(seat){
@@ -1158,11 +1170,13 @@ renderer.domElement.addEventListener('pointerup',e=>{
   const seatHit=ray.intersectObjects(SEATS.map(s=>s.mesh))[0];
   if(seatHit){const seat=seatHit.object.userData.seat;
     if(state==='carrying')return goSeat(seat);
+    if(state==='roam'){if(seat.taken){say(me,'여긴 자리가 있네',1200);return;}return sitAgain(seat);}
     if(state!=='seated')say(me,'먼저 배식부터 받아 올까?',1500);return;}
   if(state==='seated')return;
   const hit=ray.intersectObject(floor)[0];if(!hit)return;
   const x=Math.max(-RX+.6,Math.min(RX-.6,hit.point.x)),z=Math.max(-7.6,Math.min(3.4,hit.point.z));
   $('#hintTap').style.opacity=0;
+  if(state==='roam'){walkPath(me,routeTo(me.position,{x,z}),2.8);mpSet({st:'roam',x:+x.toFixed(2),z:+z.toFixed(2)});return;}
   state=state==='carrying'?'carrying':'idle';
   walkPath(me,routeTo(me.position,{x,z}));updNav();
 });
@@ -1431,15 +1445,24 @@ function seatBeside(st){if(!st)return null;const f=SEATS.filter(t=>t.tableZ===st
   return f.find(t=>!t.taken&&Math.abs(t.z-st.z)<.1&&Math.abs(Math.abs(t.x-st.x)-1.5)<.1)||f.find(t=>!t.taken&&Math.abs(t.x-st.x)<.1)||f.find(t=>!t.taken)||null;}
 function seatAcross(st){if(!st)return null;const a=SEATS.find(t=>t!==st&&t.tableZ===st.tableZ&&Math.abs(t.x-st.x)<.1);
   if(a&&!a.taken)return a;const f=SEATS.filter(t=>!t.taken&&t.tableZ===st.tableZ&&Math.abs(t.z-st.z)>.5);return f.sort((p,q)=>Math.abs(p.x-st.x)-Math.abs(q.x-st.x))[0]||seatBeside(st);}
-function mpRemove(id){const o=MP.others.get(id);if(!o)return;removeLabel(o.lbl);const k=o.kid;
+function mpRemove(id){const o=MP.others.get(id);if(!o)return;removeLabel(o.lbl);const k=o.kid;movers.delete(k);
   if(o.seat&&o.seat.taken===k)o.seat.taken=null;if(k.userData.tableTray)scene.remove(k.userData.tableTray);scene.remove(k);
   const ix=npcs.indexOf(k);if(ix>=0)npcs.splice(ix,1);MP.others.delete(id);}
 function mpSync(){if(!MP.ch)return;let st={};try{st=MP.ch.presenceState();}catch(e){}
-  const live=new Map();for(const [id,arr] of Object.entries(st)){if(id===mySid()||!arr||!arr.length)continue;const m=arr[arr.length-1];if(m&&(m.st==='seated')&&Number.isInteger(m.seat))live.set(id,m);}
+  const live=new Map();for(const [id,arr] of Object.entries(st)){if(id===mySid()||!arr||!arr.length)continue;const m=arr[arr.length-1];if(!m)continue;if(m.st==='seated'&&Number.isInteger(m.seat))live.set(id,m);else if(m.st==='roam'&&Number.isFinite(m.x)&&Number.isFinite(m.z))live.set(id,Object.assign({},m,{x:Math.max(-RX+.6,Math.min(RX-.6,m.x)),z:Math.max(-7.6,Math.min(3.4,m.z))}));}
   for(const id of [...MP.others.keys()])if(!live.has(id))mpRemove(id);
   let n=0;
   for(const [id,m] of live){if(n>=16)break;n++;
+    if(m.st==='roam'){const o=MP.others.get(id);
+      if(o&&o.st==='roam'){if(o.tx!==m.x||o.tz!==m.z){o.tx=m.x;o.tz=m.z;walkPath(o.kid,routeTo(o.kid.position,{x:m.x,z:m.z}),2.8);}continue;}
+      let from=null;if(o){from={x:o.kid.position.x,z:o.kid.position.z+(o.seat&&o.seat.face===0?-.4:.4)};mpRemove(id);}
+      const kid=makeKid({skin:SKIN[hashN(id,3)],hair:HAIR[hashN(id+'h',4)],suit:SUIT[hashN(id+'s',5)]});
+      const tr=makeTray();setCarry(kid,tr);kid.position.set(from?from.x:m.x,0,from?from.z:m.z);scene.add(kid);npcs.push(kid);
+      const lbl=addLabel(kid,'🟢 '+esc(String(m.name||'급식 친구').slice(0,24)),'tag-mp',0,1.62);
+      MP.others.set(id,{kid,lbl,seat:null,name:m.name,st:'roam',tx:m.x,tz:m.z});
+      walkPath(kid,routeTo(kid.position,{x:m.x,z:m.z}),2.8);continue;}
     const pal=mySeat&&(m.with===mySid()||(INV&&id===INV.sid&&MP.me.st));
+    if(MP.others.has(id)&&MP.others.get(id).st==='roam')mpRemove(id);
     if(MP.others.has(id)){const o=MP.others.get(id);
       if(pal&&o.seat.tableZ===mySeat.tableZ&&Math.abs(o.seat.x-mySeat.x)<.1)continue;
       if(pal){const a=SEATS.find(t=>t!==mySeat&&t.tableZ===mySeat.tableZ&&Math.abs(t.x-mySeat.x)<.1);if(a&&(!a.taken||a.taken===o.kid)){mpRemove(id);}else continue;}else continue;}
@@ -1450,7 +1473,7 @@ function mpSync(){if(!MP.ch)return;let st={};try{st=MP.ch.presenceState();}catch
     const kid=makeKid({skin:SKIN[hashN(id,3)],hair:HAIR[hashN(id+'h',4)],suit:SUIT[hashN(id+'s',5)]});
     const tr=makeTray();DISHES.forEach((d,i)=>trayPut(tr,i,d));setCarry(kid,tr);seat.taken=kid;sitDown(kid,seat);kid.userData.eating=true;npcs.push(kid);
     const lbl=addLabel(kid,'🟢 '+esc(String(m.name||'급식 친구').slice(0,24)),'tag-mp',0,1.62);
-    MP.others.set(id,{kid,lbl,seat,name:m.name});
+    MP.others.set(id,{kid,lbl,seat,name:m.name,st:'seated'});
     if(m.with===mySid())setTimeout(()=>say(kid,'불러 줘서 고마워! 같이 먹자 🍱',2400),400);}
   const cnt=MP.others.size+(MP.me.st?1:0);const pill=$('#mpCount');
   if(MP.others.size>=2){pill.textContent=`🍱 지금 같이 먹는 중 ${cnt}명`;pill.hidden=false;}else pill.hidden=true;}
