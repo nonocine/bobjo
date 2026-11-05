@@ -880,7 +880,7 @@ function separate(){const all=[me,...npcs].filter(k=>k.visible&&!k.userData.sitt
   for(let i=0;i<all.length;i++)for(let j=i+1;j<all.length;j++){const a=all[i],b=all[j];
     let dx=b.position.x-a.position.x,dz=b.position.z-a.position.z;const d=Math.hypot(dx,dz);if(d>=R_MIN)continue;
     if(d<1e-4){dx=.01;dz=0;}const push=(R_MIN-Math.max(d,1e-4))/2;const nx=dx/Math.max(d,1e-4),nz=dz/Math.max(d,1e-4);
-    const wa=a===me&&state==='serving'?0:1,wb=b===me&&state==='serving'?0:1;const sum=wa+wb||1;
+    const meGo=state==='serving'||movers.has(me);const wa=a===me&&meGo?0:1,wb=b===me&&meGo?0:1;const sum=wa+wb||1;
     a.position.x-=nx*push*2*wa/sum;a.position.z-=nz*push*2*wa/sum;b.position.x+=nx*push*2*wb/sum;b.position.z+=nz*push*2*wb/sum;}}
 /* 걷기: 경유점 배열을 차례로 이동 */
 const movers=new Set();
@@ -890,7 +890,8 @@ function walkPath(k,pts,speed=2.6){
 function stepMovers(dt){
   for(const k of movers){const u=k.userData;const tgt=u.path[0];if(!tgt){u.walking=false;movers.delete(k);u.done&&u.done();continue;}
     const dx=tgt[0]-k.position.x,dz=tgt[1]-k.position.z;const dist=Math.hypot(dx,dz);
-    if(dist<.05){u.path.shift();continue;}
+    if(dist<.05){u.path.shift();u.lastD=undefined;u.stuckT=0;continue;}
+    if(k===me){if(u.lastD===undefined||dist<u.lastD-.15){u.lastD=dist;u.stuckT=0;}else{u.stuckT=(u.stuckT||0)+dt;if(u.stuckT>1.8){k.position.x+=dx/dist*Math.min(dist,.9);k.position.z+=dz/dist*Math.min(dist,.9);u.stuckT=0;u.lastD=undefined;continue;}}}
     const step=Math.min(dist,u.speed*dt);k.position.x+=dx/dist*step;k.position.z+=dz/dist*step;
     const want=Math.atan2(dx,dz);let diff=want-k.rotation.y;diff=Math.atan2(Math.sin(diff),Math.cos(diff));k.rotation.y+=diff*Math.min(1,dt*12);}
 }
