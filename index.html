@@ -120,6 +120,10 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-off
 #certImg{width:100%;max-width:420px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.18);margin:6px auto 12px;display:block}
 .certbtn{display:block;width:100%;margin:12px 0 0}
 .stickyclose{position:sticky;bottom:-18px;margin:12px -16px -18px;padding:10px 16px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(rgba(255,253,246,0),var(--sheet) 30%)}
+.sheet .card{position:relative;padding-top:24px;touch-action:pan-y}
+.sheet .card::before{content:"";position:absolute;top:8px;left:50%;width:40px;height:5px;margin-left:-20px;border-radius:3px;background:rgba(42,38,32,.22)}
+.sheet .card.drag{transition:none}
+.sheet .card.back{transition:transform .22s ease}
 .tag-mp{font-size:11.5px;font-weight:700;background:#FFFFFF;color:#2A2620;border:2px solid #2E9A62;border-radius:999px;padding:1px 8px;white-space:nowrap}
 .mpc{position:absolute;left:10px;top:8px;z-index:6;background:rgba(46,154,98,.92);color:#FFFFFF;font-size:12.5px;font-weight:700;border-radius:999px;padding:4px 10px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .emobar{position:absolute;left:50%;transform:translateX(-50%);bottom:84px;z-index:8;display:flex;flex-direction:row;gap:4px;padding:5px 8px;border-radius:999px}
@@ -643,7 +647,13 @@ function buildMonth(){const start=new Date(today);start.setDate(start.getDate()-
     h+=`<td class="${now?'now':''}"><div class="d">${d.getMonth()+1}/${d.getDate()}</div>${m[0].n}<br>${m[2].n}<br><span class="s">★${m[5].n}</span></td>`;}h+='</tr>';}
   $('#monthTable').innerHTML=h;}
 $('#closeMonth').onclick=()=>$('#monthOv').classList.remove('on');
-['monthOv','helpOv','orgOv','moreOv','recOv','certOv'].forEach(id=>{const o=document.getElementById(id);if(o)o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('on');});});
+['monthOv','helpOv','orgOv','moreOv','recOv','certOv'].forEach(id=>{const o=document.getElementById(id);if(!o)return;o.classList.add('sheet');
+  o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('on');});
+  const c=o.querySelector('.card');let y0=null,dy=0,ok=false;
+  c.addEventListener('touchstart',e=>{ok=c.scrollTop<=0;y0=e.touches[0].clientY;dy=0;c.classList.remove('back');},{passive:true});
+  c.addEventListener('touchmove',e=>{if(!ok||y0===null)return;dy=e.touches[0].clientY-y0;if(dy>0){c.classList.add('drag');c.style.transform=`translateY(${dy}px)`;if(e.cancelable)e.preventDefault();}else{ok=c.scrollTop<=0&&dy>-4;}},{passive:false});
+  c.addEventListener('touchend',()=>{if(y0===null)return;c.classList.remove('drag');c.classList.add('back');
+    if(dy>90){c.style.transform=`translateY(100%)`;setTimeout(()=>{o.classList.remove('on');c.style.transform='';c.classList.remove('back');},200);}else c.style.transform='';y0=null;dy=0;});});
 
 /* ───────── 소리 ───────── */
 let soundOn=false,ac=null;
