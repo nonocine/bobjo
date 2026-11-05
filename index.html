@@ -116,7 +116,9 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-off
 .ofc{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.45;margin:12px 0}
 .ofc input{width:20px;height:20px;flex:none;margin-top:1px}
 .tr{display:inline-block;width:1.25em;height:.95em;vertical-align:-.14em;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Crect x='1' y='1' width='38' height='28' rx='5' fill='%23C9CED3' stroke='%238E959C' stroke-width='1.5'/%3E%3Crect x='4' y='4' width='9' height='8' rx='2' fill='%23F2F4F5'/%3E%3Crect x='15.5' y='4' width='9' height='8' rx='2' fill='%23F2F4F5'/%3E%3Crect x='27' y='4' width='9' height='8' rx='2' fill='%23F2F4F5'/%3E%3Crect x='4' y='14.5' width='15' height='12' rx='2.5' fill='%23F2F4F5'/%3E%3Crect x='21' y='14.5' width='15' height='12' rx='2.5' fill='%23F2F4F5'/%3E%3Ccircle cx='8.5' cy='8' r='2.6' fill='%23E8743B'/%3E%3Ccircle cx='20' cy='8' r='2.6' fill='%237FB069'/%3E%3Ccircle cx='31.5' cy='8' r='2.6' fill='%23D23A2E'/%3E%3Cellipse cx='11.5' cy='20.5' rx='5.5' ry='4' fill='%23FFFFFF' stroke='%23DADDE0'/%3E%3Cellipse cx='28.5' cy='20.5' rx='5.5' ry='4' fill='%23E9B25A'/%3E%3C/svg%3E") center/contain no-repeat}
+#certOv,#recOv,#orgOv{z-index:30}
 #certOv .card{text-align:center}
+#certImg:not([src]){min-height:300px;background:#FFF6E8 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E")}
 #certImg{width:100%;max-width:420px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.18);margin:6px auto 12px;display:block}
 .certbtn{display:block;width:100%;margin:12px 0 0}
 .stickyclose{position:sticky;bottom:-18px;margin:12px -16px -18px;padding:10px 16px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(rgba(255,253,246,0),var(--sheet) 30%)}
@@ -1630,8 +1632,8 @@ async function drawCert(){try{await document.fonts.ready;}catch(e){}
   g.fillStyle='#9A8F80';g.font='28px "Noto Sans KR", sans-serif';g.fillText('bap.youthforten.kr · 빡.만.앱',W/2,H-88);
   return new Promise(r=>c.toBlob(r,'image/png'));}
 let CERT_BLOB=null;
-async function openCert(){$('#certMsg').textContent='';$('#certOv').classList.add('on');$('#certImg').removeAttribute('src');
-  CERT_BLOB=await drawCert();if(CERT_BLOB)$('#certImg').src=URL.createObjectURL(CERT_BLOB);}
+async function openCert(){$('#certMsg').textContent='상장 만드는 중… 🏅';$('#certOv').classList.add('on');$('#certImg').removeAttribute('src');$('#certShare').disabled=true;
+  CERT_BLOB=await drawCert();if(CERT_BLOB){$('#certImg').src=URL.createObjectURL(CERT_BLOB);$('#certMsg').textContent='';}else $('#certMsg').textContent='상장을 만들지 못했어요.';$('#certShare').disabled=false;}
 $('#recCert').onclick=()=>{$('#recOv').classList.remove('on');openCert();};
 $('#certClose').onclick=()=>$('#certOv').classList.remove('on');
 $('#certShare').onclick=async()=>{track('share_cert',String(REC.today));const url='https://bap.youthforten.kr/';
