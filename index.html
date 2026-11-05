@@ -297,6 +297,22 @@ details ul{padding-left:16px}
 @keyframes conf{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--x),var(--y)) rotate(400deg)}}
 .top .me{white-space:nowrap;display:flex;align-items:center;gap:4px;min-width:0}
 .top .me b{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.eaves{display:block;width:100%;border:0;border-radius:22px;padding:18px 16px 16px;margin:0 0 14px;background:radial-gradient(120% 90% at 50% 0%,#3A332B,#221E19);color:#FFF8E7;text-align:center;box-shadow:0 10px 24px rgba(30,20,10,.28);position:relative;overflow:hidden;cursor:pointer}
+.eaves::after{content:"";position:absolute;inset:-40%;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.08) 50%,transparent 60%);animation:sheen 3.2s ease-in-out infinite}
+@keyframes sheen{from{transform:translateX(-40%)}to{transform:translateX(40%)}}
+.ev-q{display:block;font-family:var(--title);font-size:24px;line-height:1.25;margin-bottom:12px}
+.ev-row{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:14px}
+.ev-cook{width:54px;height:54px;flex:none}
+.ev-bub{position:relative;background:#FFF8E7;color:#2A2620;border-radius:16px;padding:10px 12px;font-size:14px;text-align:left;max-width:230px}
+.ev-bub::before{content:"";position:absolute;left:-7px;top:18px;border:7px solid transparent;border-right-color:#FFF8E7;border-left:0}
+.ev-bub i{font-style:normal;font-weight:700;color:#E8743B;margin-right:4px;display:inline-block;animation:ss 1.2s ease-in-out infinite}
+.ev-bub i+i{animation-delay:.3s}
+@keyframes ss{50%{transform:translateY(-3px)}}
+.ev-blur{display:block;margin-top:4px;filter:blur(4px);user-select:none}
+.ev-cta{display:inline-block;background:#E8743B;color:#FFFFFF;border-radius:999px;padding:9px 20px;font-weight:700;font-size:15px;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.06);box-shadow:0 0 0 8px rgba(232,116,59,.18)}}
+.whisper{animation:unblur .7s ease-out both}
+@keyframes unblur{from{filter:blur(6px);opacity:.3}to{filter:none;opacity:1}}
 .teaser{width:100%;text-align:left;border:2px solid #E07A1F;background:rgba(224,122,31,.08);border-radius:14px;padding:14px;font-size:15px;margin:0 0 14px}
 .teaser b{display:block;font-family:var(--title);font-weight:400;font-size:19px}
 @media (prefers-reduced-motion:reduce){.ld .steam,.bubble,.stamp{animation:none}}
@@ -373,14 +389,14 @@ details ul{padding-left:16px}
     <h2>이렇게 놀아요</h2><p class="date">급식실 한 바퀴, 2분이면 충분해요.</p>
     <ul class="howto">
       <li><b>👆 걷기</b>바닥을 누르면 그쪽으로 걸어가요.</li>
-      <li><b>🍱 배식</b>배식대 앞에서 "식판 받기" 한 번이면 오늘 메뉴가 다 담겨요.</li>
+      <li><b>🍱 배식</b>반찬마다 "먹을래요", "더 주세요", "안 먹을래요"를 고를 수 있어요.</li>
       <li><b>🥛 우유 뽑기</b>흰우유·초코·바나나, 운 좋으면 딸기우유!</li>
       <li><b>🪑 앉기</b>의자 옆에 서면 "앉기" 버튼이 떠요. 귀찮으면 "아무 데나 앉기".</li>
       <li><b>😋 먹기</b>"냠냠"을 세 번 누르면 식판이 깨끗해져요.</li>
       <li><b>📋 식단표</b>아래 버튼. 학교를 골랐다면 그 학교의 다음 급식들이 보여요.</li>
       <li><b>🍽 한 그릇 더</b>다 먹고 다시 줄 설 수 있어요.</li>
       <li><b>🗑 퇴식구</b>식판 반납하면 끝. 다음 달 특식 투표가 기다려요.</li>
-      <li><b>🎒 주황 가방</b>조리사님이 주황 가방 친구에게 뭔가 속닥여요. 궁금하면 옆에 앉아 봐도 되고, 혼자 먹어도 돼요.</li>
+      <li><b>🎒 방과후아카데미 친구</b>조리사님이 그 친구에게만 뭔가 속닥여요. 궁금하면 옆에 앉아 봐도 되고, 혼자 먹어도 돼요.</li>
     </ul>
     <button class="btn" id="closeHelp" style="width:100%">알겠어요, 밥 먹으러!</button>
   </div></div>
@@ -416,7 +432,11 @@ details ul{padding-left:16px}
     <p class="result" id="result"></p>
     <div class="vote" id="vote"></div>
     <div class="row"><button class="btn" id="saveMenu">오늘 메뉴 저장</button><button class="btn sub" id="shareBtn">공유하기</button></div>
-    <button class="teaser" id="teaser"><b>조리사님이 뭐라고 속닥였는지 보기</b>주황 가방 친구에게 무슨 말을 했을까요?</button>
+    <button class="eaves" id="teaser" aria-label="조리사님 이야기 엿듣기">
+      <span class="ev-q">조리사님의 이야기가<br>궁금한 사람?</span>
+      <span class="ev-row"><svg class="ev-cook" viewBox="0 0 60 60" aria-hidden="true"><ellipse cx="30" cy="14" rx="17" ry="11" fill="#FFFFFF"/><rect x="15" y="14" width="30" height="9" fill="#FFFFFF"/><circle cx="30" cy="34" r="17" fill="#F6D7B8"/><path d="M14 30 q16 -12 32 0" fill="#4A3426"/><circle cx="24" cy="35" r="2.2" fill="#2A2620"/><circle cx="36" cy="35" r="2.2" fill="#2A2620"/><ellipse cx="20" cy="41" rx="3.5" ry="2.2" fill="#F2A7A0"/><ellipse cx="40" cy="41" rx="3.5" ry="2.2" fill="#F2A7A0"/><path d="M27 44 h6" stroke="#7A3B2E" stroke-width="2" stroke-linecap="round"/><path d="M47 36 q7 -2 7 5" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".8"/></svg>
+      <span class="ev-bub"><i>속닥</i><i>속닥</i><span class="ev-blur">내년부터는 방과후아카데미 청소년은…</span></span></span>
+      <span class="ev-cta">👂 살짝 엿듣기</span></button>
     <div id="exitCampaign" hidden>
     <div class="whisper"><small>조리사님이 속닥인 말</small>“내년부터는 방과후아카데미 청소년은 소득 수준에 따라 급식비를 내야 한대. 부모님께 전달해 줘.”</div>
     <p class="fact" id="visitors" style="text-align:center;display:none"></p>
@@ -600,7 +620,7 @@ drawBoard();
 // 표어
 const posterDraws=[];function poster(text,x,y,z,ry=0,w=1.3,h=1.7){const draw=(g)=>{g.fillStyle='#FFFDF4';g.fillRect(0,0,260,340);g.fillStyle='#3B2F25';g.font='78px Jua, "Noto Sans KR", sans-serif';g.textAlign='center';text.split('\n').forEach((l,i)=>g.fillText(l,130,95+i*90));};const t=canvasTex(260,340,draw);posterDraws.push(()=>{draw(t.image.getContext('2d'));t.needsUpdate=true;});
   const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshLambertMaterial({map:t}));m.position.set(x,y,z);m.rotation.y=ry;scene.add(m);return {m,t};}
-const posters=[poster('꼭꼭\n씹어\n먹자',-4.4,2.7,-RZ+.09)];
+const posters=[poster('여기는\n무조건\n0칼로리',-4.4,2.7,-RZ+.09)];
 // 브라운관 TV
 const tv=new THREE.Group();tv.position.set(RX-.9,3.1,-RZ+1);tv.rotation.y=-.5;scene.add(tv);
 box(1.1,.9,.9,0x5A5853,0,0,0,tv);box(.86,.66,.02,lam(0x3F555B,{emissive:0x24363A,emissiveIntensity:.6}),0,0,.46,tv);box(.3,.6,.3,0x4A4844,0,-.7,-.1,tv);
@@ -691,8 +711,8 @@ function kcalOf(d){const n=d.n||'';
   if(/전$|파전|동그랑땡|만두/.test(n))return 200;
   return 170;}
 let trayKcal=0,MEAL_CAL='';
-function putMine(i){const d=DISHES[i];trayPut(myTray,i,d);clink();const k=kcalOf(d);trayKcal+=k;
-  addLabel(me,`<b>${d.n}</b> 약 ${k}kcal`,'kcal',1500,1.9,1.1);}
+function putMine(i,more=0){const d=DISHES[i];trayPut(myTray,i,d,more);clink();const k=Math.round(kcalOf(d)*(more?1.5:1));trayKcal+=k;
+  addLabel(me,`<b>${d.n}${more?' 곱빼기':''}</b> 약 ${k}kcal`,'kcal',1500,1.9,1.1);}
 /* 식판 */
 const SLOT=[[-.13,.075],[.16,.075],[-.17,-.085],[-.02,-.085],[.13,-.085],[.02,.075]];
 // 순서: 밥(왼아래),국(오른아래),반찬1,반찬2,김치(윗줄),특식(가운데 아래)
@@ -927,7 +947,7 @@ async function goQueue(){
   if(first){qInst=storySeen?['school','center','dahamke'][rand(3)]:'bangka';const I=INST[qInst];
     bkBag.material.color.setHex(I[1]);if(qInst==='bangka')hideBks();
     bk.visible=true;bk.position.set(BIN_X[0],0,-7.75);bk.rotation.y=Math.PI/2;bkTray=makeTray();setCarry(bk,bkTray);
-    bkLbl=qInst==='bangka'?addLabel(bk,'주황 가방','tag-bk',0,1.62):null;}
+    bkLbl=qInst==='bangka'?addLabel(bk,'방과후아카데미','tag-bk',0,1.62):null;}
   meQueue=true;state='walking';setAct('<p class="say" style="margin:0">배식대로 가는 중…</p>');
   myTray=makeTray();setCarry(me,myTray);
   await walkPath(me,routeTo(me.position,{x:-5.2,z:-6.6}),4.2);
@@ -936,30 +956,32 @@ async function goQueue(){
   setAct(`<p class="say">${first?'앞 친구 다음이 내 차례!':'다시 줄 섰다'}<small>오늘 메뉴 ${DISHES.length}가지</small></p><div class="row"><button class="btn" id="takeAll">식판 받기</button></div>`);
   $('#takeAll').onclick=()=>first?serveWithBk():serveAll(0);
 }
+function pickDish(i){return new Promise(async res=>{const d=DISHES[i],ck=cookOf(i);
+  await walkPath(me,[[BIN_X[i],-7.75]],2.8);say(ck,d.t==='sp'?`오늘 특식 ${d.n}!`:`${d.n} 줄게~`,1500);
+  setAct(`<p class="say"><b>${d.n}</b><small>${d.t==='sp'?'오늘의 특식 · ':''}약 ${kcalOf(d)}kcal</small></p><div class="row"><button class="btn gold" id="pTake">먹을래요</button><button class="btn sub" id="pMore">더 주세요</button></div><div class="row"><button class="btn ghost" id="pSkip">안 먹을래요</button></div>`);
+  $('#pTake').onclick=()=>{putMine(i);res();};
+  $('#pMore').onclick=()=>{say(ck,KIND[rand(KIND.length)][0],1700);putMine(i,1);res();};
+  $('#pSkip').onclick=()=>{say(ck,SKIP[rand(SKIP.length)],1700);res();};});}
+async function serveMine(){trayKcal=0;for(let i=0;i<DISHES.length;i++){await pickDish(i);await wait(350);}}
 async function serveAll(from){setAct('<p class="say" style="margin:0">배식 받는 중…</p>');
-  trayKcal=0;for(let i=from;i<DISHES.length;i++){await walkPath(me,[[BIN_X[i],-7.75]],2.8);putMine(i);if(i===DISHES.length-1)say(cookOf(i),'특식은 듬뿍~',1300);await wait(700);}
-  say(cookOf(5),'맛있게 먹어~',1600);afterServe();}
+  await serveMine();say(cookOf(5),'맛있게 먹어~',1600);afterServe();}
 function afterServe(){meQueue=false;setAct(`${SP.img?`<img class="actimg" src="${SP.img}" alt="${SP.n}" onerror="this.remove()">`:''}<p class="say">내 식판 약 <b>${trayKcal.toLocaleString('ko-KR')}kcal</b><small>${MEAL_CAL?'학교 공식 '+MEAL_CAL+' + 보너스 특식':'특식 '+SP.n+' 포함'} · 우유도 챙길까?</small></p><div class="row"><button class="btn" id="milkBtn">우유 챙기기</button></div>`);$('#milkBtn').onclick=getMilk;}
-async function serveWithBk(){bkFocus=true;setAct('<p class="say" style="margin:0">배식 받는 중…</p>');
-  for(let i=0;i<6;i++){if(i===0)trayKcal=0;const ps=[walkPath(bk,[[BIN_X[i],-7.75]],2.8)];if(i>0)ps.push(walkPath(me,[[BIN_X[i-1],-7.75]],2.8));await Promise.all(ps);
-    if(i<5)trayPut(bkTray,i,DISHES[i]);if(i>0)putMine(i-1);await wait(700);}
+async function serveWithBk(){bkFocus=true;setAct('<p class="say" style="margin:0">앞 친구가 먼저 받는 중…</p>');
+  for(let i=0;i<6;i++){await walkPath(bk,[[BIN_X[i],-7.75]],3.2);trayPut(bkTray,i,DISHES[i]);clink();await wait(380);}
   const ck=cookOf(5);
-  if(qInst!=='bangka'){say(bk,['와, 맛있겠다!','특식이다!','많이 주세요~'][rand(3)],1500);await wait(900);say(ck,'그래, 맛있게 먹어~',1600);trayPut(bkTray,5,DISHES[5]);clink();await wait(900);
-    bkDone=true;bkFocus=false;bkSit();await walkPath(me,[[BIN_X[5],-7.75]],2.8);putMine(5);say(ck,'너도 맛있게 먹어~',1600);afterServe();return;}
-  say(ck,'잠깐,',1300);await wait(1300);
-  say(ck,'너 방과후아카데미 학생이니?',2000);await wait(2100);
-  say(bk,'네.',1500);await wait(1700);
+  if(qInst!=='bangka'){say(bk,['와, 맛있겠다!','특식이다!','많이 주세요~'][rand(3)],1500);await wait(900);say(ck,'그래, 맛있게 먹어~',1600);await wait(900);
+    bkDone=true;bkFocus=false;bkSit();await serveMine();say(ck,'너도 맛있게 먹어~',1600);afterServe();return;}
   say(ck,'(속닥속닥…)',3000);await wait(3200);
-  say(bk,'…',2200);await wait(1600);
+  say(bk,'…',2200);await wait(1500);
   bkAct();}
-async function bkAct(){bkDone=true;bkFocus=false;trayPut(bkTray,5,DISHES[5]);
-  setAct('<p class="say" style="margin:0">…뭐지? 저 친구 표정이 안 좋은데.</p>');say(me,'…뭐지?',1800);bkSit();
-  await walkPath(me,[[BIN_X[5],-7.75]],2.8);putMine(5);say(cookOf(5),'너도 맛있게 먹어~',1600);meQueue=false;
+async function bkAct(){bkDone=true;bkFocus=false;
+  say(me,'…뭐지?',1800);bkSit();await wait(900);
+  await serveMine();say(cookOf(5),'너도 맛있게 먹어~',1600);meQueue=false;
   for(let t=0;t<40&&!(bk.userData.sitting&&SEATS.find(x=>x.taken===bk));t++)await wait(200);
   state='carrying';choiceAct();}
 let CHOICE=false;
 function choiceAct(){CHOICE=true;
-  setAct(`<p class="say">조리사님이 뭐라고 속닥이신 걸까?<small>내 식판 약 ${trayKcal.toLocaleString('ko-KR')}kcal${milk?' · '+milk:''}</small></p><div class="row"><button class="btn gold" id="sitBk">주황 가방 친구 옆에 앉기</button></div><div class="row"><button class="btn sub" id="soloEat">혼자 먹기</button>${milk?'':'<button class="btn sub" id="milkBtn">우유 챙기기</button>'}</div>`);
+  setAct(`<p class="say">조리사님이 뭐라고 속닥이신 걸까?<small>내 식판 약 ${trayKcal.toLocaleString('ko-KR')}kcal${milk?' · '+milk:''}</small></p><div class="row"><button class="btn gold" id="sitBk">방과후아카데미 친구 옆에 앉기</button></div><div class="row"><button class="btn sub" id="soloEat">혼자 먹기</button>${milk?'':'<button class="btn sub" id="milkBtn">우유 챙기기</button>'}</div>`);
   $('#soloEat').onclick=()=>{CHOICE=false;if(HOLD&&HOLD.taken==='hold'){HOLD.taken=null;HOLD=null;}nearSeat=undefined;carryAct();};
   if($('#milkBtn'))$('#milkBtn').onclick=getMilk;
   $('#sitBk').onclick=()=>{CHOICE=false;if(HOLD&&HOLD.taken==='hold'){HOLD.taken=null;const h=HOLD;HOLD=null;return goSeat(h);}const ns=seatNear(SEATS.find(x=>x.taken===bk));if(ns)goSeat(ns);else carryAct();};}
@@ -1274,7 +1296,7 @@ box(.38,.44,.18,0xE07A1F,0,.7,-.23,bks.userData.body);box(.2,.12,.02,0xFFFFFF,0,
 let bksSeat=SEATS.filter(st=>!st.taken).sort((a,b)=>Math.abs(a.x)-Math.abs(b.x))[0];
 if(bksSeat){bksSeat.taken=bks;const tr=makeTray();DISHES.forEach((d,j)=>j<5&&trayPut(tr,j,d));u_seatOnly(bks,bksSeat,tr);}
 function u_seatOnly(k,seat,tr){k.userData.carry=tr;k.userData.body.add(tr);sitDown(k,seat);k.userData.eating=false;}
-const bksLbl=addLabel(bks,'💬 주황 가방','tag-bk tap',0,1.5);bksLbl.el.onclick=()=>{if(storySeen)return say(bks,'…고마워, 들어 줘서.',2000);openStory();};
+const bksLbl=addLabel(bks,'💬 방과후아카데미','tag-bk tap',0,1.5);bksLbl.el.onclick=()=>{if(storySeen)return say(bks,'…고마워, 들어 줘서.',2000);openStory();};
 hideBks();
 setInterval(()=>{if(bks.visible&&!storySeen&&state!=='exit')say(bks,'…',1400);},9000);
 function hideBks(){bks.visible=false;removeLabel(bksLbl);if(bksSeat){bksSeat.taken=null;if(bks.userData.tableTray){scene.remove(bks.userData.tableTray);bks.userData.tableTray=null;}}}
@@ -1298,9 +1320,9 @@ function bkFace(m){
   ${mouth}${tear}</g></svg>`;}
 const BKSVG=bkFace(1);
 const STORY=[
-  {who:'주황 가방 친구',h:'나 <em>청소년방과후아카데미</em> 다녀.<br>학교 끝나면 거기서 돌봄 프로그램 하고,<br>저녁 먹고 집에 가.',btn:'그런데 왜?'},
-  {who:'주황 가방 친구',h:'내년부터는 밥 먹기 전에<br><em>부모님 소득 증빙 서류</em>를 내야 한대.<br>기준보다 높으면 한 끼 <em>2,000원</em>이고.',btn:'다른 친구들은?'},
-  {who:'주황 가방 친구',h:'학교 돌봄, 지역아동센터,<br>다함께돌봄 다니는 애들은<br>안 물어본대.<br>같은 밥인데.',btn:'그랬구나…'}];
+  {who:'방과후아카데미 친구',h:'나 <em>청소년방과후아카데미</em> 다녀.<br>학교 끝나면 거기서 돌봄 프로그램 하고,<br>저녁 먹고 집에 가.',btn:'그런데 왜?'},
+  {who:'방과후아카데미 친구',h:'내년부터는 밥 먹기 전에<br><em>부모님 소득 증빙 서류</em>를 내야 한대.<br>기준보다 높으면 한 끼 <em>2,000원</em>이고.',btn:'다른 친구들은?'},
+  {who:'방과후아카데미 친구',h:'학교 돌봄, 지역아동센터,<br>다함께돌봄 다니는 애들은<br>안 물어본대.<br>같은 밥인데.',btn:'그랬구나…'}];
 function openStory(back){const card=$('#storyCard');let i=0;
   const step=()=>{if(i<STORY.length){const st=STORY[i];card.innerHTML=`<div class="sline">${bkFace(i)}<p class="who">${st.who}</p><h3>${st.h}</h3></div><button class="btn" id="sNext">${st.btn}</button>`;$('#sNext').onclick=()=>{i++;step();};card.scrollTop=0;return;}
     storySeen=true;$('#storyOv').classList.remove('on');back&&back();};
