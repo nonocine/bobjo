@@ -956,9 +956,9 @@ async function goQueue(){
   setAct(`<p class="say">${first?'앞 친구 다음이 내 차례!':'다시 줄 섰다'}<small>오늘 메뉴 ${DISHES.length}가지</small></p><div class="row"><button class="btn" id="takeAll">식판 받기</button></div>`);
   $('#takeAll').onclick=()=>first?serveWithBk():serveAll(0);
 }
-function pickDish(i){return new Promise(async res=>{const d=DISHES[i],ck=cookOf(i);
-  await walkPath(me,[[BIN_X[i],-7.75]],2.8);say(ck,d.t==='sp'?`오늘 특식 ${d.n}!`:`${d.n} 줄게~`,1500);
-  setAct(`<p class="say"><b>${d.n}</b><small>${d.t==='sp'?'오늘의 특식 · ':''}약 ${kcalOf(d)}kcal</small></p><div class="row"><button class="btn gold" id="pTake">먹을래요</button><button class="btn sub" id="pMore">더 주세요</button></div><div class="row"><button class="btn ghost" id="pSkip">안 먹을래요</button></div>`);
+function pickDish(i,here=false){return new Promise(async res=>{const d=DISHES[i],ck=cookOf(i);
+  if(!here)await walkPath(me,[[BIN_X[i],-7.75]],2.8);say(ck,d.t==='sp'?`오늘 특식 ${d.n}!`:`${d.n} 줄게~`,1500);
+  setAct(`<p class="say"><b>${d.n}</b><small>${d.t==='sp'?'오늘의 특식 · ':''}약 ${kcalOf(d)}kcal</small></p><div class="row"><button class="btn gold" id="pTake">먹을래요</button></div><div class="row"><button class="btn sub" id="pMore">더 주세요</button><button class="btn sub" id="pSkip">안 먹을래요</button></div>`);
   $('#pTake').onclick=()=>{putMine(i);res();};
   $('#pMore').onclick=()=>{say(ck,KIND[rand(KIND.length)][0],1700);putMine(i,1);res();};
   $('#pSkip').onclick=()=>{say(ck,SKIP[rand(SKIP.length)],1700);res();};});}
@@ -966,22 +966,24 @@ async function serveMine(){trayKcal=0;for(let i=0;i<DISHES.length;i++){await pic
 async function serveAll(from){setAct('<p class="say" style="margin:0">배식 받는 중…</p>');
   await serveMine();say(cookOf(5),'맛있게 먹어~',1600);afterServe();}
 function afterServe(){meQueue=false;setAct(`${SP.img?`<img class="actimg" src="${SP.img}" alt="${SP.n}" onerror="this.remove()">`:''}<p class="say">내 식판 약 <b>${trayKcal.toLocaleString('ko-KR')}kcal</b><small>${MEAL_CAL?'학교 공식 '+MEAL_CAL+' + 보너스 특식':'특식 '+SP.n+' 포함'} · 우유도 챙길까?</small></p><div class="row"><button class="btn" id="milkBtn">우유 챙기기</button></div>`);$('#milkBtn').onclick=getMilk;}
-async function serveWithBk(){bkFocus=true;setAct('<p class="say" style="margin:0">앞 친구가 먼저 받는 중…</p>');
-  for(let i=0;i<6;i++){await walkPath(bk,[[BIN_X[i],-7.75]],3.2);trayPut(bkTray,i,DISHES[i]);clink();await wait(380);}
-  const ck=cookOf(5);
-  if(qInst!=='bangka'){say(bk,['와, 맛있겠다!','특식이다!','많이 주세요~'][rand(3)],1500);await wait(900);say(ck,'그래, 맛있게 먹어~',1600);await wait(900);
-    bkDone=true;bkFocus=false;bkSit();await serveMine();say(ck,'너도 맛있게 먹어~',1600);afterServe();return;}
-  say(ck,'(속닥속닥…)',3000);await wait(3200);
-  say(bk,'…',2200);await wait(1500);
-  bkAct();}
-async function bkAct(){bkDone=true;bkFocus=false;
-  say(me,'…뭐지?',1800);bkSit();await wait(900);
-  await serveMine();say(cookOf(5),'너도 맛있게 먹어~',1600);meQueue=false;
+async function serveWithBk(){bkFocus=false;trayKcal=0;const bang=qInst==='bangka';
+  await walkPath(bk,[[BIN_X[0],-7.75]],3);trayPut(bkTray,0,DISHES[0]);
+  for(let i=0;i<DISHES.length;i++){
+    const ps=[walkPath(me,[[BIN_X[i],-7.75]],2.8)];
+    if(i<DISHES.length-1)ps.push(walkPath(bk,[[BIN_X[i+1],-7.75]],2.8).then(()=>{trayPut(bkTray,i+1,DISHES[i+1]);clink();}));
+    await Promise.all(ps);
+    if(i===DISHES.length-2){
+      if(bang){setAct('');say(cookOf(5),'(속닥속닥…)',2800);await wait(3000);say(bk,'…',2000);await wait(1300);}
+      else{say(bk,['와, 맛있겠다!','특식이다!','많이 주세요~'][rand(3)],1500);await wait(900);}
+      bkDone=true;bkSit();if(bang)say(me,'…뭐지?',1600);}
+    await pickDish(i,true);await wait(300);}
+  say(cookOf(5),'너도 맛있게 먹어~',1600);meQueue=false;
+  if(!bang){afterServe();return;}
   for(let t=0;t<40&&!(bk.userData.sitting&&SEATS.find(x=>x.taken===bk));t++)await wait(200);
   state='carrying';choiceAct();}
 let CHOICE=false;
 function choiceAct(){CHOICE=true;
-  setAct(`<p class="say">조리사님이 뭐라고 속닥이신 걸까?<small>내 식판 약 ${trayKcal.toLocaleString('ko-KR')}kcal${milk?' · '+milk:''}</small></p><div class="row"><button class="btn gold" id="sitBk">방과후아카데미 친구 옆에 앉기</button></div><div class="row"><button class="btn sub" id="soloEat">혼자 먹기</button>${milk?'':'<button class="btn sub" id="milkBtn">우유 챙기기</button>'}</div>`);
+  setAct(`<p class="say">조리사님이 뭐라고 속닥이신 걸까?<small>내 식판 약 ${trayKcal.toLocaleString('ko-KR')}kcal${milk?' · '+milk:''}</small></p><div class="row"><button class="btn gold" id="sitBk">앞 친구 옆에 앉기</button></div><div class="row"><button class="btn sub" id="soloEat">혼자 먹기</button>${milk?'':'<button class="btn sub" id="milkBtn">우유 챙기기</button>'}</div>`);
   $('#soloEat').onclick=()=>{CHOICE=false;if(HOLD&&HOLD.taken==='hold'){HOLD.taken=null;HOLD=null;}nearSeat=undefined;carryAct();};
   if($('#milkBtn'))$('#milkBtn').onclick=getMilk;
   $('#sitBk').onclick=()=>{CHOICE=false;if(HOLD&&HOLD.taken==='hold'){HOLD.taken=null;const h=HOLD;HOLD=null;return goSeat(h);}const ns=seatNear(SEATS.find(x=>x.taken===bk));if(ns)goSeat(ns);else carryAct();};}
