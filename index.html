@@ -1327,7 +1327,7 @@ async function renderVote(full=false){const el=$('#vote');const mlabel=(vm.getMo
   el.querySelectorAll('.vopt').forEach(b=>b.onclick=()=>castVote(b.dataset.o));}
 let ORG_N=0,ORGS=null;
 async function loadOrgs(){try{const r=await fetch(SB_URL+'/rest/v1/partner_orgs?select=name,region&order=created_at.asc',{headers:SB_H});ORGS=await r.json();ORG_N=ORGS.length;}catch(e){ORGS=[];}}
-async function openOrgs(){if(!ORGS)await loadOrgs();$('#orgList').innerHTML=ORGS.length?ORGS.map(o=>`<li><span>${o.name}</span><small>${o.region||''}</small></li>`).join(''):'<li>목록을 불러오지 못했어요.</li>';$('#orgOv').classList.add('on');}
+async function openOrgs(){$('#orgOv').classList.add('on');if(!ORGS){$('#orgList').innerHTML='<li>불러오는 중…</li>';await loadOrgs();}$('#orgList').innerHTML=ORGS.length?ORGS.map(o=>`<li><span>${o.name}</span><small>${o.region||''}</small></li>`).join(''):'<li>목록을 불러오지 못했어요.</li>';$('#orgOv').classList.add('on');}
 $('#closeOrg').onclick=()=>$('#orgOv').classList.remove('on');
 $('#orgOpen').onclick=()=>{$('#orgOpen').hidden=true;$('#orgForm').hidden=false;setTimeout(()=>$('#oName').focus(),50);};
 $('#oSend').onclick=async()=>{const v=id=>$(id).value.trim();const msg=$('#oMsg');
