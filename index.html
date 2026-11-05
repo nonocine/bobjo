@@ -152,7 +152,15 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-off
 .stamp{width:120px;height:120px;border-radius:50%;margin:6px auto 12px;border:5px solid var(--red);color:var(--red);display:grid;place-items:center;text-align:center;font-family:var(--title);font-size:22px;line-height:1.15;transform:rotate(-12deg);animation:stamp .5s cubic-bezier(.2,1.6,.4,1) both}
 @keyframes stamp{from{transform:rotate(-12deg) scale(2.4);opacity:0}}
 .kidq{text-align:center;margin:4px auto 10px;animation:kidin .6s cubic-bezier(.2,1.4,.4,1) both}
-.kidq svg{width:116px;height:116px;display:block;margin:0 auto}
+.kidq{position:relative}
+.kidq svg{width:150px;height:140px;display:block;margin:0 auto;overflow:visible}
+.kidq .hop{transform-origin:80px 150px;animation:hop 1.8s ease-in-out infinite}
+@keyframes hop{0%,100%{transform:none}20%{transform:translateY(-6px) rotate(-2deg)}40%{transform:none}}
+.hearts{position:absolute;left:0;right:0;top:0;height:120px;pointer-events:none}
+.hearts i{position:absolute;bottom:96px;font-style:normal;color:#F07C7C;font-size:18px;opacity:0;animation:heart 3s ease-out infinite}
+.hearts i:nth-child(1){left:30%;animation-delay:0s}.hearts i:nth-child(2){left:64%;animation-delay:.7s;font-size:14px}
+.hearts i:nth-child(3){left:42%;animation-delay:1.4s;font-size:12px}.hearts i:nth-child(4){left:70%;animation-delay:2s;color:#F2B84B}.hearts i:nth-child(5){left:24%;animation-delay:2.4s;font-size:13px}
+@keyframes heart{0%{transform:translateY(0) scale(.6);opacity:0}20%{opacity:1}100%{transform:translateY(-60px) scale(1.1);opacity:0}}
 .kidq p{font-family:var(--title);font-size:30px;margin:2px 0 0}
 @keyframes kidin{from{transform:translateY(30px) scale(.8);opacity:0}}
 .result{text-align:center;font-size:16px;margin:0 0 14px}
@@ -178,7 +186,29 @@ details ul{padding-left:16px}
 .nextbtn{margin-top:10px;border:2px solid var(--accent);background:transparent;color:var(--accent);border-radius:999px;padding:7px 16px;font-size:14px;font-weight:700}
 #heroTag{cursor:pointer}
 .hero.bonusmode .spimg{max-width:150px}
-.hero{text-align:center;border:2px dashed var(--line);border-radius:16px;padding:12px;margin:8px 0 12px}
+.hero{position:relative;overflow:hidden;text-align:center;border:2px dashed var(--line);border-radius:16px;padding:12px;margin:8px 0 12px}
+.hero>*:not(.wxfx){position:relative;z-index:1}
+.wxfx{position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:14px;transition:background .6s}
+.wxfx.rain{background:linear-gradient(#C9D6E3,#EEF2F6 70%)}.wxfx.snow{background:linear-gradient(#DCE6F2,#F7FAFD 70%)}
+.wxfx.cold{background:linear-gradient(#DDE7F1,#F8FAFC 70%)}.wxfx.cool{background:linear-gradient(#F6E7D2,#FFFBF3 70%)}
+.wxfx.mild{background:linear-gradient(#D7ECFA,#FFFDF6 70%)}.wxfx.hot{background:linear-gradient(#FFE1B0,#FFF8EA 70%)}
+.wxfx .drop{position:absolute;top:-20px;width:2px;height:16px;border-radius:2px;background:#7FA3C6;opacity:.7;animation:drop linear infinite}
+@keyframes drop{to{transform:translate(-14px,520px)}}
+.wxfx .flake{position:absolute;top:-12px;width:8px;height:8px;border-radius:50%;background:#FFFFFF;box-shadow:0 0 4px #B9CDE3;animation:flake linear infinite}
+@keyframes flake{to{transform:translate(20px,520px)}}
+.wxfx .leaf{position:absolute;top:-24px;font-size:18px;animation:leaf linear infinite}
+@keyframes leaf{50%{transform:translate(24px,240px) rotate(160deg)}to{transform:translate(-10px,520px) rotate(320deg)}}
+.wxfx .sun{position:absolute;right:14px;top:12px;width:54px;height:54px;border-radius:50%;background:radial-gradient(#FFE07A,#FFC23A);box-shadow:0 0 0 8px rgba(255,214,90,.35),0 0 0 16px rgba(255,214,90,.18);animation:sun 4s ease-in-out infinite}
+.wxfx.hot .sun{width:68px;height:68px}
+@keyframes sun{50%{box-shadow:0 0 0 12px rgba(255,214,90,.3),0 0 0 22px rgba(255,214,90,.12)}}
+.wxfx .cloud{position:absolute;width:70px;height:24px;border-radius:20px;background:#FFFFFF;opacity:.9;animation:cloud 18s linear infinite}
+.wxfx .cloud::before,.wxfx .cloud::after{content:"";position:absolute;background:#FFFFFF;border-radius:50%}
+.wxfx .cloud::before{width:30px;height:30px;left:10px;top:-14px}.wxfx .cloud::after{width:38px;height:38px;left:28px;top:-20px}
+.wxfx.rain .cloud,.wxfx.snow .cloud{background:#AEBBC9}.wxfx.rain .cloud::before,.wxfx.rain .cloud::after,.wxfx.snow .cloud::before,.wxfx.snow .cloud::after{background:#AEBBC9}
+@keyframes cloud{from{transform:translateX(-90px)}to{transform:translateX(480px)}}
+.wxbar{display:flex;gap:6px;align-items:center;justify-content:center;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}
+.wxbar select,.wxbar button{font:inherit;font-size:13px;border:1.5px solid var(--line);background:#FFFFFF;border-radius:999px;padding:4px 10px;color:#2A2620}
+@media (prefers-reduced-motion:reduce){.wxfx *{animation:none!important}}
 .hero .spimg{max-width:230px;margin-bottom:8px}
 .hero b{font-family:var(--title);font-weight:400;font-size:24px;color:var(--accent);display:block;line-height:1.25}
 .hero span{font-size:13px;color:var(--ink-soft);display:block}
@@ -225,7 +255,11 @@ details ul{padding-left:16px}
 .sline .who{font-size:13px;color:var(--ink-soft);margin:0}
 .sline h3{font-family:var(--title);font-weight:400;font-size:26px;line-height:1.4;margin:0;word-break:keep-all}
 .sline h3 em{font-style:normal;color:var(--red)}
-.bkid{width:120px;height:120px;margin:0 auto}
+.bkid{width:150px;height:150px;margin:0 auto;overflow:visible}
+.bkid .bob{transform-origin:70px 140px;animation:bob 2.6s ease-in-out infinite}
+.bkid .tear{animation:tear 2.2s ease-in infinite}
+@keyframes bob{50%{transform:translateY(-3px) rotate(-1.5deg)}}
+@keyframes tear{0%{transform:translateY(-4px);opacity:0}30%{opacity:1}100%{transform:translateY(10px);opacity:0}}
 .receipt{background:#FFFDF6;color:#2A2620;padding:18px 18px 22px;font-size:15px;border:1px solid #E3DAC4;margin:6px 0 14px;-webkit-mask:radial-gradient(7px at 50% 100%,#0000 98%,#000) 50% 100%/14px 100% repeat-x;mask:radial-gradient(7px at 50% 100%,#0000 98%,#000) 50% 100%/14px 100% repeat-x}
 .receipt h4{font-family:var(--title);font-weight:400;font-size:21px;text-align:center;margin:0}
 .receipt .rd{text-align:center;font-size:12px;color:#6B6255;margin:0 0 8px;padding-bottom:8px;border-bottom:2px dashed #D9CFBA}
@@ -241,6 +275,8 @@ details ul{padding-left:16px}
 .vbar{margin:6px 0;font-size:14px}
 .vbar i{display:block;height:8px;border-radius:4px;background:var(--accent);margin-top:3px}
 .vbar.mine{font-weight:700}
+.whisper{background:#2A2620;color:#FFF8E7;border-radius:14px;padding:14px 16px;font-size:16px;line-height:1.55;margin:0 0 14px}
+.whisper small{display:block;color:#E8A06B;font-size:12px;margin-bottom:4px}
 .teaser{width:100%;text-align:left;border:2px solid #E07A1F;background:rgba(224,122,31,.08);border-radius:14px;padding:14px;font-size:15px;margin:0 0 14px}
 .teaser b{display:block;font-family:var(--title);font-weight:400;font-size:19px}
 @media (prefers-reduced-motion:reduce){.ld .steam,.bubble,.stamp{animation:none}}
@@ -276,7 +312,7 @@ details ul{padding-left:16px}
     <div class="askov" id="askOv"><div class="askcard glass" id="askCard">
       <p class="who">조리사님이 묻습니다</p>
       <h3>잠깐, 너…<br><em>청소년방과후아카데미</em><br>학생이니?</h3>
-      <div class="row"><button class="btn sub" id="yes" style="color:#2A2620;border-color:#2A2620">네</button><button class="btn" id="no">아니오</button></div>
+      <div class="row"><button class="btn sub" id="yes" style="color:#2A2620;border-color:#2A2620">네</button><button class="btn" id="no">아니요</button></div>
     </div></div>
   </div>
 
@@ -303,9 +339,11 @@ details ul{padding-left:16px}
       <h2 id="mTitle"></h2><p class="date" id="mDate"></p>
       <p class="sec" id="mDishesH" hidden></p>
       <div id="mDishes"></div>
-      <div class="hero" id="mHero"><p class="bonus" id="heroTag" hidden>＋ 덤으로 하나 더</p><img class="spimg" id="wxImg" alt="" onerror="this.style.display='none'"><span id="wxWhy"></span><b id="wxName"></b><span id="wxSub">오늘 급식실 특식</span><button class="nextbtn" id="wxNext">🔄 다른 메뉴 볼래요</button></div>
+      <div class="hero" id="mHero"><div class="wxfx" id="wxFx" aria-hidden="true"></div><div class="wxbar" id="wxBar" hidden><span id="wxLabel">날씨</span><select id="wxRegion" aria-label="지역"></select><button type="button" id="wxGeo">📍 내 위치</button></div><p class="bonus" id="heroTag" hidden>＋ 덤으로 하나 더</p><img class="spimg" id="wxImg" alt="" onerror="this.style.display='none'"><span id="wxWhy"></span><b id="wxName"></b><span id="wxSub">오늘 급식실 특식</span><button class="nextbtn" id="wxNext">🔄 다른 메뉴 볼래요</button></div>
       <details id="mNutri"><summary>칼로리·영양 정보</summary><ul id="mNutriList"></ul></details>
       <button class="btn" id="enter" style="width:100%">이 식판 들고 급식실 가기</button>
+      <div class="row" style="margin-top:8px"><button class="btn sub" id="doorSave">메뉴만 저장하기</button><button class="btn sub" id="doorBye">여기까지 볼게요</button></div>
+      <p class="fact" id="doorMsg" style="text-align:center;margin:8px 0 0" hidden>저장했어요. 급식실은 언제든 구경 오세요 🙂</p>
     </div>
   </div></div>
 
@@ -320,7 +358,7 @@ details ul{padding-left:16px}
       <li><b>📋 식단표</b>아래 버튼. 학교를 골랐다면 그 학교의 다음 급식들이 보여요.</li>
       <li><b>🍽 한 그릇 더</b>다 먹고 다시 줄 설 수 있어요.</li>
       <li><b>🗑 퇴식구</b>식판 반납하면 끝. 다음 달 특식 투표가 기다려요.</li>
-      <li><b>🎒 주황 가방</b>줄 앞에 선 주황 가방 친구, 표정이 안 좋아요. 옆에 앉아서 밥 먹고 물어봐 주세요.</li>
+      <li><b>🎒 주황 가방</b>조리사님이 주황 가방 친구에게 뭔가 속닥여요. 궁금하면 옆에 앉아 봐도 되고, 혼자 먹어도 돼요.</li>
     </ul>
     <button class="btn" id="closeHelp" style="width:100%">알겠어요, 밥 먹으러!</button>
   </div></div>
@@ -342,11 +380,23 @@ details ul{padding-left:16px}
   <div class="overlay" id="storyOv"><div class="card" id="storyCard"></div></div>
 
   <div class="overlay" id="exit"><div class="card" id="exitCard">
-    <div class="kidq" id="stamp"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="66" r="40" fill="#F6D7B8"/><path d="M19 62 C17 24 103 24 101 62 C93 46 80 40 60 40 C40 40 27 46 19 62Z" fill="#2B2522"/><path d="M41 66 q6 -7 12 0" stroke="#2A2620" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M67 66 q6 -7 12 0" stroke="#2A2620" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="38" cy="79" r="6" fill="#F2A7A0"/><circle cx="82" cy="79" r="6" fill="#F2A7A0"/><path d="M50 84 q10 13 20 0 z" fill="#C2453A"/><g transform="rotate(22 98 80)"><rect x="95" y="74" width="6" height="36" rx="3" fill="#9AA3A8"/><ellipse cx="98" cy="70" rx="8" ry="10" fill="#B9C0C4"/></g></svg><p>잘 먹었나요?</p></div>
+    <div class="kidq" id="stamp"><div class="hearts" aria-hidden="true"><i>♥</i><i>♥</i><i>♥</i><i>★</i><i>♥</i></div><svg viewBox="0 0 160 150" aria-hidden="true"><g class="hop">
+  <path d="M46 150 C46 110 62 100 80 100 C98 100 114 110 114 150Z" fill="#8FC4E8"/>
+  <rect x="38" y="112" width="84" height="32" rx="8" fill="#E9ECEE"/><rect x="44" y="117" width="22" height="22" rx="5" fill="#FFFFFF"/><rect x="69" y="117" width="22" height="22" rx="5" fill="#FFFFFF"/><rect x="94" y="117" width="22" height="22" rx="5" fill="#FFFFFF"/>
+  <circle cx="35" cy="68" r="8" fill="#F2C7A3"/><circle cx="125" cy="68" r="8" fill="#F2C7A3"/>
+  <circle cx="80" cy="64" r="45" fill="#F7D6B6"/>
+  <path d="M35 62 C33 18 127 18 125 62 C118 44 106 39 96 43 C89 32 71 31 64 42 C54 38 41 45 35 62Z" fill="#2B2522"/>
+  <path d="M58 70 q7 -9 14 0" stroke="#2A2620" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M88 70 q7 -9 14 0" stroke="#2A2620" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+  <ellipse cx="50" cy="84" rx="9" ry="6" fill="#F4A3A0"/><ellipse cx="110" cy="84" rx="9" ry="6" fill="#F4A3A0"/>
+  <path d="M66 86 q14 18 28 0 z" fill="#C2453A"/><path d="M73 93 q7 5 14 0 q-7 -4 -14 0z" fill="#F28C8C"/>
+  <g transform="rotate(24 132 92)"><rect x="128" y="88" width="7" height="42" rx="3.5" fill="#B9C0C4"/><ellipse cx="131.5" cy="84" rx="10" ry="12" fill="#D7DCDF"/><ellipse cx="131.5" cy="80" rx="8" ry="6" fill="#FFFFFF"/></g>
+  </g></svg><p>잘 먹었나요?</p></div>
     <p class="result" id="result"></p>
     <div class="vote" id="vote"></div>
-    <button class="teaser" id="teaser"><b>아까 그 주황 가방 친구,</b>무슨 일이었는지 볼래요?</button>
-    <div id="exitCampaign">
+    <div class="row"><button class="btn" id="saveMenu">오늘 메뉴 저장</button><button class="btn sub" id="shareBtn">공유하기</button></div>
+    <button class="teaser" id="teaser"><b>조리사님이 뭐라고 속닥였는지 보기</b>주황 가방 친구에게 무슨 말을 했을까요?</button>
+    <div id="exitCampaign" hidden>
+    <div class="whisper"><small>조리사님이 속닥인 말</small>“내년부터는 방과후아카데미 청소년은 소득 수준에 따라 급식비를 내야 한대. 부모님께 전달해 줘.”</div>
     <p class="fact" id="visitors" style="text-align:center;display:none"></p>
     <p class="big" style="text-align:center">2,000원보다 무거운 건,<br>밥 먹기 전에 듣는<br>“너희 집 형편은?”이라는 질문이에요.</p><p class="math" style="text-align:center">주 5일이면 한 달 약 4만 원, 형제 둘이면 8만 원.</p>
     <div class="note">저는 방과후아카데미에서 아이들과 함께 활동하는 청소년지도사입니다.<br>내년부터 몇몇 아이들은 이 밥값으로 2,000원을 내야 합니다.<br>같은 식탁에서 같은 밥을 먹는데, 집 형편을 물어보고 계산서를 줍니다.<br>말로 설명하기가 너무 억울해서, 직접 급식실을 만들었습니다.<div class="sig">한 청소년지도사가</div></div>
@@ -354,8 +404,7 @@ details ul{padding-left:16px}
     <a class="petition" href="https://petitions.assembly.go.kr/proceed/onGoingAll/5CB51C03131E1ED4E064ECE7A7064E8B" target="_blank" rel="noopener">이 밥값이 바뀌길 바라신다면, 청원에 동의하기</a>
     <p class="fact" style="text-align:center;margin:0 0 10px">국회 국민동의청원은 30일 안에 5만 명이 모이면 국회 위원회로 넘어갑니다.</p>
     </div>
-    <div class="row"><button class="btn sub" id="shareBtn">오늘의 급식 공유하기</button></div>
-    <div class="toast" id="toast" role="status"></div>
+        <div class="toast" id="toast" role="status"></div>
     <div class="row"><button class="btn sub" id="again">다시 급식실로</button><button class="btn" id="goHome">처음으로</button></div>
     <details><summary>근거 자료</summary><ul>
       <li>성평등가족부 청소년활동진흥과-2361(2026. 8. 24.) 2027년 예산안 가내시 지침</li>
@@ -374,7 +423,7 @@ const rand=n=>Math.floor(Math.random()*n);
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 
 /* ───────── 이름 (번호 조합) ───────── */
-const ADJ=['두 그릇 먹는','더 주세요 장인','줄 서는','잔반 없는','초코우유 찾는','4교시부터 배고픈','특식 기다리는','국물까지 마시는','조용히 먹는','배식대 앞 설레는','반찬 아껴 먹는','식단표 외우는','후식 먼저 먹는','한입 크게 먹는','오늘도 1등인','천천히 씹는','콧노래 부르는','우유 챙기는','밥알 하나 안 남기는','숟가락 반짝이는'];
+const ADJ=['두 그릇 먹는','더 주세요 장인','줄 서는','잔반 없는','초코우유 찾는','4교시부터 배고픈','특식 기다리는','국물까지 마시는','조용히 먹는','배식대 앞 설레는','반찬 아껴 먹는','식단표 외우는','후식 먼저 먹는','한 입 크게 먹는','오늘도 1등인','천천히 씹는','콧노래 부르는','우유 챙기는','밥알 하나 안 남기는','숟가락 반짝이는'];
 const NOUN=['깍두기','국자','돈가스','숟가락','계란말이','수저통','탕수육','식판','미역국','순두부','닭강정','우유팩','떡볶이','잡채','감자조림','요구르트','짜장밥','카레','멸치볶음','젓가락'];
 let nameIdx=[rand(ADJ.length),rand(NOUN.length)];
 const showName=()=>{$('#myname').textContent=ADJ[nameIdx[0]]+' '+NOUN[nameIdx[1]];};
@@ -400,11 +449,11 @@ const W=[
  [D('새우필라프',C.yellow,'rice'),D('크림수프',C.cream,'soup'),D('함박스테이크',C.dark,'side'),D('과일샐러드',C.pink,'side'),D('피클',C.green,'cube'),D('장어덮밥',C.dark,'sp',1)],
  [D('태국식 소고기덮밥',C.brown,'rice'),D('똠얌꿍',C.red,'soup'),D('짜조',C.yellow,'roll'),D('파인애플',C.yellow,'cube'),D('깍두기',C.kimchi,'cube'),D('팟타이',C.noodle,'sp')],
  [D('페퍼로니 피자',C.red,'side'),D('콘수프',C.yellow,'soup'),D('치킨윙',C.orange,'side'),D('감자튀김',C.yellow,'side'),D('피클',C.green,'cube'),D('딸기 탕후루',0xE2475A,'sp')],
- [D('쌀밥',C.rice,'rice'),D('사골곰탕',C.cream,'soup'),D('잡채',C.brown,'noodle'),D('동그랑땡',C.yellow,'side'),D('깍두기',C.kimchi,'cube'),D('순대국밥',C.soup,'sp')],
+ [D('쌀밥',C.rice,'rice'),D('사골곰탕',C.cream,'soup'),D('잡채',C.brown,'noodle'),D('동그랑땡',C.yellow,'side'),D('깍두기',C.kimchi,'cube'),D('순댓국밥',C.soup,'sp')],
  [D('잡곡밥',C.brown,'rice'),D('감자탕',C.red,'soup'),D('계란말이',C.yellow,'roll'),D('멸치볶음',C.brown,'side'),D('배추김치',C.kimchi,'kimchi'),D('치즈 닭갈비',C.red,'sp')],
  [D('전복죽',C.cream,'rice'),D('맑은국',C.soup,'soup'),D('소불고기',C.dark,'side'),D('잡채',C.brown,'noodle'),D('깍두기',C.kimchi,'cube'),D('대왕 전복 삼계탕',C.cream,'sp',1)],
  [D('오므라이스',C.yellow,'rice'),D('미역국',C.green,'soup'),D('돈가스',C.orange,'side'),D('양배추샐러드',C.green,'side'),D('배추김치',C.kimchi,'kimchi'),D('응원 찹쌀떡 + 부대찌개',C.red,'sp')],
- [D('볶음밥',C.yellow,'rice'),D('짬뽕국',C.red,'soup'),D('깐풍기',C.orange,'side'),D('짜사이',C.green,'side'),D('단무지',C.yellow,'cube'),D('양념 반 후라이드 반',C.orange,'sp')]
+ [D('볶음밥',C.yellow,'rice'),D('짬뽕국',C.red,'soup'),D('깐풍기',C.orange,'side'),D('짜사이',C.green,'side'),D('단무지',C.yellow,'cube'),D('양념 반 프라이드 반',C.orange,'sp')]
 ];
 /* 오늘의 특식 = 직장인 점심 추천 메뉴 (월~금 4주 순환) */
 const SPECIALS=[
@@ -808,7 +857,7 @@ let state='door',myTray=null,mySeat=null,paidCount=0,milk=null,bites=0,ate=false
 function setAct(html){if(state==='door'&&html)return;act.innerHTML=html;act.classList.toggle('on',!!html);updNav();}
 function updNav(){
   $('#navMore').disabled=!(state==='seated'||(state==='idle'&&ate));
-  let lock=false;try{lock=!storySeen&&!!orangeKid();}catch(e){}
+  let lock=false;
   $('#navExit').disabled=lock||!(state==='seated'||state==='carrying'||(state==='idle'&&ate));
   if(lock)$('#navMore').disabled=true;
 }
@@ -831,7 +880,7 @@ function idleAct(){setAct(`<p class="say">배식대에 줄을 서 볼까?<small>
 async function walkCounter(){
   if(mySeat){standUp(me,mySeat);mySeat.taken=null;mySeat=null;if(me.userData.carry){setCarry(me,null);}if(me.userData.tableTray){scene.remove(me.userData.tableTray);me.userData.tableTray=null;}}
   state='walking';setAct('<p class="say" style="margin:0">배식대로 가는 중…</p>');
-  await walkPath(me,routeTo(me.position,{x:-4.4,z:-6.9}),8);state='idle';counterAsked=false;checkCounter();}
+  await walkPath(me,routeTo(me.position,{x:-4.4,z:-6.9}),4.2);state='idle';counterAsked=false;checkCounter();}
 let counterAsked=false;
 function checkCounter(){
   if(state!=='idle'||movers.has(me))return;const near=me.position.z<-6.3;
@@ -849,40 +898,44 @@ async function goQueue(){
     bkLbl=qInst==='bangka'?addLabel(bk,'주황 가방','tag-bk',0,1.62):null;}
   meQueue=true;state='walking';setAct('<p class="say" style="margin:0">배식대로 가는 중…</p>');
   myTray=makeTray();setCarry(me,myTray);
-  await walkPath(me,routeTo(me.position,{x:-5.2,z:-6.6}),8);
-  await walkPath(me,[[-5.2,-7.7]],6);
+  await walkPath(me,routeTo(me.position,{x:-5.2,z:-6.6}),4.2);
+  await walkPath(me,[[-5.2,-7.7]],3.2);
   state='serving';
   setAct(`<p class="say">${first?'앞 친구 다음이 내 차례!':'다시 줄 섰다'}<small>오늘 메뉴 ${DISHES.length}가지</small></p><div class="row"><button class="btn" id="takeAll">식판 받기</button></div>`);
   $('#takeAll').onclick=()=>first?serveWithBk():serveAll(0);
 }
 async function serveAll(from){setAct('<p class="say" style="margin:0">배식 받는 중…</p>');
-  trayKcal=0;for(let i=from;i<DISHES.length;i++){await walkPath(me,[[BIN_X[i],-7.75]],4);putMine(i);if(i===DISHES.length-1)say(cookOf(i),'특식은 듬뿍~',1300);await wait(450);}
+  trayKcal=0;for(let i=from;i<DISHES.length;i++){await walkPath(me,[[BIN_X[i],-7.75]],2.8);putMine(i);if(i===DISHES.length-1)say(cookOf(i),'특식은 듬뿍~',1300);await wait(700);}
   say(cookOf(5),'맛있게 먹어~',1600);afterServe();}
 function afterServe(){meQueue=false;setAct(`${SP.img?`<img class="actimg" src="${SP.img}" alt="${SP.n}" onerror="this.remove()">`:''}<p class="say">내 식판 약 <b>${trayKcal.toLocaleString('ko-KR')}kcal</b><small>${MEAL_CAL?'학교 공식 '+MEAL_CAL+' + 보너스 특식':'특식 '+SP.n+' 포함'} · 우유도 챙길까?</small></p><div class="row"><button class="btn" id="milkBtn">우유 챙기기</button></div>`);$('#milkBtn').onclick=getMilk;}
 async function serveWithBk(){bkFocus=true;setAct('<p class="say" style="margin:0">배식 받는 중…</p>');
-  for(let i=0;i<6;i++){if(i===0)trayKcal=0;const ps=[walkPath(bk,[[BIN_X[i],-7.75]],4)];if(i>0)ps.push(walkPath(me,[[BIN_X[i-1],-7.75]],4));await Promise.all(ps);
-    if(i<5)trayPut(bkTray,i,DISHES[i]);if(i>0)putMine(i-1);await wait(450);}
+  for(let i=0;i<6;i++){if(i===0)trayKcal=0;const ps=[walkPath(bk,[[BIN_X[i],-7.75]],2.8)];if(i>0)ps.push(walkPath(me,[[BIN_X[i-1],-7.75]],2.8));await Promise.all(ps);
+    if(i<5)trayPut(bkTray,i,DISHES[i]);if(i>0)putMine(i-1);await wait(700);}
   const ck=cookOf(5);
   if(qInst!=='bangka'){say(bk,['와, 맛있겠다!','특식이다!','많이 주세요~'][rand(3)],1500);await wait(900);say(ck,'그래, 맛있게 먹어~',1600);trayPut(bkTray,5,DISHES[5]);clink();await wait(900);
-    bkDone=true;bkFocus=false;bkSit();await walkPath(me,[[BIN_X[5],-7.75]],4);putMine(5);say(ck,'너도 맛있게 먹어~',1600);afterServe();return;}
-  say(ck,'잠깐!',1200);await wait(1100);
-  say(ck,'너는 어디서 왔니?',1500);await wait(1500);
-  say(bk,'방과후아카데미요.',1500);await wait(1600);
-  say(ck,'내년부터는 방과후아카데미 청소년은 소득 수준에 따라 급식비를 내야한대.',3200);thud();await wait(2600);won(bk);say(ck,'부모님께 전달해 줘.',2200);await wait(1600);
-  await wait(1300);say(bk,'…',1800);
+    bkDone=true;bkFocus=false;bkSit();await walkPath(me,[[BIN_X[5],-7.75]],2.8);putMine(5);say(ck,'너도 맛있게 먹어~',1600);afterServe();return;}
+  say(ck,'잠깐,',1300);await wait(1300);
+  say(ck,'너 방과후아카데미 학생이니?',2000);await wait(2100);
+  say(bk,'네.',1500);await wait(1700);
+  say(ck,'(속닥속닥…)',3000);await wait(3200);
+  say(bk,'…',2200);await wait(1600);
   bkAct();}
 async function bkAct(){bkDone=true;bkFocus=false;trayPut(bkTray,5,DISHES[5]);
   setAct('<p class="say" style="margin:0">…뭐지? 저 친구 표정이 안 좋은데.</p>');say(me,'…뭐지?',1800);bkSit();
-  await walkPath(me,[[BIN_X[5],-7.75]],4);putMine(5);say(cookOf(5),'너도 맛있게 먹어~',1600);meQueue=false;
+  await walkPath(me,[[BIN_X[5],-7.75]],2.8);putMine(5);say(cookOf(5),'너도 맛있게 먹어~',1600);meQueue=false;
   for(let t=0;t<40&&!(bk.userData.sitting&&SEATS.find(x=>x.taken===bk));t++)await wait(200);
-  state='carrying';
-  setAct(`<p class="say">아까 그 친구, 괜찮을까?<small>내 식판 약 ${trayKcal.toLocaleString('ko-KR')}kcal</small></p><div class="row"><button class="btn gold" id="sitBk">친구 옆에 앉기</button></div>`);
-  $('#sitBk').onclick=()=>{if(HOLD&&HOLD.taken==='hold'){HOLD.taken=null;const h=HOLD;HOLD=null;return goSeat(h);}const ns=seatNear(SEATS.find(x=>x.taken===bk));if(ns)goSeat(ns);else carryAct();};}
+  state='carrying';choiceAct();}
+let CHOICE=false;
+function choiceAct(){CHOICE=true;
+  setAct(`<p class="say">조리사님이 뭐라고 속닥이신 걸까?<small>내 식판 약 ${trayKcal.toLocaleString('ko-KR')}kcal${milk?' · '+milk:''}</small></p><div class="row"><button class="btn gold" id="sitBk">주황 가방 친구 옆에 앉기</button></div><div class="row"><button class="btn sub" id="soloEat">혼자 먹기</button>${milk?'':'<button class="btn sub" id="milkBtn">우유 챙기기</button>'}</div>`);
+  $('#soloEat').onclick=()=>{CHOICE=false;if(HOLD&&HOLD.taken==='hold'){HOLD.taken=null;HOLD=null;}nearSeat=undefined;carryAct();};
+  if($('#milkBtn'))$('#milkBtn').onclick=getMilk;
+  $('#sitBk').onclick=()=>{CHOICE=false;if(HOLD&&HOLD.taken==='hold'){HOLD.taken=null;const h=HOLD;HOLD=null;return goSeat(h);}const ns=seatNear(SEATS.find(x=>x.taken===bk));if(ns)goSeat(ns);else carryAct();};}
 function seatNear(st){if(!st)return null;const f=SEATS.filter(t=>!t.taken&&t.tableZ===st.tableZ);
   return f.find(t=>Math.abs(t.z-st.z)<.1&&Math.abs(Math.abs(t.x-st.x)-1.5)<.1)||f.find(t=>Math.abs(t.x-st.x)<.1)||f[0]||null;}
 function besideMe(k,seat){const o=SEATS.find(t=>t.taken===k);return o&&o.tableZ===seat.tableZ&&Math.abs(o.x-seat.x)<1.6&&(Math.abs(o.z-seat.z)<.1||Math.abs(o.x-seat.x)<.1);}
 async function bkSit(){const ok=SEATS.filter(t=>!t.taken&&SEATS.some(n=>n!==t&&!n.taken&&n.tableZ===t.tableZ&&Math.abs(n.z-t.z)<.1&&Math.abs(Math.abs(n.x-t.x)-1.5)<.1));const near=(a,b)=>Math.hypot(a.x-bk.position.x,a.z-bk.position.z)-Math.hypot(b.x-bk.position.x,b.z-bk.position.z);const seat=ok.length?ok.sort(near)[0]:freeSeat();if(!seat)return;seat.taken=bk;
-  HOLD=SEATS.find(n=>n!==seat&&!n.taken&&n.tableZ===seat.tableZ&&Math.abs(n.z-seat.z)<.1&&Math.abs(Math.abs(n.x-seat.x)-1.5)<.1)||null;if(HOLD)HOLD.taken='hold';await walkPath(bk,routeTo(bk.position,{x:seat.x,z:seat.z}),5);sitDown(bk,seat);bk.userData.eating=true;}
+  HOLD=SEATS.find(n=>n!==seat&&!n.taken&&n.tableZ===seat.tableZ&&Math.abs(n.z-seat.z)<.1&&Math.abs(Math.abs(n.x-seat.x)-1.5)<.1)||null;if(HOLD)HOLD.taken='hold';await walkPath(bk,routeTo(bk.position,{x:seat.x,z:seat.z}),2.8);sitDown(bk,seat);bk.userData.eating=true;}
 let HOLD=null;
 const KIND=[['그래, 많이 먹고 쑥쑥 커라~',1],['오늘도 애썼다, 든든히 먹어~',1],['맛있게 먹어 줘서 고마워~',1],['더 필요하면 또 와, 얼마든지!',1],['너는 특별히 두 국자!',2],['잘 먹는 모습이 제일 예쁘다~',1]];
 const SKIP=['그래, 대신 다른 거 많이 먹어~','괜찮아, 먹고 싶은 것만 먹어도 돼~','다음엔 한 입만 먹어 볼까?'];
@@ -901,7 +954,7 @@ function serve(i){
 function ask(i){
   const ck=cookOf(i);say(ck,'잠깐!',1400);setAct('');
   const card=$('#askCard');
-  card.innerHTML=(DISHES[i].img?`<img class="spimg sm" src="${DISHES[i].img}" alt="${DISHES[i].n}" onerror="this.remove()"><p class="who">오늘의 특식 · ${DISHES[i].n}</p>`:'')+`<p class="who">조리사님이 묻습니다</p><h3>잠깐, 너…<br><em>청소년방과후아카데미</em><br>학생이니?</h3><div class="row"><button class="btn sub" id="yes" style="color:#2A2620;border-color:#2A2620">네</button><button class="btn" id="no">아니오</button></div>`;
+  card.innerHTML=(DISHES[i].img?`<img class="spimg sm" src="${DISHES[i].img}" alt="${DISHES[i].n}" onerror="this.remove()"><p class="who">오늘의 특식 · ${DISHES[i].n}</p>`:'')+`<p class="who">조리사님이 묻습니다</p><h3>잠깐, 너…<br><em>청소년방과후아카데미</em><br>학생이니?</h3><div class="row"><button class="btn sub" id="yes" style="color:#2A2620;border-color:#2A2620">네</button><button class="btn" id="no">아니요</button></div>`;
   setTimeout(()=>$('#askOv').classList.add('on'),450);
   const done=()=>{$('#askOv').classList.remove('on');trayPut(myTray,i,DISHES[i]);};
   $('#yes').onclick=()=>{paidCount++;thud();
@@ -918,13 +971,13 @@ async function getMilk(){
   milk=milk||'흰우유';say(me,milk==='딸기우유'?'딸기우유 당첨!!':milk+' 득템',1800);clink();
   box(.05,.08,.05,{'흰우유':0xFFFFFF,'초코우유':0x7A4E30,'바나나우유':0xF6D14C,'딸기우유':0xF2A7A0}[milk],.22,.06,-.12,myTray);
   state='carrying';
-  nearSeat=undefined;carryAct();
+  nearSeat=undefined;if(CHOICE)choiceAct();else carryAct();
 }
 function carryAct(){setAct(`<p class="say">빈자리를 찾아 보자<small>의자 옆에 서면 앉기 버튼이 떠요</small></p><div class="row"><button class="btn sub" id="anySeat">아무 데나 앉기</button></div>`);$('#anySeat').onclick=()=>goSeat(freeSeat());}
 /* 의자 가까이 가면 '앉기' */
 let nearSeat=null;
 function checkSeat(){
-  if(state!=='carrying'||movers.has(me)||$('#sitBk'))return;
+  if(state!=='carrying'||movers.has(me)||CHOICE)return;
   let best=null,bd=1.4;
   for(const st of SEATS){if(st.taken)continue;const d=Math.hypot(st.x-me.position.x,st.z-me.position.z);if(d<bd){bd=d;best=st;}}
   if(best===nearSeat)return;nearSeat=best;
@@ -932,19 +985,19 @@ function checkSeat(){
   else carryAct();
 }
 function orangeKid(){return qInst==='bangka'&&bkDone?bk:(bks.visible?bks:null);}
-async function joinMe(seat){const k=orangeKid();if(!k||storySeen||besideMe(k,seat))return;
+async function joinMe(seat){return;
   const cand=SEATS.filter(t=>!t.taken&&t.tableZ===seat.tableZ&&Math.abs(t.z-seat.z)<.1&&Math.abs(Math.abs(t.x-seat.x)-1.5)<.1)
     .concat(SEATS.filter(t=>!t.taken&&t.tableZ===seat.tableZ&&Math.abs(t.x-seat.x)<.1&&Math.abs(t.z-seat.z)>.5));
   const ns=cand[0];if(!ns)return;const old=SEATS.find(t=>t.taken===k);
   if(old){k.userData.eating=false;standUp(k,old);old.taken=null;}if(k===bks)bksSeat=ns;ns.taken=k;
   await walkPath(k,routeTo(k.position,{x:ns.x,z:ns.z}),2.6);sitDown(k,ns);say(k,'…',1600);}
 function exitAct(){setAct(`<p class="say">잘 먹었다!<small>식판 반납하러 가자</small></p><div class="row"><button class="btn" id="toExit">퇴식구로 가기</button></div>`);$('#toExit').onclick=goExit;}
-function moodBtn(){return (!storySeen&&orangeKid())?'<button class="btn sub" id="askMood">친구 기분 물어보기</button>':'';}
+function moodBtn(){const k=(!storySeen&&mySeat)?orangeKid():null;return (k&&besideMe(k,mySeat))?'<button class="btn sub" id="askMood">친구 기분 물어보기</button>':'';}
 function bindMood(){const b=$('#askMood');if(!b)return;b.onclick=async()=>{setAct('<p class="say" style="margin:0">…</p>');const k=orangeKid();say(me,'너 왜 기분이 안 좋아?',1800);await wait(1700);if(k)say(k,'…그냥. 내년부터 밥 먹을 때 좀 그래.',2200);await wait(1900);openStory(()=>{const k=orangeKid();if(k)say(k,'…들어 줘서 고마워.',2000);ate?exitAct():setAct(`<p class="say">마저 먹자.</p><div class="row"><button class="btn gold" id="eat">냠냠</button></div>`);$('#eat')&&($('#eat').onclick=eat);});};}
 async function goSeat(seat){
   if(!seat||seat.taken)return;
   nearSeat=null;state='walking';seat.taken=me;setAct('');
-  await walkPath(me,routeTo(me.position,{x:seat.x,z:seat.z}),6);
+  await walkPath(me,routeTo(me.position,{x:seat.x,z:seat.z}),3.2);
   mySeat=seat;sitDown(me,seat);state='seated';bites=0;joinMe(seat);
   setAct(`<p class="say">맛있게 먹자!<small>${moodBtn()?'옆 친구는 말없이 숟가락만 들고 있다':(milk?milk+'까지 챙겼다':'냠냠 세 번이면 끝')}</small></p><div class="row"><button class="btn gold" id="eat">냠냠</button></div>`);
   $('#eat').onclick=eat;
@@ -960,10 +1013,10 @@ function eat(){
 async function goExit(){
   if(mySeat){standUp(me,mySeat);mySeat.taken=null;mySeat=null;}
   state='walking';setAct('<p class="say" style="margin:0">퇴식구로 쓩~</p>');
-  await walkPath(me,routeTo(me.position,{x:RX-.9,z:1.6}),11);
+  await walkPath(me,routeTo(me.position,{x:RX-.9,z:1.6}),4.5);
   setCarry(me,null);thud();setAct('');
   $('#result').innerHTML=`${SP.img?`<figure class="dishhero"><img src="${SP.img}" alt="${SP.n}" onerror="this.parentNode.remove()"><figcaption><small>${SRC==='모두의 급식실'?'오늘의 특식':SRC==='오늘의 점심 추천'?'오늘의 추천 메뉴':SRC+' 급식 + 보너스 특식'}</small><b>${SP.n}, 맛있었죠?</b></figcaption></figure>`:''}식판까지 싹싹, 한 그릇 뚝딱!`;
-  $('#teaser').hidden=storySeen;$('#exitCampaign').hidden=!storySeen;
+  $('#teaser').hidden=false;$('#exitCampaign').hidden=true;
   loadOrgs().then(()=>{const b=$('#orgBtn');if(b&&ORG_N)b.textContent=`참여 기관 보기 (${ORG_N}곳)`;});renderVote();showVisitors();$('#exit').classList.add('on');const st=$('#stamp');st.style.animation='none';void st.offsetWidth;st.style.animation='';$('#exitCard').scrollTop=0;state='exit';updNav();
 }
 /* 액션 패널을 캐릭터 옆에 붙이기 */
@@ -1116,6 +1169,19 @@ const WX_SETS={rain:[[13,'비 오는 날엔 칼국수'],[9,'비 오는 날엔 �
   cold:[[6,'쌀쌀한 날엔 국밥'],[12,'쌀쌀한 날엔 순댓국'],[0,'쌀쌀한 날엔 김치찌개'],[16,'쌀쌀한 날엔 뚝배기']],cool:[[8,'선선한 날엔 된장찌개'],[1,'선선한 날엔 제육'],[4,'선선한 날엔 돈가스'],[3,'선선한 날엔 생선구이'],[17,'선선한 날엔 갈치구이']],
   mild:[[7,'맑은 날엔 비빔밥'],[2,'맑은 날엔 짜장면'],[14,'맑은 날엔 파스타'],[19,'맑은 날엔 크림 파스타'],[1,'맑은 날엔 제육']],hot:[[18,'더운 날엔 쌀국수'],[7,'더운 날엔 비빔밥'],[14,'더운 날엔 파스타']]};
 let WX_LAST={key:'mild',temp:null};
+const WX_NAME={rain:'🌧 비',snow:'❄️ 눈',cold:'🥶 추움',cool:'🍂 선선',mild:'⛅ 맑음',hot:'☀️ 더움'};
+function renderWx(key){const f=$('#wxFx');f.className='wxfx '+key;let h='';
+  const r=(a,b)=>a+Math.random()*(b-a);
+  if(key==='rain'){h+='<i class="cloud" style="top:18px;animation-delay:-4s"></i><i class="cloud" style="top:44px;animation-delay:-11s;transform:scale(.8)"></i>';for(let i=0;i<42;i++)h+=`<i class="drop" style="left:${r(0,105)}%;animation-duration:${r(.55,.9).toFixed(2)}s;animation-delay:-${r(0,1).toFixed(2)}s"></i>`;}
+  else if(key==='snow'||key==='cold'){h+='<i class="cloud" style="top:20px;animation-delay:-6s"></i>';for(let i=0;i<(key==='snow'?30:10);i++)h+=`<i class="flake" style="left:${r(0,100)}%;animation-duration:${r(4,8).toFixed(1)}s;animation-delay:-${r(0,8).toFixed(1)}s;transform:scale(${r(.5,1.2).toFixed(2)})"></i>`;}
+  else if(key==='cool'){for(let i=0;i<9;i++)h+=`<i class="leaf" style="left:${r(0,95)}%;animation-duration:${r(6,10).toFixed(1)}s;animation-delay:-${r(0,10).toFixed(1)}s">${['🍂','🍁'][i%2]}</i>`;}
+  else{h+='<i class="sun"></i><i class="cloud" style="top:30px;animation-delay:-3s"></i><i class="cloud" style="top:70px;animation-delay:-12s;transform:scale(.7)"></i>';}
+  f.innerHTML=h;$('#wxLabel').textContent=WX_NAME[key]+(WX_LAST.temp!=null?' '+Math.round(WX_LAST.temp)+'°':'');}
+let LUNCH_REGION='부산광역시';try{LUNCH_REGION=localStorage.getItem('gs-region')||LUNCH_REGION;}catch(e){}
+const REGION_SHORT=r=>r.replace(/특별자치시|특별자치도|특별시|광역시/,'').replace(/^(충청|전라|경상)(북|남)도$/,(m,a,b)=>a[0]+b).replace(/도$/,'');
+async function lunchPick(region){LUNCH_REGION=region;try{localStorage.setItem('gs-region',region);}catch(e){}$('#wxRegion').value=region;
+  setSpecial(await weatherPick(region));$('#mTitle').textContent=`오늘 점심, ${SP.n} 어때요?`;renderWx(WX_LAST.key);
+  $('#mDishes').innerHTML=`<p class="msg">급식실에 가면 ${DISHES.slice(0,5).map(d=>d.n).join(', ')}도 같이 나와요.</p>`;drawBoard();}
 function nextSpecial(){const set=WX_SETS[WX_LAST.key];const cur=set.findIndex(x=>SPECIALS[x[0]][0]===SP.n);
   let i,why;if(cur>=0&&set.length>1){[i,why]=set[(cur+1)%set.length];}else{do{i=rand(SPECIALS.length);}while(SPECIALS[i][0]===SP.n);why='이것도 괜찮아요';}
   if(set.length>1&&cur>=0&&(cur+1)%set.length===0){do{i=rand(SPECIALS.length);}while(SPECIALS[i][0]===SP.n);why='이것도 괜찮아요';}
@@ -1131,7 +1197,7 @@ async function weatherPick(region){const [la,lo]=REGION[region]||REGION['부산�
 function renderMealList(list,cal,nutri){
   $('#mDishes').innerHTML=list.map(x=>`<div class="dish"><span>${x.name}</span><small>${(x.allergy||[]).map(a=>ALLERGY[a]).filter(Boolean).join(' ')}</small></div>`).join('');
   $('#mNutri').hidden=!cal;$('#mNutriList').innerHTML=cal?[`<li>${cal}</li>`,...nutri.map(n=>`<li>${n}</li>`)].join(''):'';}
-function heroMode(school,name){const h=$('#mHero'),t=$('#heroTag');t.hidden=!school;h.classList.toggle('bonusmode',school);
+function heroMode(school,name){const h=$('#mHero'),t=$('#heroTag');$('#wxBar').hidden=school;if(school){$('#wxFx').className='wxfx';$('#wxFx').innerHTML='';}t.hidden=!school;h.classList.toggle('bonusmode',school);
   $('#mDishesH').hidden=!school;$('#mDishesH').innerHTML=school?`${name} 실제 급식<small>나이스 교육정보 개방포털</small>`:'';
   $('#wxSub').textContent=school?'학교 급식이 아니라, 이 앱 급식실에서만 나오는 보너스 특식이에요.':'오늘 급식실 특식';
   const parent=h.parentNode;if(school)parent.insertBefore(h,$('#enter'));else parent.insertBefore(h,$('#mDishesH'));}
@@ -1147,8 +1213,14 @@ async function loadMeal(sc){MEAL_CAL='';heroMode(true,sc.name);showPane('dMeal')
   renderMealList(meal.dishes,meal.cal,meal.nutrition);
   SRC=sc.name;MEAL_CAL=(meal.cal||'').replace(/\s*kcal/i,'kcal');applyDishes(schoolDishes(meal.dishes));}
 async function showLunch(){SCHOOL_MEALS=null;MEAL_CAL='';heroMode(false);showPane('dMeal');$('#mTitle').textContent='오늘 점심, 이거 어때요?';$('#mDate').textContent=dateStr+' · 직장인 점심 선호 통계 + 날씨';
-  SRC='오늘의 점심 추천';setSpecial(await weatherPick('부산광역시'));$('#mTitle').textContent=`오늘 점심, ${SP.n} 어때요?`;
-  $('#mDishes').innerHTML=`<p class="msg">급식실에 가면 ${DISHES.slice(0,5).map(d=>d.n).join(', ')}도 같이 나와요.</p>`;$('#mNutri').hidden=true;drawBoard();}
+  SRC='오늘의 점심 추천';$('#mNutri').hidden=true;$('#wxBar').hidden=false;await lunchPick(LUNCH_REGION);}
+$('#wxRegion').innerHTML=Object.keys(REGION).filter(r=>!/^(강원도|전라북도)$/.test(r)).map(r=>`<option value="${r}">${REGION_SHORT(r)}</option>`).join('');
+$('#wxRegion').onchange=e=>lunchPick(e.target.value);
+$('#wxGeo').onclick=()=>{if(!navigator.geolocation){$('#wxGeo').textContent='위치 사용 불가';return;}$('#wxGeo').textContent='찾는 중…';
+  navigator.geolocation.getCurrentPosition(p=>{const {latitude:a,longitude:o}=p.coords;let best='부산광역시',bd=1e9;
+    for(const [k,[la,lo]] of Object.entries(REGION)){const d=(la-a)**2+(lo-o)**2;if(d<bd){bd=d;best=k;}}
+    $('#wxGeo').textContent='📍 내 위치';lunchPick(best==='강원도'?'강원특별자치도':best==='전라북도'?'전북특별자치도':best);},
+    ()=>{$('#wxGeo').textContent='📍 내 위치';},{timeout:8000,maximumAge:600000});};
 
 /* ───────── 주황 가방 친구 ───────── */
 const INST={school:['학교 돌봄',0x3E73D6,'#3E73D6'],center:['지역아동센터',0x2E9A62,'#2E9A62'],dahamke:['다함께돌봄',0x8358C7,'#8358C7'],bangka:['방과후아카데미',0xE07A1F,'#E07A1F']};
@@ -1165,21 +1237,55 @@ const bksLbl=addLabel(bks,'💬 주황 가방','tag-bk tap',0,1.5);bksLbl.el.onc
 hideBks();
 setInterval(()=>{if(bks.visible&&!storySeen&&state!=='exit')say(bks,'…',1400);},9000);
 function hideBks(){bks.visible=false;removeLabel(bksLbl);if(bksSeat){bksSeat.taken=null;if(bks.userData.tableTray){scene.remove(bks.userData.tableTray);bks.userData.tableTray=null;}}}
-const BKSVG='<svg class="bkid" viewBox="0 0 120 120" aria-hidden="true"><rect x="28" y="70" width="64" height="50" rx="14" fill="#E07A1F"/><circle cx="60" cy="52" r="34" fill="#EFC9A4"/><path d="M26 50 C24 18 96 18 94 50 C86 36 76 30 60 30 C44 30 34 36 26 50Z" fill="#4A3426"/><circle cx="48" cy="56" r="3.5" fill="#2A2620"/><circle cx="72" cy="56" r="3.5" fill="#2A2620"/><path d="M50 72 q10 -6 20 0" stroke="#2A2620" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg>';
+function bkFace(m){
+  const brow=m?'<path d="M45 55 Q52 50 60 50" stroke="#4A3426" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M95 55 Q88 50 80 50" stroke="#4A3426" stroke-width="3.5" fill="none" stroke-linecap="round"/>':'';
+  const mouth=m===0?'<path d="M63 90 q7 3 14 0" stroke="#7A3B2E" stroke-width="3.5" fill="none" stroke-linecap="round"/>':'<path d="M62 92 q8 -7 16 0" stroke="#7A3B2E" stroke-width="3.5" fill="none" stroke-linecap="round"/>';
+  const tear=m===2?'<path class="tear" d="M47 76 q-5 9 0 12 q5 -3 0 -12z" fill="#7CC3F0"/>':'';
+  const hy=m?70:66;
+  return `<svg class="bkid" viewBox="0 0 140 140" aria-hidden="true"><g class="bob">
+  <rect x="24" y="86" width="92" height="56" rx="22" fill="#F08A2E"/><rect x="52" y="110" width="36" height="18" rx="7" fill="#FFB067"/>
+  <path d="M40 142 C40 106 55 97 70 97 C85 97 100 106 100 142Z" fill="#A9B4C2"/>
+  <path d="M50 104 L45 142" stroke="#D96E15" stroke-width="8" stroke-linecap="round"/><path d="M90 104 L95 142" stroke="#D96E15" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="29" cy="66" r="8" fill="#F2C7A3"/><circle cx="111" cy="66" r="8" fill="#F2C7A3"/>
+  <circle cx="70" cy="62" r="42" fill="#F7D6B6"/>
+  <path d="M28 62 C24 20 116 20 112 62 C106 46 96 41 86 45 C80 35 62 34 55 45 C45 41 34 47 28 62Z" fill="#4A3426"/>
+  <path d="M66 22 q5 -11 13 -5" stroke="#4A3426" stroke-width="5" fill="none" stroke-linecap="round"/>
+  ${brow}
+  <ellipse cx="54" cy="70" rx="7" ry="8.5" fill="#2A2620"/><ellipse cx="86" cy="70" rx="7" ry="8.5" fill="#2A2620"/>
+  <circle cx="56" cy="${hy}" r="2.6" fill="#FFFFFF"/><circle cx="88" cy="${hy}" r="2.6" fill="#FFFFFF"/>
+  <ellipse cx="42" cy="84" rx="8" ry="5" fill="#F4A3A0" opacity=".85"/><ellipse cx="98" cy="84" rx="8" ry="5" fill="#F4A3A0" opacity=".85"/>
+  ${mouth}${tear}</g></svg>`;}
+const BKSVG=bkFace(1);
 const STORY=[
   {who:'주황 가방 친구',h:'나 <em>청소년방과후아카데미</em> 다녀.<br>학교 끝나면 거기서 돌봄 프로그램 하고,<br>저녁 먹고 집에 가.',btn:'그런데 왜?'},
   {who:'주황 가방 친구',h:'내년부터는 밥 먹기 전에<br><em>부모님 소득 증빙 서류</em>를 내야 한대.<br>기준보다 높으면 한 끼 <em>2,000원</em>이고.',btn:'다른 친구들은?'},
-  {who:'주황 가방 친구',h:'학교 돌봄, 지역아동센터,<br>다함께돌봄 다니는 애들은<br>안 물어본대.<br>같은 밥인데.',btn:'계산서 보기'}];
+  {who:'주황 가방 친구',h:'학교 돌봄, 지역아동센터,<br>다함께돌봄 다니는 애들은<br>안 물어본대.<br>같은 밥인데.',btn:'그랬구나…'}];
 function openStory(back){const card=$('#storyCard');let i=0;
-  const step=()=>{if(i<STORY.length){const s=STORY[i];card.innerHTML=`<div class="sline">${BKSVG}<p class="who">${s.who}</p><h3>${s.h}</h3></div><button class="btn" id="sNext">${s.btn}</button>`;$('#sNext').onclick=()=>{i++;step();};card.scrollTop=0;return;}
-    storySeen=true;card.innerHTML=`${SP.img?`<img class="spimg sm" src="${SP.img}" alt="${SP.n}" onerror="this.remove()">`:''}<p class="big" style="text-align:center">같은 ${SP.n}인데,<br>계산서는 달라요.</p><div class="receipt" role="table" aria-label="기관별 저녁 급식비"><h4>오늘 저녁 계산서</h4><p class="rd">2027년부터 · 같은 메뉴, 같은 급식실</p>
-      <div class="rrow"><span>학교 돌봄</span><b>0원</b></div><div class="rrow"><span>지역아동센터</span><b>0원</b></div><div class="rrow"><span>다함께돌봄</span><b>0원</b></div>
-      <div class="rrow hit"><span>청소년방과후아카데미</span><b>2,000원*</b></div><p class="rnote">* 기준중위소득 150% 초과 가구 학생. 해당 여부 판단을 위해 부모님 소득 증빙 서류를 내야 합니다.</p></div>
-      <button class="btn" id="sBack" style="width:100%">급식실로 돌아가기</button>`;card.scrollTop=0;
-    $('#sBack').onclick=()=>{$('#storyOv').classList.remove('on');back&&back();};};
+  const step=()=>{if(i<STORY.length){const st=STORY[i];card.innerHTML=`<div class="sline">${bkFace(i)}<p class="who">${st.who}</p><h3>${st.h}</h3></div><button class="btn" id="sNext">${st.btn}</button>`;$('#sNext').onclick=()=>{i++;step();};card.scrollTop=0;return;}
+    storySeen=true;$('#storyOv').classList.remove('on');back&&back();};
   $('#storyOv').classList.add('on');step();}
-$('#teaser').onclick=()=>{$('#exit').classList.remove('on');openStory(()=>{$('#exit').classList.add('on');$('#teaser').hidden=true;$('#exitCampaign').hidden=false;});};
+$('#teaser').onclick=()=>{$('#teaser').hidden=true;$('#exitCampaign').hidden=false;setTimeout(()=>$('#exitCampaign').scrollIntoView({behavior:'smooth',block:'start'}),60);};
+/* 오늘 메뉴 저장 (이미지) */
+async function drawMenu(){try{await document.fonts.ready;}catch(e){}
+  const W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+  g.fillStyle='#F6F1E4';g.fillRect(0,0,W,H);g.fillStyle='#FFFDF6';g.beginPath();g.roundRect?g.roundRect(60,60,W-120,H-120,48):g.rect(60,60,W-120,H-120);g.fill();
+  g.textAlign='center';g.fillStyle='#D23A2E';g.font='44px Jua, sans-serif';g.fillText('빡.만.앱',W/2,170);
+  g.fillStyle='#2A2620';g.font='92px Jua, sans-serif';g.fillText('오늘의 급식',W/2,290);
+  g.fillStyle='#8A7F70';g.font='38px "Noto Sans KR", sans-serif';g.fillText(`${today.getMonth()+1}월 ${today.getDate()}일 ${DAYS[today.getDay()]}요일 · ${SRC}`,W/2,360,W-200);
+  const list=DISHES.filter(d=>d.t!=='sp').map(d=>d.n);let y=470;g.font='50px "Noto Sans KR", sans-serif';g.fillStyle='#2A2620';
+  for(const n of list.slice(0,7)){g.fillText(n,W/2,y,W-220);y+=78;}
+  y+=20;g.fillStyle='#E8743B';g.beginPath();g.roundRect?g.roundRect(W/2-300,y-60,600,96,48):g.rect(W/2-300,y-60,600,96);g.fill();
+  g.fillStyle='#FFFFFF';g.font='46px Jua, sans-serif';g.fillText((SRC==='오늘의 점심 추천'?'추천 ':SRC==='모두의 급식실'?'특식 ':'보너스 특식 ')+SP.n,W/2,y+2,560);
+  if(MEAL_CAL){g.fillStyle='#8A7F70';g.font='34px "Noto Sans KR", sans-serif';g.fillText('학교 공식 '+MEAL_CAL,W/2,y+110);}
+  g.fillStyle='#A49A8B';g.font='32px "Noto Sans KR", sans-serif';g.fillText('모두의 급식? · bobjo-geupsik.vercel.app',W/2,H-110);
+  return new Promise(r=>c.toBlob(r,'image/png'));}
+async function saveMenu(){const b=await drawMenu();if(!b)return;const f=new File([b],'오늘의급식.png',{type:'image/png'});
+  try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'오늘의 급식'});return true;}}catch(e){return false;}
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='오늘의급식.png';document.body.appendChild(a);a.click();a.remove();return true;}
+$('#saveMenu').onclick=saveMenu;
 
+$('#doorSave').onclick=async()=>{if(await saveMenu())$('#doorMsg').hidden=false;};
+$('#doorBye').onclick=()=>{$('#doorMsg').textContent='오늘도 맛있게 드세요! 급식실은 언제든 구경 오세요 🙂';$('#doorMsg').hidden=false;};
 $('#enter').onclick=async()=>{logVisit();let seen=null;try{seen=localStorage.getItem('gs-help');localStorage.setItem('gs-help','1');}catch(e){}$('#door').classList.remove('on');state='idle';$('#hintTap').style.opacity=0;goQueue();};
 updNav();
 $('#ring').onclick=()=>{unlockAudio();setSound(true);chime();$('#bellSvg').classList.add('ringing');$('#ring').classList.add('torn');$('#ring').disabled=true;
