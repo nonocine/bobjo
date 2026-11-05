@@ -407,7 +407,7 @@ details ul{padding-left:16px}
       <details id="mNutri"><summary>칼로리·영양 정보</summary><ul id="mNutriList"></ul></details>
       <button class="btn" id="enter" style="width:100%">이 식판 들고 급식실 가기</button>
       <div class="row" style="margin-top:8px"><button class="btn sub" id="doorSave">메뉴만 저장하기</button><button class="btn sub" id="doorBye">여기까지 볼게요</button></div>
-      <button class="linkbtn" id="doorShare" style="display:block;margin:10px auto 0">📣 이 앱 공유하기</button>
+      <button class="linkbtn" id="doorShare" style="display:block;margin:10px auto 0">🍱 같이 먹을 급식 친구 부르기</button>
       <p class="fact" id="doorMsg" style="text-align:center;margin:8px 0 0" hidden>저장했어요. 급식실은 언제든 구경 오세요 🙂</p>
     </div>
   </div></div>
@@ -474,8 +474,8 @@ details ul{padding-left:16px}
     <p class="fact" style="text-align:center;margin:0 0 10px">국회 국민동의청원은 30일 안에 5만 명이 모이면 국회 위원회로 넘어갑니다.</p>
     </div>
     <div class="vote" id="vote"></div>
-    <div class="row"><button class="btn sub" id="saveMenu">오늘 메뉴 저장</button><button class="btn sub" id="shareBtn">급식 카드 공유</button></div>
-    <button class="appshare" id="appShare"><b>📣 이 앱 공유하기</b><span>친구·학부모·선생님에게 급식실 링크 보내기</span></button>
+    <div class="row"><button class="btn sub" id="saveMenu">오늘 메뉴 저장</button><button class="btn sub" id="shareBtn">내 식판 자랑하기</button></div>
+    <button class="appshare" id="appShare"><b>🍱 급식 친구 부르기</b><span>같이 급식 먹고 싶은 친구에게 보내기</span></button>
     <div class="toast" id="toast" role="status"></div>
     <div class="row"><button class="btn sub" id="again">다시 급식실로</button><button class="btn" id="goHome">처음으로</button></div>
     <details><summary>근거 자료</summary><ul>
@@ -1188,12 +1188,12 @@ async function castVote(menu){const el=$('#vote');el.querySelectorAll('button').
 
 /* 공유 카드 */
 $('#shareBtn').onclick=async()=>{track('share_card');
-  const url=location.href.split('#')[0];const text=`오늘의 급식: ${SRC==='모두의 급식실'||SRC==='오늘의 점심 추천'?'':SRC+' 급식 + 보너스 '}특식 ${SP.n}. 우리 학교 급식도 찾아봐! #빡만앱`;
+  const url='https://bap.youthforten.kr/';const text=`나 오늘 급식실에서 ${SP.n} 먹었어 😋 너도 와서 같이 먹자! 우리 학교 급식도 찾아볼 수 있어 #모두의급식 #빡만앱`;
   try{const blob=await drawCard();const file=blob?new File([blob],'모두의급식.png',{type:'image/png'}):null;
     if(file&&navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'모두의 급식?',text:text+' '+url});return;}
     if(navigator.share){await navigator.share({title:'모두의 급식?',text,url});return;}
     if(blob){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='모두의급식.png';a.click();}
-    await navigator.clipboard.writeText(text+' '+url);$('#toast').textContent='카드를 저장하고 링크를 복사했어요.';
+    await navigator.clipboard.writeText(text+' '+url);$('#toast').textContent='카드를 저장하고 링크를 복사했어요. 급식 친구에게 보내 주세요 🍱';
   }catch(e){if(e&&e.name==='AbortError')return;$('#toast').textContent='주소창의 링크를 복사해 공유해 주세요.';}
 };
 async function drawCard(){try{await document.fonts.ready;}catch(e){}
@@ -1390,9 +1390,9 @@ async function saveMenu(){track('save_menu');const b=await drawMenu();if(!b)retu
   try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'오늘의 급식'});return true;}}catch(e){return false;}
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='오늘의급식.png';document.body.appendChild(a);a.click();a.remove();return true;}
 $('#saveMenu').onclick=saveMenu;
-async function shareApp(){track('share_app');const url='https://bap.youthforten.kr/';const text='우리 학교 급식 찾고, 급식실에서 밥 한 끼 먹고 가요. 모두의 급식? #빡만앱';
+async function shareApp(){track('share_app');const url='https://bap.youthforten.kr/';const text='급식 같이 먹을래? 🍱 우리 학교 급식도 찾아보고, 급식실에서 한 끼 먹고 가자! #모두의급식 #빡만앱';
   try{if(navigator.share){await navigator.share({title:'모두의 급식?',text,url});return;}}catch(e){if(e&&e.name==='AbortError')return;}
-  try{await navigator.clipboard.writeText(text+' '+url);$('#toast').textContent='링크를 복사했어요. 원하는 곳에 붙여 넣어 주세요.';}catch(e){$('#toast').textContent=url;}}
+  try{await navigator.clipboard.writeText(text+' '+url);$('#toast').textContent='링크를 복사했어요. 급식 친구에게 붙여 넣어 주세요 🍱';}catch(e){$('#toast').textContent=url;}}
 $('#appShare').onclick=shareApp;
 
 $('#doorShare').onclick=async()=>{await shareApp();const t=$('#toast').textContent;if(t){$('#doorMsg').textContent=t;$('#doorMsg').hidden=false;$('#toast').textContent='';}};
