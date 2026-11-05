@@ -8,12 +8,12 @@
 <meta property="og:title" content="모두의 급식?">
 <meta property="og:description" content="빡.만.앱 (청소년지도사가 빡쳐서 만든 앱)">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://bobjo-geupsik.vercel.app/">
-<meta property="og:image" content="https://bobjo-geupsik.vercel.app/og.png">
+<meta property="og:url" content="https://bap.youthforten.kr/">
+<meta property="og:image" content="https://bap.youthforten.kr/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://bobjo-geupsik.vercel.app/og.png">
+<meta name="twitter:image" content="https://bap.youthforten.kr/og.png">
 <meta name="theme-color" content="#E8743B">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
@@ -1383,13 +1383,13 @@ async function drawMenu(){try{await document.fonts.ready;}catch(e){}
   y+=20;g.fillStyle='#E8743B';g.beginPath();g.roundRect?g.roundRect(W/2-300,y-60,600,96,48):g.rect(W/2-300,y-60,600,96);g.fill();
   g.fillStyle='#FFFFFF';g.font='46px Jua, sans-serif';g.fillText((SRC==='오늘의 점심 추천'?'추천 ':SRC==='모두의 급식실'?'특식 ':'보너스 특식 ')+SP.n,W/2,y+2,560);
   if(MEAL_CAL){g.fillStyle='#8A7F70';g.font='34px "Noto Sans KR", sans-serif';g.fillText('학교 공식 '+MEAL_CAL,W/2,y+110);}
-  g.fillStyle='#A49A8B';g.font='32px "Noto Sans KR", sans-serif';g.fillText('모두의 급식? · bobjo-geupsik.vercel.app',W/2,H-110);
+  g.fillStyle='#A49A8B';g.font='32px "Noto Sans KR", sans-serif';g.fillText('모두의 급식? · bap.youthforten.kr',W/2,H-110);
   return new Promise(r=>c.toBlob(r,'image/png'));}
 async function saveMenu(){const b=await drawMenu();if(!b)return;const f=new File([b],'오늘의급식.png',{type:'image/png'});
   try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'오늘의 급식'});return true;}}catch(e){return false;}
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='오늘의급식.png';document.body.appendChild(a);a.click();a.remove();return true;}
 $('#saveMenu').onclick=saveMenu;
-async function shareApp(){const url='https://bobjo-geupsik.vercel.app/';const text='우리 학교 급식 찾고, 급식실에서 밥 한 끼 먹고 가요. 모두의 급식? #빡만앱';
+async function shareApp(){const url='https://bap.youthforten.kr/';const text='우리 학교 급식 찾고, 급식실에서 밥 한 끼 먹고 가요. 모두의 급식? #빡만앱';
   try{if(navigator.share){await navigator.share({title:'모두의 급식?',text,url});return;}}catch(e){if(e&&e.name==='AbortError')return;}
   try{await navigator.clipboard.writeText(text+' '+url);$('#toast').textContent='링크를 복사했어요. 원하는 곳에 붙여 넣어 주세요.';}catch(e){$('#toast').textContent=url;}}
 $('#appShare').onclick=shareApp;
