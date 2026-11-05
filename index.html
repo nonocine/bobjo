@@ -111,6 +111,10 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-off
 .stamps span small{display:block;font-size:10.5px;font-weight:400;color:#B8655E}
 .recline{text-align:center;font-size:14px;color:var(--ink-soft);margin:8px 0 0}
 .recline{display:block}.recline em{font-style:normal;font-weight:700;color:var(--accent)}
+.ofl{display:block;font-size:13px;font-weight:700;margin:10px 0 0}
+.ofl input{display:block;width:100%;margin-top:4px;border:2px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;font-size:16px;font-weight:400;background:var(--sheet);color:var(--ink);box-sizing:border-box}
+.ofc{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.45;margin:12px 0}
+.ofc input{width:20px;height:20px;flex:none;margin-top:1px}
 .tag-mp{font-size:11.5px;font-weight:700;background:#FFFFFF;color:#2A2620;border:2px solid #2E9A62;border-radius:999px;padding:1px 8px;white-space:nowrap}
 .mpc{position:absolute;left:10px;top:8px;z-index:6;background:rgba(46,154,98,.92);color:#FFFFFF;font-size:12.5px;font-weight:700;border-radius:999px;padding:4px 10px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .emobar{position:absolute;left:50%;transform:translateX(-50%);bottom:84px;z-index:8;display:flex;flex-direction:row;gap:4px;padding:5px 8px;border-radius:999px}
@@ -494,7 +498,21 @@ details ul{padding-left:16px}
   <div class="overlay" id="orgOv"><div class="card">
     <h2>참여 기관</h2><p class="date">매달 1위 메뉴를 아이들 실제 특식으로 만드는 청소년방과후아카데미예요.</p>
     <ul class="orglist" id="orgList"></ul>
-    <p class="fact" style="margin-top:12px">함께하고 싶은 기관은 계속 늘어나요. 참여 문의는 운영 기관으로 연락해 주세요.</p>
+    <div class="orgapply">
+      <p class="fact" style="margin:14px 0 8px;text-align:center">우리 기관 아이들도 같이 먹을래요</p>
+      <button class="btn gold" id="orgOpen" style="width:100%">🍱 참여 기관 신청하기</button>
+      <div id="orgForm" hidden>
+        <label class="ofl">기관명<input id="oName" maxlength="60" autocomplete="organization" placeholder="예) ○○구청소년센터"></label>
+        <label class="ofl">지역<input id="oRegion" maxlength="30" placeholder="예) 부산 동래구"></label>
+        <label class="ofl">담당자 이름<input id="oWho" maxlength="30" autocomplete="name"></label>
+        <label class="ofl">연락처 (이메일 또는 전화)<input id="oContact" maxlength="80" autocomplete="email"></label>
+        <label class="ofl">참여 아이들 수 (선택)<input id="oKids" type="number" inputmode="numeric" min="1" max="5000"></label>
+        <label class="ofc"><input type="checkbox" id="oAgree"> 연락을 위해 담당자 이름과 연락처를 모으는 데 동의해요. 캠페인이 끝나면 지워요.</label>
+        <button class="btn" id="oSend" style="width:100%">신청 보내기</button>
+        <p class="fact" style="margin:6px 0 0;font-size:12.5px">확인 후 목록에 올라가요. 담당자가 따로 연락드릴게요.</p>
+      </div>
+      <p class="toast" id="oMsg"></p>
+    </div>
     <button class="btn sub" id="closeOrg" style="width:100%">닫기</button>
   </div></div>
 
@@ -554,7 +572,7 @@ const ADJ=['두 그릇 먹는','더 주세요 장인','줄 서는','잔반 없�
 const NOUN=['깍두기','국자','돈가스','숟가락','계란말이','수저통','탕수육','식판','미역국','순두부','닭강정','우유팩','떡볶이','잡채','감자조림','요구르트','짜장밥','카레','멸치볶음','젓가락'];
 let nameIdx=[rand(ADJ.length),rand(NOUN.length)];let meLbl=null;
 const myName=()=>ADJ[nameIdx[0]]+' '+NOUN[nameIdx[1]];
-const showName=()=>{$('#myname').textContent=myName();if(meLbl)meLbl.el.textContent=myName();};
+const showName=()=>{$('#myname').textContent=myName();if(meLbl)meLbl.el.textContent=myName()+(()=>{try{return REC.today>=2?' 🍱'+REC.today:'';}catch(e){return '';}})();};
 $('#reroll').onclick=()=>{nameIdx=[rand(ADJ.length),rand(NOUN.length)];showName();};
 
 /* ───────── 식단 ───────── */
@@ -1264,6 +1282,16 @@ let ORG_N=0,ORGS=null;
 async function loadOrgs(){try{const r=await fetch(SB_URL+'/rest/v1/partner_orgs?select=name,region&order=created_at.asc',{headers:SB_H});ORGS=await r.json();ORG_N=ORGS.length;}catch(e){ORGS=[];}}
 async function openOrgs(){if(!ORGS)await loadOrgs();$('#orgList').innerHTML=ORGS.length?ORGS.map(o=>`<li><span>${o.name}</span><small>${o.region||''}</small></li>`).join(''):'<li>목록을 불러오지 못했어요.</li>';$('#orgOv').classList.add('on');}
 $('#closeOrg').onclick=()=>$('#orgOv').classList.remove('on');
+$('#orgOpen').onclick=()=>{$('#orgOpen').hidden=true;$('#orgForm').hidden=false;setTimeout(()=>$('#oName').focus(),50);};
+$('#oSend').onclick=async()=>{const v=id=>$(id).value.trim();const msg=$('#oMsg');
+  const b={org_name:v('#oName'),region:v('#oRegion'),contact_name:v('#oWho'),contact:v('#oContact'),kids:v('#oKids')?Math.round(+v('#oKids')):null,consent:$('#oAgree').checked};
+  if(b.org_name.length<2){msg.textContent='기관명을 적어 주세요.';return;}if(!b.region){msg.textContent='지역을 적어 주세요.';return;}
+  if(!b.contact_name){msg.textContent='담당자 이름을 적어 주세요.';return;}if(b.contact.length<5){msg.textContent='연락받을 이메일이나 전화번호를 적어 주세요.';return;}
+  if(b.kids!==null&&!(b.kids>=1&&b.kids<=5000))b.kids=null;if(!b.consent){msg.textContent='개인정보 수집에 동의해야 보낼 수 있어요.';return;}
+  $('#oSend').disabled=true;msg.textContent='보내는 중…';
+  try{const r=await fetch(SB_URL+'/rest/v1/org_requests',{method:'POST',headers:{...SB_H,'Prefer':'return=minimal'},body:JSON.stringify(b)});if(!r.ok)throw 0;
+    $('#orgForm').hidden=true;msg.textContent=`신청 고마워요! ${b.org_name} 아이들과도 곧 같이 먹어요 🍱`;}
+  catch(e){$('#oSend').disabled=false;msg.textContent='보내지 못했어요. 잠시 후 다시 눌러 주세요.';}};
 async function castVote(menu){const el=$('#vote');el.querySelectorAll('button').forEach(b=>b.disabled=true);
   try{const r=await fetch(SB_URL+'/rest/v1/menu_votes',{method:'POST',headers:{...SB_H,'Prefer':'return=minimal'},body:JSON.stringify({vote_month:VOTE_MONTH,menu,device_id:devId()})});
     if(!r.ok&&r.status!==409)throw new Error(r.status);}catch(e){$('#toast').textContent='투표가 저장되지 않았어요. 잠시 후 다시 눌러 주세요.';el.querySelectorAll('button').forEach(b=>b.disabled=false);return;}
@@ -1490,8 +1518,8 @@ const shortSc=n=>String(n||'').replace('초등학교','초').replace('중학교'
 function recPill(){const p=$('#recPill');if(!REC.today){p.hidden=true;return;}p.textContent=`🍱 ${REC.today}그릇${REC.todaySc.length?' · '+REC.todaySc.length+'곳':''}`;p.hidden=false;}
 function recBowl(){bowlN++;REC.today++;REC.total++;const best=REC.today>REC.best;if(best)REC.best=REC.today;
   if(CUR_SC){if(!REC.todaySc.includes(CUR_SC.name))REC.todaySc.push(CUR_SC.name);if(!REC.schools.find(x=>x.n===CUR_SC.name)){REC.schools.push({n:CUR_SC.name,r:CUR_SC.region||'',d:ymd(today)});if(REC.schools.length>300)REC.schools.shift();}}
-  recSave();recPill();setTimeout(()=>addLabel(me,`🍱 오늘 ${REC.today}그릇째${best&&REC.today>1?' · 최고 기록!':''}`,'yum',2000,1.95,1),900);track('bowl',String(REC.today));}
-recPill();
+  recSave();recPill();showName();if(MP.me.st)mpSet({});setTimeout(()=>addLabel(me,`🍱 오늘 ${REC.today}그릇째${best&&REC.today>1?' · 최고 기록!':''}`,'yum',2000,1.95,1),900);track('bowl',String(REC.today));}
+recPill();showName();
 $('#recPill').onclick=()=>{$('#recStat').innerHTML=`<div><b>${REC.today}</b><small>오늘</small></div><div><b>${REC.best}</b><small>최고 기록</small></div><div><b>${REC.total}</b><small>누적</small></div>`;
   $('#recScN').textContent=REC.schools.length+'곳';
   $('#recStamps').innerHTML=REC.schools.length?REC.schools.slice().reverse().map(x=>`<span>${esc(shortSc(x.n))}<small>${esc(x.r||'')}</small></span>`).join(''):'<p class="fact" style="margin:0">아직 없어요. "한 그릇 더"로 다른 학교 급식을 먹어 보세요.</p>';
@@ -1541,12 +1569,13 @@ function mpStart(){if(MP.ch||!window.supabase)return;
     MP.ch=cl.channel('geupsik-hall',{config:{presence:{key:mySid()},broadcast:{self:false}}});
     MP.ch.on('presence',{event:'sync'},mpSync).on('broadcast',{event:'react'},({payload})=>mpReact(payload||{}));
     MP.ch.subscribe(st=>{if(st==='SUBSCRIBED'){MP.on=true;if(MP.me.st)MP.ch.track(MP.me).catch(()=>{});mpSync();}});}catch(e){}}
-function mpSet(o){Object.assign(MP.me,o,{name:myName(),with:INV?INV.sid:null,sc:CUR_SC?shortSc(CUR_SC.name).slice(0,16):''});if(MP.on)MP.ch.track(MP.me).catch(()=>{});mpSync();}
+function mpSet(o){Object.assign(MP.me,o,{name:myName(),bowls:REC.today,with:INV?INV.sid:null,sc:CUR_SC?shortSc(CUR_SC.name).slice(0,16):''});if(MP.on)MP.ch.track(MP.me).catch(()=>{});mpSync();}
 function mpLeave(){MP.me={};if(MP.on)MP.ch.untrack().catch(()=>{});}
 function seatBeside(st){if(!st)return null;const f=SEATS.filter(t=>t.tableZ===st.tableZ&&t!==st);
   return f.find(t=>!t.taken&&Math.abs(t.z-st.z)<.1&&Math.abs(Math.abs(t.x-st.x)-1.5)<.1)||f.find(t=>!t.taken&&Math.abs(t.x-st.x)<.1)||f.find(t=>!t.taken)||null;}
 function seatAcross(st){if(!st)return null;const a=SEATS.find(t=>t!==st&&t.tableZ===st.tableZ&&Math.abs(t.x-st.x)<.1);
   if(a&&!a.taken)return a;const f=SEATS.filter(t=>!t.taken&&t.tableZ===st.tableZ&&Math.abs(t.z-st.z)>.5);return f.sort((p,q)=>Math.abs(p.x-st.x)-Math.abs(q.x-st.x))[0]||seatBeside(st);}
+function mpTag(m){const n=Number.isInteger(m.bowls)&&m.bowls>=2&&m.bowls<1000?' 🍱'+m.bowls:'';return '🟢 '+esc(String(m.name||'급식 친구').slice(0,24))+(m.sc?' · '+esc(String(m.sc).slice(0,16)):'')+n;}
 function mpRemove(id){const o=MP.others.get(id);if(!o)return;removeLabel(o.lbl);const k=o.kid;movers.delete(k);
   if(o.seat&&o.seat.taken===k)o.seat.taken=null;if(k.userData.tableTray)scene.remove(k.userData.tableTray);scene.remove(k);
   const ix=npcs.indexOf(k);if(ix>=0)npcs.splice(ix,1);MP.others.delete(id);}
@@ -1555,12 +1584,13 @@ function mpSync(){if(!MP.ch)return;let st={};try{st=MP.ch.presenceState();}catch
   for(const id of [...MP.others.keys()])if(!live.has(id))mpRemove(id);
   let n=0;
   for(const [id,m] of live){if(n>=16)break;n++;
+    {const o0=MP.others.get(id);if(o0){const t=mpTag(m);if(o0.tag!==t){o0.tag=t;o0.lbl.el.innerHTML=t;}}}
     if(m.st==='roam'){const o=MP.others.get(id);
       if(o&&o.st==='roam'){if(o.tx!==m.x||o.tz!==m.z){o.tx=m.x;o.tz=m.z;walkPath(o.kid,routeTo(o.kid.position,{x:m.x,z:m.z}),2.8);}continue;}
       let from=null;if(o){from={x:o.kid.position.x,z:o.kid.position.z+(o.seat&&o.seat.face===0?-.4:.4)};mpRemove(id);}
       const kid=makeKid({skin:SKIN[hashN(id,3)],hair:HAIR[hashN(id+'h',4)],suit:SUIT[hashN(id+'s',5)]});
       const tr=makeTray();setCarry(kid,tr);kid.position.set(from?from.x:m.x,0,from?from.z:m.z);scene.add(kid);npcs.push(kid);
-      const lbl=addLabel(kid,'🟢 '+esc(String(m.name||'급식 친구').slice(0,24))+(m.sc?' · '+esc(String(m.sc).slice(0,16)):''),'tag-mp',0,1.62);
+      const lbl=addLabel(kid,mpTag(m),'tag-mp',0,1.62);
       MP.others.set(id,{kid,lbl,seat:null,name:m.name,st:'roam',tx:m.x,tz:m.z});
       walkPath(kid,routeTo(kid.position,{x:m.x,z:m.z}),2.8);continue;}
     const pal=mySeat&&(m.with===mySid()||(INV&&id===INV.sid&&MP.me.st));
@@ -1574,7 +1604,7 @@ function mpSync(){if(!MP.ch)return;let st={};try{st=MP.ch.presenceState();}catch
     if(!seat){const f=SEATS.filter(t=>!t.taken);if(!f.length)continue;const w=SEATS[m.seat]||f[0];seat=f.sort((a,b)=>Math.hypot(a.x-w.x,a.z-w.z)-Math.hypot(b.x-w.x,b.z-w.z))[0];}
     const kid=makeKid({skin:SKIN[hashN(id,3)],hair:HAIR[hashN(id+'h',4)],suit:SUIT[hashN(id+'s',5)]});
     const tr=makeTray();DISHES.forEach((d,i)=>trayPut(tr,i,d));setCarry(kid,tr);seat.taken=kid;sitDown(kid,seat);kid.userData.eating=true;npcs.push(kid);
-    const lbl=addLabel(kid,'🟢 '+esc(String(m.name||'급식 친구').slice(0,24))+(m.sc?' · '+esc(String(m.sc).slice(0,16)):''),'tag-mp',0,1.62);
+    const lbl=addLabel(kid,mpTag(m),'tag-mp',0,1.62);
     MP.others.set(id,{kid,lbl,seat,name:m.name,st:'seated'});
     if(m.with===mySid())setTimeout(()=>say(kid,'불러 줘서 고마워! 같이 먹자 🍱',2400),400);}
   const cnt=MP.others.size+(MP.me.st?1:0);const pill=$('#mpCount');
