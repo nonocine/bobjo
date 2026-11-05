@@ -119,6 +119,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-off
 #certOv .card{text-align:center}
 #certImg{width:100%;max-width:420px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.18);margin:6px auto 12px;display:block}
 .certbtn{display:block;width:100%;margin:12px 0 0}
+.stickyclose{position:sticky;bottom:-18px;margin:12px -16px -18px;padding:10px 16px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(rgba(255,253,246,0),var(--sheet) 30%)}
 .tag-mp{font-size:11.5px;font-weight:700;background:#FFFFFF;color:#2A2620;border:2px solid #2E9A62;border-radius:999px;padding:1px 8px;white-space:nowrap}
 .mpc{position:absolute;left:10px;top:8px;z-index:6;background:rgba(46,154,98,.92);color:#FFFFFF;font-size:12.5px;font-weight:700;border-radius:999px;padding:4px 10px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .emobar{position:absolute;left:50%;transform:translateX(-50%);bottom:84px;z-index:8;display:flex;flex-direction:row;gap:4px;padding:5px 8px;border-radius:999px}
@@ -504,7 +505,7 @@ details ul{padding-left:16px}
     <h2 id="monthH">이번 달 식단표</h2><p class="date" id="monthSub">★ 오늘의 특식 = 직장인 추천 점심 메뉴 (데이터 통계 기반)</p>
     <div style="overflow-x:auto"><table class="month" id="monthTable"></table></div>
     <p class="fact" style="margin:10px 0 0">★ 특식은 직장인 점심 메뉴 조사 통계를 참고했어요. 잡코리아 직장인 502명 조사(2023): 백반 정식 24.9%, 김치찌개 11.4%, 제육볶음 6.6%, 순두부찌개 6.2%, 순댓국 5.2% · 인크루트 조사(2022) 직장인 선호 4대 메뉴: 제육볶음·김치찌개·짜장면·돼지국밥</p>
-    <button class="btn sub" id="closeMonth" style="width:100%;margin-top:12px">닫기</button>
+    <div class="stickyclose"><button class="btn" id="closeMonth" style="width:100%">닫기</button></div>
   </div></div>
 
   <div class="overlay" id="orgOv"><div class="card">
@@ -642,6 +643,7 @@ function buildMonth(){const start=new Date(today);start.setDate(start.getDate()-
     h+=`<td class="${now?'now':''}"><div class="d">${d.getMonth()+1}/${d.getDate()}</div>${m[0].n}<br>${m[2].n}<br><span class="s">★${m[5].n}</span></td>`;}h+='</tr>';}
   $('#monthTable').innerHTML=h;}
 $('#closeMonth').onclick=()=>$('#monthOv').classList.remove('on');
+['monthOv','helpOv','orgOv','moreOv','recOv','certOv'].forEach(id=>{const o=document.getElementById(id);if(o)o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('on');});});
 
 /* ───────── 소리 ───────── */
 let soundOn=false,ac=null;
@@ -977,12 +979,16 @@ cooks.forEach(c=>{const ladle=new THREE.Group();c.userData.armR.add(ladle);cyl(.
 /* 친구들 (혼자 모드 분위기용, 나중에 실제 접속자로 교체) */
 const npcs=[];let meQueue=false,npcAtCounter=0;
 function freeSeat(){const f=SEATS.filter(s=>!s.taken);return f[rand(f.length)];}
+const waitLine=[];
 async function npcLife(k){
   const u=k.userData;
   while(true){
     k.position.set(-6.4,0,3.2);k.visible=true;setCarry(k,null);
     await walkPath(k,[[-5.6,2.4],[0,2.2],[0,AISLE_Z]],2.2);
-    while(meQueue)await wait(600);
+    waitLine.push(k);
+    if(waitLine.length>1||meQueue||npcAtCounter>=2)await walkPath(k,[[.2+(waitLine.length-1)*.75,AISLE_Z+.15]],2.2);
+    while(waitLine[0]!==k||meQueue||npcAtCounter>=2){await wait(450);const i=waitLine.indexOf(k);if(i>=0&&!movers.has(k)){const tx=.2+i*.75;if(Math.abs(k.position.x-tx)>.2)walkPath(k,[[tx,AISLE_Z+.15]],2);}}
+    waitLine.shift();if(npcAtCounter)await wait(1200);
     npcAtCounter++;await walkPath(k,[[-5.2,-7.7]],2.2);
     const tray=makeTray();setCarry(k,tray);
     for(let i=0;i<6;i++){await walkPath(k,[[BIN_X[i],-7.75]],1.8);trayPut(tray,i,DISHES[i],Math.random()<.3?1:0);await wait(350+rand(300));
@@ -1220,7 +1226,7 @@ function eat(){
 function zeroPop(){return new Promise(res=>{const p=$('#zeroPop');
   $('#zpWas').textContent=trayKcal?`약 ${trayKcal.toLocaleString('ko-KR')}kcal`:'';p.classList.add('on');chime&&setTimeout(()=>{try{chime();}catch(e){}},150);
   let done=false;const go=()=>{if(done)return;done=true;p.classList.remove('on');setTimeout(res,250);};p.onclick=go;setTimeout(go,3200);});}
-async function goExit(){track('exit');mpLeave();
+async function goExit(){track('exit');mpLeave();meQueue=false;
   if(mySeat){standUp(me,mySeat);mySeat.taken=null;mySeat=null;}
   state='walking';setAct('<p class="say" style="margin:0">퇴식구로 쓩~</p>');
   await walkPath(me,routeTo(me.position,{x:RX-.9,z:1.6}),4.5);
@@ -1240,7 +1246,7 @@ function placeAct(){
   let top=y-ah/2;top=Math.max(8,Math.min(h-ah-84,top));const ebh=(document.getElementById('emoBar')&&!document.getElementById('emoBar').hidden)?56:0;left=(w-aw)/2;top=h-ah-84-ebh;
   act.style.left=left+'px';act.style.top=top+'px';
 }
-$('#again').onclick=()=>{$('#exit').classList.remove('on');milk=null;ate=false;me.position.set(-6.4,0,3);state='idle';idleAct();};
+$('#again').onclick=()=>{$('#exit').classList.remove('on');meQueue=false;milk=null;ate=false;me.position.set(-6.4,0,3);state='idle';idleAct();};
 
 /* 바닥·의자 누르기 */
 const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();let downAt=null;
