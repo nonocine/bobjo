@@ -1152,8 +1152,9 @@ renderer.domElement.addEventListener('pointerup',e=>{
 const VOTE_OPTS=(()=>{const seen=new Set(),o=[];SPECIALS.forEach(([n],i)=>{if(!seen.has(n)){seen.add(n);o.push([n,SP_IMG[i]]);}});return o;})();
 const vm=new Date(today.getFullYear(),today.getMonth()+1,1);
 const VOTE_MONTH=`${vm.getFullYear()}-${String(vm.getMonth()+1).padStart(2,'0')}`;
-function devId(){let d=null;try{d=localStorage.getItem('gs-dev');if(!d){d=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+Date.now());localStorage.setItem('gs-dev',d);}}catch(e){d=d||'nostore-'+Date.now();}return d;}
-let myVote=null;try{myVote=localStorage.getItem('gs-vote-'+VOTE_MONTH);}catch(e){}
+const VISIT_ID=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+Date.now());
+function devId(){return VISIT_ID;}
+let myVote=null;
 let VOTE_RES={};
 async function loadVotes(){try{const r=await fetch(SB_URL+'/rest/v1/rpc/vote_results',{method:'POST',headers:SB_H,body:JSON.stringify({p_month:VOTE_MONTH})});VOTE_RES=await r.json()||{};}catch(e){VOTE_RES={};}}
 function rankHTML(full){const tot=Object.values(VOTE_RES).reduce((a,b)=>a+b,0);
@@ -1162,12 +1163,12 @@ function rankHTML(full){const tot=Object.values(VOTE_RES).reduce((a,b)=>a+b,0);
   const medal=['🥇','🥈','🥉'];const top=list.slice(0,3);
   let h='<div class="podium">'+top.map((x,k)=>`<div class="pd p${k+1}${x.n===myVote?' mine':''}"><span class="md">${medal[k]}</span><img src="img/${String(x.i).padStart(2,'0')}.webp" alt="" onerror="this.remove()"><b>${x.n}</b><small>${x.c}표 · ${Math.round(x.c/tot*100)}%</small></div>`).join('')+'</div>';
   const gap=list[0].c-(list[1]?list[1].c:0);
-  h+=`<p class="vstat">지금까지 <b>${tot.toLocaleString('ko-KR')}명</b> 참여 · ${gap?`1위와 2위는 <b>${gap}표</b> 차이`:'1위 공동, 박빙이에요!'}</p>`;
+  h+=`<p class="vstat">지금까지 <b>${tot.toLocaleString('ko-KR')}표</b> · ${gap?`1위와 2위는 <b>${gap}표</b> 차이`:'1위 공동, 박빙이에요!'}</p>`;
   if(full)h+='<ol class="vrank">'+list.map((x,k)=>`<li class="${x.n===myVote?'mine':''}"><span>${k+1}</span>${x.n}<i style="width:${Math.max(2,Math.round(x.c/list[0].c*100||0))}%"></i><small>${x.c}</small></li>`).join('')+'</ol>';
   return h;}
 async function renderVote(full=false){const el=$('#vote');const mlabel=(vm.getMonth()+1)+'월';
   if(!renderVote.loaded){el.innerHTML='<p class="msg">투표 불러오는 중…</p>';await loadVotes();renderVote.loaded=true;}
-  const head=`<div class="vhead"><b>${mlabel} 특식 투표</b><span>1위 메뉴는 참여하는 청소년방과후아카데미에서 아이들 저녁 특식으로 만들어요.</span></div>`;
+  const head=`<div class="vhead"><b>${mlabel} 특식 투표</b><span>1위 메뉴는 참여하는 청소년방과후아카데미에서 아이들 저녁 특식으로 만들어요. 들어올 때마다 한 표씩!</span></div>`;
   const orgBtn=`<button class="orgbtn" id="orgBtn">참여 기관 보기${ORG_N?` (${ORG_N}곳)`:''}</button>`;
   const grid=myVote?`<p class="vmine">내 한 표: <b>${myVote}</b> ✔</p>`:'<p class="vpick">👇 다음 달에 먹고 싶은 메뉴를 하나 골라 주세요</p><div class="vopts">'+VOTE_OPTS.map(([n,i])=>`<button class="vopt" data-o="${n}"><img src="img/${String(i).padStart(2,'0')}.webp" alt="" onerror="this.remove()"><span>${n}</span>${VOTE_RES[n]?`<em>${VOTE_RES[n]}</em>`:''}</button>`).join('')+'</div>';
   const any=Object.values(VOTE_RES).some(v=>v>0);el.innerHTML=head+rankHTML(full)+(any?`<button class="vmore" id="vMore">${full?'순위 접기':'전체 순위 보기'}</button>`:'')+grid+orgBtn;
@@ -1180,7 +1181,7 @@ $('#closeOrg').onclick=()=>$('#orgOv').classList.remove('on');
 async function castVote(menu){const el=$('#vote');el.querySelectorAll('button').forEach(b=>b.disabled=true);
   try{const r=await fetch(SB_URL+'/rest/v1/menu_votes',{method:'POST',headers:{...SB_H,'Prefer':'return=minimal'},body:JSON.stringify({vote_month:VOTE_MONTH,menu,device_id:devId()})});
     if(!r.ok&&r.status!==409)throw new Error(r.status);}catch(e){$('#toast').textContent='투표가 저장되지 않았어요. 잠시 후 다시 눌러 주세요.';el.querySelectorAll('button').forEach(b=>b.disabled=false);return;}
-  myVote=menu;try{localStorage.setItem('gs-vote-'+VOTE_MONTH,menu);}catch(e){}VOTE_RES[menu]=(VOTE_RES[menu]||0)+1;
+  myVote=menu;VOTE_RES[menu]=(VOTE_RES[menu]||0)+1;
   await loadVotes();VOTE_RES[menu]=Math.max(VOTE_RES[menu]||0,1);const rk=Object.entries(VOTE_RES).sort((a,b)=>b[1]-a[1]).findIndex(x=>x[0]===menu)+1;
   $('#toast').textContent=`${menu}에 한 표! 지금 ${rk}위예요 🎉`;renderVote(true);}
 
@@ -1206,8 +1207,7 @@ async function drawCard(){try{await document.fonts.ready;}catch(e){}
   g.fillStyle='#2A2620';g.font='42px "Noto Sans KR", sans-serif';g.fillText(DISHES.slice(0,5).map(d=>d.n).join(' · '),540,1200,860);
   g.font='56px Jua, sans-serif';
   if(paidCount){g.fillStyle='#D23A2E';g.fillText('나의 밥값: 2,000원',540,1380);g.font='40px "Noto Sans KR", sans-serif';g.fillStyle='#2A2620';g.fillText('같은 밥인데, 나만 계산서를 받았다',540,1450);}
-  else{g.fillStyle='#2F5543';g.fillText('나의 밥값: 0원',540,1380);g.font='40px "Noto Sans KR", sans-serif';g.fillStyle='#2A2620';g.fillText('어떤 친구는 2,000원을 냈다',540,1450);}
-  g.fillStyle='#6B6255';g.font='36px "Noto Sans KR", sans-serif';g.fillText(location.host||'',540,1660);
+  else{g.fillStyle='#2F5543';g.fillText('나의 밥값: 0원',540,1380);g.font='40px "Noto Sans KR", sans-serif';g.fillStyle='#2A2620';g.fillText('어떤 친구는 2027년부터 2,000원을 내야 한단다',540,1450,860);}
   return new Promise(r=>c.toBlob(r,'image/png'));}
 function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
 
