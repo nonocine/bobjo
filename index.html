@@ -428,6 +428,15 @@ details ul{padding-left:16px}
       <button class="linkbtn" id="doorShare" style="display:block;margin:10px auto 0">🍱 같이 먹을 급식 친구 부르기</button>
       <p class="fact" id="doorMsg" style="text-align:center;margin:8px 0 0" hidden>저장했어요. 급식실은 언제든 구경 오세요 🙂</p>
     </div>
+    <div id="dBye" hidden style="text-align:center;padding:10px 0 4px">
+      <div style="font-size:54px;line-height:1;animation:roadP 1.6s ease-in-out infinite">👋</div>
+      <h2 style="margin:12px 0 4px">오늘도 맛있게 드세요!</h2>
+      <p class="date" id="byeMenu" style="margin:0 0 14px"></p>
+      <div class="road" aria-label="순서"><span class="done">① 메뉴 ✓</span><i>›</i><span class="on pulse">② 급식실</span><i>›</i><span>③ 비밀 🤫</span></div>
+      <p class="fact" style="margin:0 0 14px">조리사님 비밀은 급식실 안에 있어요.<br>궁금하면 언제든 다시 오세요.</p>
+      <button class="btn" id="byeEnter" style="width:100%">그래도 살짝 들어가 볼래요 →</button>
+      <button class="linkbtn" id="byeHome" style="display:block;margin:12px auto 0">처음으로</button>
+    </div>
   </div></div>
 
   <div class="zpop" id="zeroPop" role="status"><div class="zcard"><div class="zconf" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -1270,7 +1279,7 @@ const ALLERGY=['','난류','우유','메밀','땅콩','대두','밀','고등어'
 const REGION={'서울특별시':[37.57,126.98],'부산광역시':[35.18,129.08],'대구광역시':[35.87,128.6],'인천광역시':[37.46,126.7],'광주광역시':[35.16,126.85],'대전광역시':[36.35,127.38],'울산광역시':[35.54,129.31],'세종특별자치시':[36.48,127.29],'경기도':[37.27,127.01],'강원특별자치도':[37.88,127.73],'강원도':[37.88,127.73],'충청북도':[36.64,127.49],'충청남도':[36.66,126.67],'전북특별자치도':[35.82,127.15],'전라북도':[35.82,127.15],'전라남도':[34.82,126.46],'경상북도':[36.58,128.5],'경상남도':[35.24,128.69],'제주특별자치도':[33.5,126.53]};
 var SCHOOL_MEALS=null,bkFocus=false,MODE=null,SRC='모두의 급식실',storySeen=false,bkDone=false,bkTray=null,bkLbl=null;
 const ymd=d=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
-function showPane(id){['dPick','dSearch','dMeal'].forEach(x=>$('#'+x).hidden=x!==id);$('#door .card').scrollTop=0;}
+function showPane(id){['dPick','dSearch','dMeal','dBye'].forEach(x=>$('#'+x).hidden=x!==id);$('#door .card').scrollTop=0;}
 document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>showPane('dPick'));
 const S_TITLE={me:'우리 학교 찾기',kid:'아이 학교 찾기',alma:'내 모교 찾기'};
 document.querySelectorAll('.pick').forEach(b=>b.onclick=()=>{MODE=b.dataset.m;
@@ -1492,7 +1501,9 @@ function bindInv(){const b=$('#sitInv');if(!b)return;b.onclick=()=>{track('sit_f
   const o=MP.others.get(INV.sid);const s=o?seatAcross(o.seat):null;if(s)goSeat(s);else carryAct();};}
 $('#doorShare').onclick=async()=>{await shareApp();const t=$('#toast').textContent;if(t){$('#doorMsg').textContent=t;$('#doorMsg').hidden=false;$('#toast').textContent='';}};
 $('#doorSave').onclick=async()=>{if(await saveMenu())$('#doorMsg').hidden=false;};
-$('#doorBye').onclick=()=>{track('door_bye');$('#doorMsg').textContent='오늘도 맛있게 드세요! 급식실은 언제든 구경 오세요 🙂';$('#doorMsg').hidden=false;};
+$('#doorBye').onclick=()=>{track('door_bye');$('#byeMenu').textContent=(typeof SP!=='undefined'&&SP&&SP.n)?`오늘 메뉴: ${SP.n}`:'';showPane('dBye');const c=document.querySelector('#door .card');if(c)c.scrollTop=0;};
+$('#byeEnter').onclick=()=>{track('bye_enter');showPane('dMeal');$('#enter').click();};
+$('#byeHome').onclick=()=>showPane('dPick');
 $('#enter').onclick=async()=>{track('enter',SRC);mpStart();logVisit();let seen=null;try{seen=localStorage.getItem('gs-help');localStorage.setItem('gs-help','1');}catch(e){}$('#door').classList.remove('on');state='idle';$('#hintTap').style.opacity=0;goQueue();};
 updNav();
 $('#ring').onclick=()=>{unlockAudio();setSound(true);chime();$('#bellSvg').classList.add('ringing');$('#ring').classList.add('torn');$('#ring').disabled=true;
