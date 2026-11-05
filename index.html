@@ -1270,13 +1270,16 @@ renderer.domElement.addEventListener('pointerup',e=>{
   const seatHit=ray.intersectObjects(SEATS.map(s=>s.mesh))[0];
   if(seatHit){const seat=seatHit.object.userData.seat;
     if(state==='carrying')return goSeat(seat);
-    if(state==='roam'){if(seat.taken){say(me,'여긴 자리가 있네',1200);return;}return sitAgain(seat);}
+    if(state==='roam'){if(seat.taken){say(me,'여긴 자리가 있네',1200);return;}
+      const sx=seat.x,sz=seat.z+(seat.face===0?-.55:.55);walkPath(me,routeTo(me.position,{x:sx,z:sz}),2.8);mpSet({st:'roam',x:+sx.toFixed(2),z:+sz.toFixed(2)});
+      setAct(`<p class="say">여기 앉을까?</p><div class="row two"><button class="btn gold" id="sitHere2">앉기</button><button class="btn" id="keepWalk">계속 걷기</button></div>`);
+      $('#sitHere2').onclick=()=>sitAgain(seat);$('#keepWalk').onclick=roamAct;return;}
     if(state!=='seated')say(me,'먼저 배식부터 받아 올까?',1500);return;}
   if(state==='seated')return;
   const hit=ray.intersectObject(floor)[0];if(!hit)return;
   const x=Math.max(-RX+.6,Math.min(RX-.6,hit.point.x)),z=Math.max(-7.6,Math.min(3.4,hit.point.z));
   $('#hintTap').style.opacity=0;
-  if(state==='roam'){walkPath(me,routeTo(me.position,{x,z}),2.8);mpSet({st:'roam',x:+x.toFixed(2),z:+z.toFixed(2)});return;}
+  if(state==='roam'){walkPath(me,routeTo(me.position,{x,z}),2.8);mpSet({st:'roam',x:+x.toFixed(2),z:+z.toFixed(2)});if($('#sitHere2'))roamAct();return;}
   state=state==='carrying'?'carrying':'idle';
   walkPath(me,routeTo(me.position,{x,z}));updNav();
 });
@@ -1638,9 +1641,13 @@ function mpStart(){if(MP.ch||!window.supabase)return;
   try{const cl=window.supabase.createClient('https://seiparhicrqnpxlyheqn.supabase.co','sb_publishable_mc0iEdUwKAKJwmFG-iIOIQ_PpMXpYTk',{realtime:{params:{eventsPerSecond:5}}});
     MP.ch=cl.channel('geupsik-hall',{config:{presence:{key:mySid()},broadcast:{self:false}}});
     MP.ch.on('presence',{event:'sync'},mpSync).on('broadcast',{event:'react'},({payload})=>mpReact(payload||{}));
-    MP.ch.subscribe(st=>{if(st==='SUBSCRIBED'){MP.on=true;if(MP.me.st)MP.ch.track(MP.me).catch(()=>{});mpSync();}});}catch(e){}}
-function mpSet(o){Object.assign(MP.me,o,{name:myName(),bowls:REC.today,with:INV?INV.sid:null,sc:CUR_SC?shortSc(CUR_SC.name).slice(0,16):''});if(MP.on)MP.ch.track(MP.me).catch(()=>{});mpSync();}
-function mpLeave(){MP.me={};if(MP.on)MP.ch.untrack().catch(()=>{});}
+    MP.cl=cl;MP.ch.subscribe(st=>{if(st==='SUBSCRIBED'){MP.on=true;MP.retry=0;mpPush();mpSync();}
+      else if(st==='CHANNEL_ERROR'||st==='TIMED_OUT'||st==='CLOSED'){MP.on=false;clearTimeout(MP.rt);MP.rt=setTimeout(()=>{try{MP.cl.removeChannel(MP.ch);}catch(e){}MP.ch=null;mpStart();},Math.min(30000,3000*(1+(MP.retry=(MP.retry||0)+1))));}});}catch(e){}}
+/* 접속 정보 보내기는 1.5초에 한 번만 (서버 제한) */
+let mpT=null,mpLastT=0;
+function mpPush(){if(!MP.on||!MP.ch)return;clearTimeout(mpT);mpT=setTimeout(()=>{mpLastT=Date.now();try{const r=MP.me.st?MP.ch.track({...MP.me}):MP.ch.untrack();r&&r.catch&&r.catch(()=>{});}catch(e){}},Math.max(0,1500-(Date.now()-mpLastT)));}
+function mpSet(o){Object.assign(MP.me,o,{name:myName(),bowls:REC.today,with:INV?INV.sid:null,sc:CUR_SC?shortSc(CUR_SC.name).slice(0,16):''});mpPush();mpSync();}
+function mpLeave(){MP.me={};mpPush();}
 function seatBeside(st){if(!st)return null;const f=SEATS.filter(t=>t.tableZ===st.tableZ&&t!==st);
   return f.find(t=>!t.taken&&Math.abs(t.z-st.z)<.1&&Math.abs(Math.abs(t.x-st.x)-1.5)<.1)||f.find(t=>!t.taken&&Math.abs(t.x-st.x)<.1)||f.find(t=>!t.taken)||null;}
 function seatAcross(st){if(!st)return null;const a=SEATS.find(t=>t!==st&&t.tableZ===st.tableZ&&Math.abs(t.x-st.x)<.1);
