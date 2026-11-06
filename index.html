@@ -512,7 +512,7 @@ details ul{padding-left:16px}
       <li><b><i class="tr"></i> 배식</b>반찬마다 먹을래요 · 더 주세요 · 안 먹을래요.</li>
       <li><b>😋 먹기</b>앉아서 "냠냠" 세 번.</li>
       <li><b>🚶 다 먹으면</b>돌아다녀도 되고, 퇴식구로 가면 끝.</li>
-      <li><b>🟢 초록 이름표</b>지금 같이 들어온 진짜 사람이에요. 😋👍 버튼으로 인사해요.</li>
+      <li><b>🟢 초록 이름표</b>지금 같이 들어온 진짜 사람이에요. 급식실에 들어오면 바로 서로 보여요. 😋👍 버튼으로 인사해요.</li>
       <li><b>🎒 방과후아카데미 친구</b>조리사님이 그 친구에게만 뭔가 속닥여요.</li>
     </ul>
     <button class="btn" id="closeHelp" style="width:100%">알겠어요, 밥 먹으러!</button>
@@ -1694,7 +1694,7 @@ setInterval(()=>{if(!MP.on||!MP.ch||!MP.me.st){MP.ok=false;return;}let st={};try
   if(st[mySid()]&&st[mySid()].length){MP.ok=true;MP.miss=0;}else{MP.ok=false;MP.miss=(MP.miss||0)+1;
     if(MP.miss===2||MP.miss===3)mpPush(true);
     if(MP.miss>=5){MP.miss=0;MP.on=false;try{MP.cl.removeChannel(MP.ch);}catch(e){}MP.ch=null;mpStart();}}
-  mpPill();},5000);
+  mpSync();},5000);
 /* 걷는 위치는 가벼운 방송으로 (접속 정보는 상태가 바뀔 때만) */
 let mvT=null,mvLast=0;
 function mpMove(){if(!MP.on||!MP.ch)return;clearTimeout(mvT);mvT=setTimeout(()=>{mvLast=Date.now();try{const r=MP.ch.send({type:'broadcast',event:'move',payload:{sid:mySid(),x:MP.me.x,z:MP.me.z,t:MP.me.t}});r&&r.catch&&r.catch(()=>{});}catch(e){}},Math.max(0,450-(Date.now()-mvLast)));}
@@ -1719,9 +1719,9 @@ function mpRemove(id){const o=MP.others.get(id);if(!o)return;removeLabel(o.lbl);
   if(o.seat&&o.seat.taken===k)o.seat.taken=null;if(k.userData.tableTray)scene.remove(k.userData.tableTray);scene.remove(k);
   const ix=npcs.indexOf(k);if(ix>=0)npcs.splice(ix,1);MP.others.delete(id);}
 function mpSync(){if(!MP.ch)return;let st={};try{st=MP.ch.presenceState();}catch(e){}
-  const live=new Map();for(const [id,arr] of Object.entries(st)){if(id===mySid()||!arr||!arr.length)continue;let m=arr[arr.length-1];if(!m)continue;const rel=m.with===mySid()||(INV&&id===INV.sid);if(m.st==='pre'&&rel&&Number.isFinite(m.x)&&Number.isFinite(m.z))m=Object.assign({},m,{st:'roam'});
+  const live=new Map();for(const [id,arr] of Object.entries(st)){if(id===mySid()||!arr||!arr.length)continue;let m=arr[arr.length-1];if(!m)continue;const rel=m.with===mySid()||(INV&&id===INV.sid);if(m.st==='pre'&&Number.isFinite(m.x)&&Number.isFinite(m.z))m=Object.assign({},m,{st:'roam'});
     if(m.st==='seated'&&Number.isInteger(m.seat))live.set(id,m);else if(m.st==='roam'&&Number.isFinite(m.x)&&Number.isFinite(m.z))live.set(id,Object.assign({},m,{x:Math.max(-RX+.6,Math.min(RX-.6,m.x)),z:Math.max(-7.6,Math.min(11.2,m.z))}));}
-  for(const id of [...MP.others.keys()])if(!live.has(id))mpRemove(id);
+  const now=Date.now();for(const [id,o] of [...MP.others]){if(live.has(id)){o.gone=0;continue;}if(!o.gone)o.gone=now;if(now-o.gone>9000)mpRemove(id);}
   let n=0;
   for(const [id,m] of live){if(n>=16)break;n++;
     {const o0=MP.others.get(id);if(o0){const t=mpTag(m);if(o0.tag!==t){o0.tag=t;o0.lbl.el.innerHTML=t;}}}
