@@ -909,7 +909,8 @@ const R_MIN=.62;
 function separate(){const all=[me,...npcs].filter(k=>k.visible&&!k.userData.sitting);
   for(let i=0;i<all.length;i++)for(let j=i+1;j<all.length;j++){const a=all[i],b=all[j];
     let dx=b.position.x-a.position.x,dz=b.position.z-a.position.z;const d=Math.hypot(dx,dz);if(d>=R_MIN)continue;if(meQueue&&((a===me&&b===bk)||(a===bk&&b===me)))continue;
-    if(d<1e-4){dx=.01;dz=0;}const push=(R_MIN-Math.max(d,1e-4))/2;const nx=dx/Math.max(d,1e-4),nz=dz/Math.max(d,1e-4);
+    if(a!==me&&b!==me&&movers.has(a)&&movers.has(b))continue;/* 걷는 친구끼리는 스쳐 지나가기 */
+    const push=(R_MIN-d)/2;let nx,nz;if(d<1e-3){const r=Math.random()*6.283;nx=Math.cos(r);nz=Math.sin(r);}else{nx=dx/d;nz=dz/d;}
     const meGo=state==='serving'||movers.has(me);const wa=a===me&&meGo?0:1,wb=b===me&&meGo?0:1;const sum=wa+wb||1;
     a.position.x-=nx*push*2*wa/sum;a.position.z-=nz*push*2*wa/sum;b.position.x+=nx*push*2*wb/sum;b.position.z+=nz*push*2*wb/sum;}}
 /* 걷기: 경유점 배열을 차례로 이동 */
@@ -920,7 +921,7 @@ function walkPath(k,pts,speed=2.6){
 function stepMovers(dt){
   for(const k of movers){const u=k.userData;const tgt=u.path[0];if(!tgt){u.walking=false;movers.delete(k);u.done&&u.done();continue;}
     const dx=tgt[0]-k.position.x,dz=tgt[1]-k.position.z;const dist=Math.hypot(dx,dz);
-    if(dist<.05){u.path.shift();u.lastD=undefined;u.stuckT=0;continue;}
+    if(dist<((k!==me&&u.path.length>1)?.3:.05)){u.path.shift();u.lastD=undefined;u.stuckT=0;continue;}
     {if(u.lastD===undefined||dist<u.lastD-.15){u.lastD=dist;u.stuckT=0;}else{u.stuckT=(u.stuckT||0)+dt;if(u.stuckT>1.8){k.position.x+=dx/dist*Math.min(dist,.9);k.position.z+=dz/dist*Math.min(dist,.9);u.stuckT=0;u.lastD=undefined;continue;}}}
     const step=Math.min(dist,u.speed*dt);k.position.x+=dx/dist*step;k.position.z+=dz/dist*step;
     const want=Math.atan2(dx,dz);let diff=want-k.rotation.y;diff=Math.atan2(Math.sin(diff),Math.cos(diff));k.rotation.y+=diff*Math.min(1,dt*12);}
@@ -996,23 +997,27 @@ cooks.forEach(c=>{const ladle=new THREE.Group();c.userData.armR.add(ladle);cyl(.
 const npcs=[];let meQueue=false,npcAtCounter=0;
 function freeSeat(){const f=SEATS.filter(s=>!s.taken);return f[rand(f.length)];}
 const waitLine=[];
+const meBlock=()=>meQueue&&me.position.z<-6.6&&me.position.x<BIN_X[1]+.6;
 async function npcLife(k){
   const u=k.userData;
   while(true){
     k.position.set(-6.4,0,3.2);k.visible=true;setCarry(k,null);
     await walkPath(k,[[-5.6,2.4],[0,2.2],[0,AISLE_Z]],2.2);
+    if(waitLine.length>=3){/* 줄이 길면 이미 받아 온 걸로 하고 바로 자리로 */const tray=makeTray();DISHES.forEach((d,j)=>trayPut(tray,j,d));setCarry(k,tray);}
+    else{
     waitLine.push(k);
-    if(waitLine.length>1||meQueue||npcAtCounter>=2)await walkPath(k,[[.2+(waitLine.length-1)*.75,AISLE_Z+.15]],2.2);
-    while(waitLine[0]!==k||meQueue||npcAtCounter>=2){await wait(450);const i=waitLine.indexOf(k);if(i>=0&&!movers.has(k)){const tx=.2+i*.75;if(Math.abs(k.position.x-tx)>.2)walkPath(k,[[tx,AISLE_Z+.15]],2);}}
+    if(waitLine.length>1||meBlock()||npcAtCounter>=2)await walkPath(k,[[.2+(waitLine.length-1)*.75,AISLE_Z+.15]],2.2);
+    while(waitLine[0]!==k||meBlock()||npcAtCounter>=2){await wait(450);const i=waitLine.indexOf(k);if(i>=0&&!movers.has(k)){const tx=.2+i*.75;if(Math.abs(k.position.x-tx)>.2)walkPath(k,[[tx,AISLE_Z+.15]],2);}}
     waitLine.shift();if(npcAtCounter)await wait(1200);
     npcAtCounter++;await walkPath(k,[[-5.2,-7.7]],2.2);
     const tray=makeTray();setCarry(k,tray);
     for(let i=0;i<6;i++){await walkPath(k,[[BIN_X[i],-7.75]],1.8);trayPut(tray,i,DISHES[i],Math.random()<.3?1:0);await wait(350+rand(300));
       if(Math.random()<.12)say(k,'더 주세요!',1200);}
-    npcAtCounter--;const seat=freeSeat();if(!seat){await wait(2000);continue;}seat.taken=k;
+    npcAtCounter--;}
+    const seat=freeSeat();if(!seat){await wait(2000);continue;}seat.taken=k;
     await walkPath(k,[[0,AISLE_Z],[0,seat.z],[seat.x,seat.z]],2.2);
     sitDown(k,seat);u.eating=true;
-    const dur=12000+rand(18000);const end=performance.now()+dur;
+    const dur=20000+rand(30000);const end=performance.now()+dur;
     while(performance.now()<end){await wait(2500+rand(3000));if(Math.random()<.35)say(k,['냠냠','오늘 특식 대박','국물 최고','더 먹을까','우유 바꿔 먹자'][rand(5)],1500);}
     u.eating=false;standUp(k,seat);seat.taken=null;
     await walkPath(k,[[0,seat.z],[0,2.4],[RX-.9,1.6]],2.2);setCarry(k,null);
@@ -1028,7 +1033,7 @@ for(let i=0;i<8;i++){const k=makeKid({skin:SKIN[rand(3)],hair:HAIR[rand(4)],suit
   const seat=freeSeat();seat.taken=k;const tr=makeTray();DISHES.forEach((d,j)=>trayPut(tr,j,d));k.userData.carry=null;
   k.position.set(seat.x,0,seat.z);u_init(k,seat,tr);}
 function u_init(k,seat,tr){k.userData.carry=tr;k.userData.body.add(tr);sitDown(k,seat);k.userData.eating=true;
-  setTimeout(async()=>{await wait(8000+rand(20000));k.userData.eating=false;standUp(k,seat);seat.taken=null;
+  setTimeout(async()=>{await wait(15000+rand(50000));k.userData.eating=false;standUp(k,seat);seat.taken=null;
     await walkPath(k,[[0,seat.z],[0,2.4],[RX-.9,1.6]],2.2);setCarry(k,null);await walkPath(k,[[0,3.2],[-6.4,3.2]],2.4);k.visible=false;await wait(2000+rand(4000));npcLife(k);},10);}
 // 줄 서는 친구들
 for(let i=0;i<3;i++){const k=makeKid({skin:SKIN[rand(3)],hair:HAIR[rand(4)],suit:SUIT[rand(5)]});k.visible=false;npcs.push(k);setTimeout(()=>npcLife(k),i*4500);}
