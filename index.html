@@ -129,6 +129,12 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-off
 .zoomc{position:absolute;right:10px;top:52px;z-index:6;display:flex;flex-direction:column;border-radius:14px;overflow:hidden}
 .zoomc button{width:38px;height:36px;border:0;background:transparent;font-size:20px;color:#2A2620;cursor:pointer}
 .zoomc button+button{border-top:1px solid rgba(42,38,32,.12)}
+.adultcard{word-break:keep-all;background:#FFF3E6;border:2px solid #E8743B;border-radius:18px;padding:16px;margin:14px 0;text-align:center}
+.adultcard .ac-k{margin:0 0 6px;font-size:13px;font-weight:700;color:#E8743B}
+.adultcard .ac-h{margin:0 0 8px;font-family:var(--title);font-size:19px;line-height:1.4;color:#2A2620}
+.adultcard .ac-s{margin:0 0 12px;font-size:14px;line-height:1.55;color:#5A5146}
+.adultcard .petition{margin:0 0 6px}
+.adulthint{margin:0 0 10px;text-align:center;font-size:13px;color:#8A5A2E;background:#FFF3E6;border-radius:12px;padding:8px 10px;line-height:1.45}
 .tag-mp{font-size:11.5px;font-weight:700;background:#FFFFFF;color:#2A2620;border:2px solid #2E9A62;border-radius:999px;padding:1px 8px;white-space:nowrap}
 .mpc{position:absolute;left:10px;top:8px;z-index:6;background:rgba(42,38,32,.82);color:#FFFFFF;font-size:12.5px;font-weight:700;border-radius:999px;padding:4px 10px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .emobar{position:absolute;left:50%;transform:translateX(-50%);bottom:84px;z-index:8;display:flex;flex-direction:row;gap:4px;padding:5px 8px;border-radius:999px}
@@ -458,6 +464,7 @@ details ul{padding-left:16px}
       <div class="hero" id="mHero"><div class="wxfx" id="wxFx" aria-hidden="true"></div><div class="wxbar" id="wxBar" hidden><span id="wxLabel">날씨</span><select id="wxRegion" aria-label="지역"></select><button type="button" id="wxGeo">📍 내 위치</button></div><p class="bonus" id="heroTag" hidden>＋ 덤으로 하나 더</p><img class="spimg" id="wxImg" alt="" onerror="this.style.display='none'"><span id="wxWhy"></span><b id="wxName"></b><span id="wxSub">오늘 급식실 특식</span><button class="nextbtn" id="wxNext">🔄 다른 메뉴 볼래요</button></div>
       <details id="mNutri"><summary>칼로리·영양 정보</summary><ul id="mNutriList"></ul></details>
       <div class="road" aria-label="순서"><span class="done">① 메뉴 ✓</span><i>›</i><span class="on pulse">② 급식실</span><i>›</i><span>③ 비밀 🤫</span></div>
+      <p class="adulthint" id="adultHint" hidden>🤫 ③ 비밀 미리보기: 이 급식실, 내년부터 어떤 아이들에겐 공짜가 아니래요.</p>
       <button class="btn" id="enter" style="width:100%">이 식판 들고 급식실 가기 →</button>
       <div class="row" style="margin-top:8px"><button class="btn sub" id="doorSave">메뉴만 저장하기</button><button class="btn sub" id="doorBye">여기까지 볼게요</button></div>
       <button class="linkbtn" id="doorShare" style="display:block;margin:10px auto 0"><i class="tr"></i> 같이 먹을 급식 친구 부르기</button>
@@ -554,6 +561,14 @@ details ul{padding-left:16px}
   <g transform="rotate(24 132 92)"><rect x="128" y="88" width="7" height="42" rx="3.5" fill="#B9C0C4"/><ellipse cx="131.5" cy="84" rx="10" ry="12" fill="#D7DCDF"/><ellipse cx="131.5" cy="80" rx="8" ry="6" fill="#FFFFFF"/></g>
   </g></svg><p>잘 먹었나요?</p></div>
     <p class="result" id="result"></p>
+    <div class="adultcard" id="adultCard" hidden>
+      <p class="ac-k">이 급식실의 진짜 이야기</p>
+      <p class="ac-h">내년부터 방과후아카데미 청소년은 소득에 따라 급식비를 내야 해요</p>
+      <p class="ac-s">한 끼 2,000원, 그리고 소득 증빙 서류.<br>학교 돌봄·지역아동센터 저녁 급식은 소득을 묻지 않아요.</p>
+      <a class="petition" onclick="track('petition','adult')" href="https://petitions.assembly.go.kr/proceed/onGoingAll/5CB51C03131E1ED4E064ECE7A7064E8B" target="_blank" rel="noopener">청원에 동의하기 →</a>
+      <p class="fact" style="margin:0 0 8px;font-size:12.5px">본인인증 한 번, 1분이면 돼요.</p>
+      <button class="linkbtn" id="acMore">왜 문제인지 더 보기</button>
+    </div>
     <button class="eaves" id="teaser" aria-label="조리사님 이야기 엿듣기">
       <span class="ev-q">조리사님의 이야기가<br>궁금한 사람?</span>
       <span class="ev-row"><svg class="ev-cook" viewBox="0 0 60 60" aria-hidden="true"><ellipse cx="30" cy="14" rx="17" ry="11" fill="#FFFFFF"/><rect x="15" y="14" width="30" height="9" fill="#FFFFFF"/><circle cx="30" cy="34" r="17" fill="#F6D7B8"/><path d="M14 30 q16 -12 32 0" fill="#4A3426"/><circle cx="24" cy="35" r="2.2" fill="#2A2620"/><circle cx="36" cy="35" r="2.2" fill="#2A2620"/><ellipse cx="20" cy="41" rx="3.5" ry="2.2" fill="#F2A7A0"/><ellipse cx="40" cy="41" rx="3.5" ry="2.2" fill="#F2A7A0"/><path d="M27 44 h6" stroke="#7A3B2E" stroke-width="2" stroke-linecap="round"/><path d="M47 36 q7 -2 7 5" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".8"/></svg>
@@ -566,7 +581,8 @@ details ul{padding-left:16px}
     <div class="note">저는 방과후아카데미에서 아이들과 함께 활동하는 청소년지도사입니다.<br>내년부터 몇몇 아이들은 이 밥값으로 2,000원을 내야 합니다.<br>같은 식탁에서 같은 밥을 먹는데, 집 형편을 물어보고 계산서를 줍니다.<br>말로 설명하기가 너무 억울해서, 직접 급식실을 만들었습니다.<div class="sig">한 청소년지도사가</div></div>
     <p class="fact">2027년 정부 예산 가내시(안)는 청소년방과후아카데미 한 곳당 예산을 1,564만 원(7.86%) 줄이고, 기준중위소득 150% 초과 가구 학생에게 한 끼 2,000원의 급식비 자부담을 새로 만들었습니다(소득 증빙 필요). 학교 돌봄, 지역아동센터, 다함께돌봄센터의 저녁 급식은 소득을 묻지 않습니다.</p>
     <a class="petition" onclick="track('petition')" href="https://petitions.assembly.go.kr/proceed/onGoingAll/5CB51C03131E1ED4E064ECE7A7064E8B" target="_blank" rel="noopener">급식으로 차별하는 건 문제라고 생각하신다면,<br>청원에 힘을 보태 주세요</a>
-    <p class="fact" style="text-align:center;margin:0 0 10px">국회 국민동의청원은 30일 안에 5만 명이 모이면 국회 위원회로 넘어갑니다.</p>
+    <p class="fact" style="text-align:center;margin:0 0 10px">본인인증 한 번, 1분이면 돼요. 국회 국민동의청원은 30일 안에 5만 명이 모이면 국회 위원회로 넘어갑니다.</p>
+    <button class="btn gold" id="toParent" style="width:100%;margin:0 0 12px" hidden>📨 부모님께 전하기</button>
     </div>
     <div class="vote" id="vote"></div>
     <div class="row"><button class="btn sub" id="saveMenu">오늘 메뉴 저장</button><button class="btn sub" id="shareBtn">내 식판 자랑하기</button></div>
@@ -1255,7 +1271,7 @@ async function goExit(){track('exit');mpLeave();meQueue=false;
   setCarry(me,null);thud();setAct('');await zeroPop();
   $('#result').innerHTML=`${SP.img?`<figure class="dishhero"><img src="${SP.img}" alt="${SP.n}" onerror="this.parentNode.remove()"><figcaption><small>${SRC==='모두의 급식실'?'오늘의 특식':SRC==='오늘의 점심 추천'?'오늘의 추천 메뉴':SRC+' 급식 + 보너스 특식'}</small><b>${SP.n}, 맛있었죠?</b></figcaption></figure>`:''}${REC.today>1?'식판까지 싹싹, '+REC.today+'그릇 뚝딱!':'식판까지 싹싹, 한 그릇 뚝딱!'}<span class="recline">오늘 <em>${REC.today}그릇</em>${REC.todaySc.length?' · 학교 <em>'+REC.todaySc.length+'곳</em>':''} · 최고 기록 <em>${REC.best}그릇</em></span><button class="btn gold certbtn" id="certBtn">🏅 오늘의 급식 상장 받기</button>`;$('#certBtn').onclick=openCert;
   $('#teaser').hidden=false;$('#exitCampaign').hidden=true;
-  loadOrgs().then(()=>{const b=$('#orgBtn');if(b&&ORG_N)b.textContent=`참여 기관 보기 (${ORG_N}곳)`;});renderVote.loaded=false;renderVote();showVisitors();$('#exit').classList.add('on');const st=$('#stamp');st.style.animation='none';void st.offsetWidth;st.style.animation='';$('#exitCard').scrollTop=0;state='exit';updNav();
+  loadOrgs().then(()=>{const b=$('#orgBtn');if(b&&ORG_N)b.textContent=`참여 기관 보기 (${ORG_N}곳)`;});renderVote.loaded=false;renderVote();showVisitors();$('#adultCard').hidden=!isAdult();$('#toParent').hidden=MODE!=='me';$('#exit').classList.add('on');const st=$('#stamp');st.style.animation='none';void st.offsetWidth;st.style.animation='';$('#exitCard').scrollTop=0;state='exit';updNav();
 }
 /* 액션 패널을 캐릭터 옆에 붙이기 */
 const actV=new THREE.Vector3();
@@ -1399,7 +1415,8 @@ const ALLERGY=['','난류','우유','메밀','땅콩','대두','밀','고등어'
 const REGION={'서울특별시':[37.57,126.98],'부산광역시':[35.18,129.08],'대구광역시':[35.87,128.6],'인천광역시':[37.46,126.7],'광주광역시':[35.16,126.85],'대전광역시':[36.35,127.38],'울산광역시':[35.54,129.31],'세종특별자치시':[36.48,127.29],'경기도':[37.27,127.01],'강원특별자치도':[37.88,127.73],'강원도':[37.88,127.73],'충청북도':[36.64,127.49],'충청남도':[36.66,126.67],'전북특별자치도':[35.82,127.15],'전라북도':[35.82,127.15],'전라남도':[34.82,126.46],'경상북도':[36.58,128.5],'경상남도':[35.24,128.69],'제주특별자치도':[33.5,126.53]};
 var SCHOOL_MEALS=null,bkFocus=false,MODE=null,SRC='모두의 급식실',storySeen=false,bkDone=false,bkTray=null,bkLbl=null;
 const ymd=d=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
-function showPane(id){['dPick','dSearch','dMeal','dBye'].forEach(x=>$('#'+x).hidden=x!==id);$('#door .card').scrollTop=0;}
+const isAdult=()=>MODE==='kid'||MODE==='alma'||MODE==='lunch';
+function showPane(id){['dPick','dSearch','dMeal','dBye'].forEach(x=>$('#'+x).hidden=x!==id);if(id==='dMeal'&&$('#adultHint'))$('#adultHint').hidden=!isAdult();$('#door .card').scrollTop=0;}
 document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>showPane('dPick'));
 const S_TITLE={me:'우리 학교 찾기',kid:'아이 학교 찾기',alma:'내 모교 찾기'};
 document.querySelectorAll('.pick').forEach(b=>b.onclick=()=>{MODE=b.dataset.m;
@@ -1536,6 +1553,10 @@ function openStory(back){const card=$('#storyCard');let i=0;
   const step=()=>{if(i<STORY.length){const st=STORY[i];card.innerHTML=`<div class="sline">${bkFace(i)}<p class="who">${st.who}</p><h3>${st.h}</h3></div><button class="btn" id="sNext">${st.btn}</button>`;$('#sNext').onclick=()=>{i++;step();};card.scrollTop=0;return;}
     storySeen=true;$('#storyOv').classList.remove('on');back&&back();};
   $('#storyOv').classList.add('on');step();}
+$('#acMore').onclick=()=>{$('#adultCard').hidden=true;$('#teaser').click();};
+$('#toParent').onclick=async()=>{track('share_app','parent');const url='https://bap.youthforten.kr/';
+  const text='엄마 아빠, 내년부터 방과후아카데미 다니는 애들은 집 형편에 따라 급식비를 내야 한대. 한 끼 2,000원이랑 소득 증빙 서류. 한번 봐 줘 🙏';
+  try{if(navigator.share){await navigator.share({title:'모두의 급식?',text,url});return;}await navigator.clipboard.writeText(text+' '+url);$('#toParent').textContent='복사했어요! 부모님께 붙여 넣어 주세요';}catch(e){}};
 $('#teaser').onclick=()=>{track('eaves');$('#teaser').hidden=true;$('#exitCampaign').hidden=false;setTimeout(()=>$('#exitCampaign').scrollIntoView({behavior:'smooth',block:'start'}),60);};
 /* 오늘 메뉴 저장 (이미지) */
 async function drawMenu(){try{await document.fonts.ready;}catch(e){}
