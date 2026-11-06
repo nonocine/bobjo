@@ -1687,7 +1687,14 @@ function mpStart(){if(MP.ch||!window.supabase)return;
       else if(st==='CHANNEL_ERROR'||st==='TIMED_OUT'||st==='CLOSED'){MP.on=false;clearTimeout(MP.rt);MP.rt=setTimeout(()=>{try{MP.cl.removeChannel(MP.ch);}catch(e){}MP.ch=null;mpStart();},Math.min(30000,3000*(1+(MP.retry=(MP.retry||0)+1))));}});}catch(e){}}
 /* 접속 정보 보내기는 1.5초에 한 번만 (서버 제한) */
 let mpT=null,mpLastT=0;
-function mpPush(){if(!MP.on||!MP.ch)return;clearTimeout(mpT);mpT=setTimeout(()=>{mpLastT=Date.now();MP.posDirty=false;try{const r=MP.me.st?MP.ch.track({...MP.me}):MP.ch.untrack();r&&r.catch&&r.catch(()=>{});}catch(e){}},Math.max(0,3000-(Date.now()-mpLastT)));}
+function mpPush(now){if(!MP.on||!MP.ch)return;clearTimeout(mpT);mpT=setTimeout(async()=>{mpLastT=Date.now();MP.posDirty=false;
+  try{const r=MP.me.st?await MP.ch.track({...MP.me}):await MP.ch.untrack();if(r&&r!=='ok'){clearTimeout(MP.rtT);MP.rtT=setTimeout(()=>mpPush(),4000);}}catch(e){clearTimeout(MP.rtT);MP.rtT=setTimeout(()=>mpPush(),4000);}},now?0:Math.max(0,3000-(Date.now()-mpLastT)));}
+/* 내 신호가 서버에 실제로 올라가 있는지 5초마다 확인하고, 없으면 다시 보내기 */
+setInterval(()=>{if(!MP.on||!MP.ch||!MP.me.st){MP.ok=false;return;}let st={};try{st=MP.ch.presenceState();}catch(e){}
+  if(st[mySid()]&&st[mySid()].length){MP.ok=true;MP.miss=0;}else{MP.ok=false;MP.miss=(MP.miss||0)+1;
+    if(MP.miss===2||MP.miss===3)mpPush(true);
+    if(MP.miss>=5){MP.miss=0;MP.on=false;try{MP.cl.removeChannel(MP.ch);}catch(e){}MP.ch=null;mpStart();}}
+  mpPill();},5000);
 /* 걷는 위치는 가벼운 방송으로 (접속 정보는 상태가 바뀔 때만) */
 let mvT=null,mvLast=0;
 function mpMove(){if(!MP.on||!MP.ch)return;clearTimeout(mvT);mvT=setTimeout(()=>{mvLast=Date.now();try{const r=MP.ch.send({type:'broadcast',event:'move',payload:{sid:mySid(),x:MP.me.x,z:MP.me.z,t:MP.me.t}});r&&r.catch&&r.catch(()=>{});}catch(e){}},Math.max(0,450-(Date.now()-mvLast)));}
@@ -1740,8 +1747,9 @@ function mpSync(){if(!MP.ch)return;let st={};try{st=MP.ch.presenceState();}catch
     const lbl=addLabel(kid,mpTag(m),'tag-mp',0,1.62);
     MP.others.set(id,{kid,lbl,seat,name:m.name,st:'seated'});
     if(m.with===mySid())setTimeout(()=>say(kid,'불러 줘서 고마워! 같이 먹자 😋',2400),400);}
-  const cnt=MP.others.size+(MP.me.st?1:0);const pill=$('#mpCount');
-  if(MP.others.size>=2){pill.innerHTML=`<i class="tr"></i> 지금 같이 먹는 중 ${cnt}명`;pill.hidden=false;}else pill.hidden=true;}
+  mpPill();}
+function mpPill(){const pill=$('#mpCount');if(!pill)return;const n=MP.others.size;
+  if(n>=1){pill.innerHTML=`${MP.ok?'🟢':'⚪'} 같이 있는 사람 ${n+1}명${MP.ok?'':' · 연결 중…'}`;pill.hidden=false;}else pill.hidden=true;}
 const EMO=['😋','👍','🥛','🙌'];
 function mpReact(p){if(!EMO.includes(p.e))return;const o=MP.others.get(p.sid);if(o)addLabel(o.kid,p.e,'yum',1500,1.5,.9);}
 document.querySelectorAll('#emoBar button').forEach(b=>b.onclick=()=>{const e=b.dataset.e;const now=Date.now();if(now-MP.lastReact<700)return;MP.lastReact=now;
