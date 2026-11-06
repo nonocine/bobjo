@@ -135,6 +135,11 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-off
 .adultcard .ac-s{margin:0 0 12px;font-size:14px;line-height:1.55;color:#5A5146}
 .adultcard .petition{margin:0 0 6px}
 .adulthint{margin:0 0 10px;text-align:center;font-size:13px;color:#8A5A2E;background:#FFF3E6;border-radius:12px;padding:8px 10px;line-height:1.45}
+.joy{position:absolute;left:12px;z-index:7;width:100px;height:100px;border-radius:50%;touch-action:none;border:1px solid rgba(255,255,255,.7);background:rgba(255,255,255,.32)}
+.joy::before,.joy::after{content:"";position:absolute;left:50%;top:50%;border:6px solid transparent;opacity:.45}
+.joy::before{border-bottom-color:#2A2620;transform:translate(-50%,-38px)}
+.joy::after{border-top-color:#2A2620;transform:translate(-50%,26px)}
+.joy-k{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(42,38,32,.82);box-shadow:0 2px 6px rgba(0,0,0,.25);pointer-events:none}
 .tag-mp{font-size:11.5px;font-weight:700;background:#FFFFFF;color:#2A2620;border:2px solid #2E9A62;border-radius:999px;padding:1px 8px;white-space:nowrap}
 .mpc{position:absolute;left:10px;top:8px;z-index:6;background:rgba(42,38,32,.82);color:#FFFFFF;font-size:12.5px;font-weight:700;border-radius:999px;padding:4px 10px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .emobar{position:absolute;left:50%;transform:translateX(-50%);bottom:84px;z-index:8;display:flex;flex-direction:row;gap:4px;padding:5px 8px;border-radius:999px}
@@ -421,6 +426,7 @@ details ul{padding-left:16px}
     <div class="hint-tap" id="hintTap">바닥을 누르면 걸어가요</div>
     <div class="err" id="err">3D 화면을 불러오지 못했어요. 새로고침해 주세요.</div>
     <div class="mpc" id="mpCount" hidden></div>
+    <div class="joy glass" id="joy" hidden aria-label="움직이기"><div class="joy-k" id="joyK"></div></div>
     <div class="zoomc glass" id="zoomC"><button id="zIn" aria-label="가까이">＋</button><button id="zOut" aria-label="멀리">－</button></div>
     <button class="recp glass" id="recPill" hidden></button>
     <div class="emobar glass" id="emoBar" hidden><button data-e="😋" aria-label="냠냠">😋</button><button data-e="👍" aria-label="맛있다">👍</button><button data-e="🥛" aria-label="우유 건배">🥛</button><button data-e="🙌" aria-label="같이 먹자">🙌</button></div>
@@ -508,7 +514,7 @@ details ul{padding-left:16px}
   <div class="overlay" id="helpOv"><div class="card">
     <h2>이렇게 놀아요</h2><p class="date">2분이면 충분해요.</p>
     <ul class="howto">
-      <li><b>👆 걷기</b>바닥을 누르면 걸어가요. 두 손가락이나 오른쪽 ＋/－로 멀리·가까이 볼 수 있어요.</li>
+      <li><b>👆 걷기</b>바닥을 누르거나 왼쪽 동그라미(방향 패드)를 밀면 걸어가요. 컴퓨터는 방향키로도 돼요. 두 손가락이나 오른쪽 ＋/－로 멀리·가까이 볼 수 있어요.</li>
       <li><b><i class="tr"></i> 배식</b>반찬마다 먹을래요 · 더 주세요 · 안 먹을래요.</li>
       <li><b>😋 먹기</b>앉아서 "냠냠" 세 번.</li>
       <li><b>🚶 다 먹으면</b>돌아다녀도 되고, 퇴식구로 가면 끝.</li>
@@ -942,6 +948,30 @@ function stepMovers(dt){
     const step=Math.min(dist,u.speed*dt);k.position.x+=dx/dist*step;k.position.z+=dz/dist*step;
     const want=Math.atan2(dx,dz);let diff=want-k.rotation.y;diff=Math.atan2(Math.sin(diff),Math.cos(diff));k.rotation.y+=diff*Math.min(1,dt*12);}
 }
+/* ───────── 방향 패드 (조이스틱 · 방향키) ───────── */
+const JOY={x:0,y:0,mag:0,id:null,keys:new Set()};let nearSeatR=null;
+function stepJoy(dt){let x=JOY.x,y=JOY.y;
+  if(JOY.keys.size){x=(JOY.keys.has('r')?1:0)-(JOY.keys.has('l')?1:0);y=(JOY.keys.has('d')?1:0)-(JOY.keys.has('u')?1:0);const m=Math.hypot(x,y)||1;x/=m;y/=m;}
+  JOY.mag=Math.min(1,Math.hypot(x,y));if(JOY.mag<.15||!['roam','carrying','idle'].includes(state))return;
+  if(movers.has(me)){movers.delete(me);me.userData.path=[];}
+  const f=new THREE.Vector3();camera.getWorldDirection(f);f.y=0;f.normalize();const rx=-f.z,rz=f.x;
+  const mx=rx*x+f.x*(-y),mz=rz*x+f.z*(-y);const sp=3.0*JOY.mag*dt;
+  let nx=me.position.x+mx*sp,nz=me.position.z+mz*sp;nx=Math.max(-RX+.5,Math.min(RX-.5,nx));nz=Math.max(-7.75,Math.min(11.2,nz));
+  if(!BLOCK.length)buildGrid();
+  if(!blocked(nx,nz)){me.position.x=nx;me.position.z=nz;}else if(!blocked(nx,me.position.z))me.position.x=nx;else if(!blocked(me.position.x,nz))me.position.z=nz;
+  const want=Math.atan2(mx,mz);let d=want-me.rotation.y;d=Math.atan2(Math.sin(d),Math.cos(d));me.rotation.y+=d*Math.min(1,dt*12);
+  if(state==='roam'){let best=null,bd=1.2;for(const st of SEATS){if(st.taken)continue;const dd=Math.hypot(st.x-me.position.x,st.z-me.position.z);if(dd<bd){bd=dd;best=st;}}
+    if(best!==nearSeatR){nearSeatR=best;if(best){setAct(`<p class="say">여기 앉을까?</p><div class="row two"><button class="btn gold" id="sitHere2">앉기</button><button class="btn" id="keepWalk">계속 걷기</button></div>`);$('#sitHere2').onclick=()=>sitAgain(best);$('#keepWalk').onclick=roamAct;}else roamAct();}}}
+(()=>{const j=document.getElementById('joy'),k=document.getElementById('joyK');const R=34;
+  const upd=(cx,cy)=>{const r=j.getBoundingClientRect();let dx=cx-(r.left+r.width/2),dy=cy-(r.top+r.height/2);const m=Math.hypot(dx,dy);if(m>R){dx*=R/m;dy*=R/m;}k.style.transform=`translate(${dx}px,${dy}px)`;JOY.x=dx/R;JOY.y=dy/R;};
+  const end=()=>{JOY.id=null;JOY.x=JOY.y=0;k.style.transform='';};
+  j.addEventListener('pointerdown',e=>{JOY.id=e.pointerId;j.setPointerCapture(e.pointerId);upd(e.clientX,e.clientY);e.preventDefault();e.stopPropagation();});
+  j.addEventListener('pointermove',e=>{if(e.pointerId===JOY.id){upd(e.clientX,e.clientY);e.preventDefault();}});
+  j.addEventListener('pointerup',end);j.addEventListener('pointercancel',end);
+  const KM={ArrowUp:'u',ArrowDown:'d',ArrowLeft:'l',ArrowRight:'r',w:'u',s:'d',a:'l',d:'r',W:'u',S:'d',A:'l',D:'r'};
+  addEventListener('keydown',e=>{const v=KM[e.key];if(!v||/INPUT|TEXTAREA|SELECT/.test((e.target&&e.target.tagName)||''))return;JOY.keys.add(v);e.preventDefault();});
+  addEventListener('keyup',e=>{const v=KM[e.key];if(v)JOY.keys.delete(v);});
+  addEventListener('blur',()=>JOY.keys.clear());})();
 // 가운데 통로(x=0)와 배식대 앞(z=-7.6)을 따라 이동하는 경로
 const AISLE_Z=-6.3;
 /* 길찾기: 격자 A* 로 식탁·의자·배식대를 피해서 걷기 */
@@ -1230,7 +1260,7 @@ function exitAct(){
   if(mySeat){const mb=moodBtn();setAct(`<p class="say">잘 먹었다!<small>${mb?'옆 친구는 아직 반도 못 먹었네':(REC.today<2?'다른 학교 급식도 맛볼 수 있어요':'일어나서 돌아다녀도 돼요 🚶')}</small></p><div class="row"><button class="btn gold" id="moreGo"><i class="tr"></i> 다른 학교 급식 한 그릇 더</button></div><div class="row two"><button class="btn" id="roamGo">돌아다니기</button><button class="btn" id="toExit">퇴식구로</button></div>${mb?'<div class="row">'+mb+'</div>':''}`);
     $('#moreGo').onclick=openMore;$('#roamGo').onclick=startRoam;$('#toExit').onclick=goExit;bindMood();return;}
   roamAct();}
-function roamAct(){setAct(`<p class="say">🚶 산책 중<small>바닥을 누르면 걸어가요</small></p><div class="row two"><button class="btn gold" id="moreGo"><i class="tr"></i> 한 그릇 더</button><button class="btn" id="toExit">퇴식구로</button></div>`);$('#moreGo').onclick=openMore;$('#toExit').onclick=goExit;}
+function roamAct(){setAct(`<p class="say">🚶 산책 중<small>동그라미를 밀거나 바닥을 누르면 걸어가요</small></p><div class="row two"><button class="btn gold" id="moreGo"><i class="tr"></i> 한 그릇 더</button><button class="btn" id="toExit">퇴식구로</button></div>`);$('#moreGo').onclick=openMore;$('#toExit').onclick=goExit;}
 function startRoam(){if(mySeat){standUp(me,mySeat);mySeat.taken=null;mySeat=null;}
   const t=me.userData.carry;if(t&&t.userData.items)t.userData.items.forEach(x=>x&&(x.visible=false));
   state='roam';roamAct();updNav();const h=$('#hintTap');h.textContent='바닥을 누르면 걸어가요';h.style.opacity=1;setTimeout(()=>{h.style.opacity=0;},3500);
@@ -1284,6 +1314,8 @@ function placeAct(){
   let top=y-ah/2;top=Math.max(8,Math.min(h-ah-84,top));const ebh=(document.getElementById('emoBar')&&!document.getElementById('emoBar').hidden)?56:0;left=(w-aw)/2;top=h-ah-84-ebh;
   act.style.left=left+'px';act.style.top=top+'px';
 }
+function placeJoy(){const j=document.getElementById('joy');if(!j)return;const show=['roam','carrying','idle'].includes(state)&&!$('#door').classList.contains('on')&&!$('#exit').classList.contains('on');
+  if(j.hidden===show)j.hidden=!show;if(!show){JOY.mag=0;return;}const h=stage.clientHeight;const top=act.classList.contains('on')?parseFloat(act.style.top)||h-200:h-84-56;j.style.top=Math.max(60,top-108)+'px';}
 $('#again').onclick=()=>{$('#exit').classList.remove('on');meQueue=false;milk=null;ate=false;me.position.set(-6.4,0,3);state='idle';idleAct();};
 
 /* 바닥·의자 누르기 */
@@ -1398,11 +1430,11 @@ let last=performance.now();
 function loop(now){
   const dt=Math.min(.05,(now-last)/1000);last=now;const t=now/1000;
   stepMovers(dt);separate();
-  me.userData.walking=movers.has(me);animKid(me,dt,t);npcs.forEach(k=>{k.userData.walking=movers.has(k);animKid(k,dt,t);});
+  stepJoy(dt);me.userData.walking=movers.has(me)||JOY.mag>.15;animKid(me,dt,t);npcs.forEach(k=>{k.userData.walking=movers.has(k);animKid(k,dt,t);});
   cooks.forEach((c,ci)=>{animKid(c,dt,t);c.userData.armR.rotation.x=-.5+Math.sin(t*1.5+ci)*.25;});
   binFood.forEach((f,i)=>f.rotation.y=Math.sin(t*.6+i)*.05);
   hand.rotation.z=-t*.2;
-  placeCam(false);renderer.render(scene,camera);updateLabels();checkSeat();checkCounter();placeAct();
+  placeCam(false);renderer.render(scene,camera);updateLabels();checkSeat();checkCounter();placeAct();placeJoy();
   requestAnimationFrame(loop);
 }
 document.fonts&&document.fonts.ready.then(()=>{drawBoard();posterDraws.forEach(f=>f());});
