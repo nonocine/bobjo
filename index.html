@@ -1694,7 +1694,9 @@ function mpMove(){if(!MP.on||!MP.ch)return;clearTimeout(mvT);mvT=setTimeout(()=>
 function mpMoveIn(p){const o=MP.others.get(p.sid);if(!o||o.st!=='roam'||!Number.isFinite(p.x)||!Number.isFinite(p.z))return;if((p.t||0)<(o.mt||0))return;o.mt=p.t||0;
   const x=Math.max(-RX+.6,Math.min(RX-.6,p.x)),z=Math.max(-7.6,Math.min(11.2,p.z));if(o.tx===x&&o.tz===z)return;o.tx=x;o.tz=z;walkPath(o.kid,routeTo(o.kid.position,{x,z}),2.8);}
 setInterval(()=>{if(MP.posDirty&&(MP.me.st==='roam'||MP.me.st==='pre'))mpPush();},12000);
-setInterval(()=>{const st=MP.me.st;if(st!=='roam'&&st!=='pre')return;const x=+me.position.x.toFixed(2),z=+me.position.z.toFixed(2);
+setInterval(()=>{/* 급식실 안에 있으면 늘 '있음'으로 알리기 (초대 친구에게 보이도록) */
+  if(MP.on&&!MP.me.st&&!$('#door').classList.contains('on')&&!$('#exit').classList.contains('on')&&state!=='door')mpSet({st:'pre',seat:null,x:+me.position.x.toFixed(2),z:+me.position.z.toFixed(2)});
+  const st=MP.me.st;if(st!=='roam'&&st!=='pre')return;const x=+me.position.x.toFixed(2),z=+me.position.z.toFixed(2);
   if(Math.hypot((MP.me.x||0)-x,(MP.me.z||0)-z)<.5)return;MP.me.x=x;MP.me.z=z;MP.me.t=Date.now();MP.posDirty=true;mpMove();},900);
 function mpSet(o){const prev={...MP.me};Object.assign(MP.me,o,{name:myName(),bowls:REC.today,with:INV?INV.sid:null,sc:CUR_SC?shortSc(CUR_SC.name).slice(0,16):''});
   const moved=prev.x!==MP.me.x||prev.z!==MP.me.z;if(moved)MP.me.t=Date.now();
