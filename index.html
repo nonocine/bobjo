@@ -1453,10 +1453,10 @@ const REGION={'서울특별시':[37.57,126.98],'부산광역시':[35.18,129.08],
 var SCHOOL_MEALS=null,bkFocus=false,MODE=null,SRC='모두의 급식실',storySeen=false,bkDone=false,bkTray=null,bkLbl=null;
 const ymd=d=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
 const isAdult=()=>MODE==='kid'||MODE==='alma'||MODE==='lunch';
-function showPane(id){['dPick','dSearch','dMeal','dBye'].forEach(x=>$('#'+x).hidden=x!==id);if(id==='dMeal'&&$('#adultHint'))$('#adultHint').hidden=!isAdult();$('#door .card').scrollTop=0;}
+function showPane(id){['dPick','dSearch','dMeal','dBye'].forEach(x=>$('#'+x).hidden=x!==id);if(id==='dMeal'){track('meal',MODE||'');if($('#adultHint'))$('#adultHint').hidden=!isAdult();}$('#door .card').scrollTop=0;}
 document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>showPane('dPick'));
 const S_TITLE={me:'우리 학교 찾기',kid:'아이 학교 찾기',alma:'내 모교 찾기'};
-document.querySelectorAll('.pick').forEach(b=>b.onclick=()=>{MODE=b.dataset.m;
+document.querySelectorAll('.pick').forEach(b=>b.onclick=()=>{MODE=b.dataset.m;track('pick',MODE);
   if(MODE==='lunch'){showLunch();return;}
   $('#sTitle').textContent=S_TITLE[MODE];$('#sInput').placeholder='학교 이름 (예: 동래중학교)';$('#sMsg').textContent='';$('#sList').innerHTML='';showPane('dSearch');setTimeout(()=>$('#sInput').focus(),50);});
 $('#sGo').onclick=searchSchool;$('#sInput').addEventListener('keydown',e=>{if(e.key==='Enter')searchSchool();});
@@ -1804,7 +1804,7 @@ $('#byeEnter').onclick=()=>{track('bye_enter');showPane('dMeal');$('#enter').cli
 $('#byeHome').onclick=()=>showPane('dPick');
 $('#enter').onclick=async()=>{track('enter',SRC);mpStart();setTimeout(()=>{if(!MP.me.st&&state!=='door')mpSet({st:'pre',seat:null,x:+me.position.x.toFixed(2),z:+me.position.z.toFixed(2)});},1200);logVisit();let seen=null;try{seen=localStorage.getItem('gs-help');localStorage.setItem('gs-help','1');}catch(e){}$('#door').classList.remove('on');state='idle';$('#hintTap').style.opacity=0;goQueue();};
 updNav();
-$('#ring').onclick=()=>{unlockAudio();setSound(true);chime();$('#bellSvg').classList.add('ringing');$('#ring').classList.add('torn');$('#ring').disabled=true;
+$('#ring').onclick=()=>{try{track('ticket');}catch(e){}try{unlockAudio();setSound(true);chime();}catch(e){}$('#bellSvg').classList.add('ringing');$('#ring').classList.add('torn');$('#ring').disabled=true;
   setTimeout(()=>{$('#bellSvg').classList.remove('ringing');$('#loading').classList.add('gone');},3400);};
 })();
 
