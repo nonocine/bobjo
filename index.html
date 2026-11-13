@@ -49,9 +49,9 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-off
 .ld .steam:nth-child(1){left:22px}.ld .steam:nth-child(2){left:39px;animation-delay:.3s}.ld .steam:nth-child(3){left:56px;animation-delay:.6s}
 @keyframes steam{0%{transform:translateY(6px) scaleY(.6);opacity:0}40%{opacity:.8}100%{transform:translateY(-14px) scaleY(1);opacity:0}}
 .ld h1{font-family:var(--title);font-weight:400;font-size:38px;margin:4px 0 10px;display:flex;align-items:center;justify-content:center}
-.hero{display:block;position:relative;width:min(340px,86vw);margin:0 auto 12px;padding:0!important;border:0!important;outline:0;min-height:0!important;border-radius:18px;overflow:hidden;cursor:pointer;box-shadow:0 8px 22px rgba(60,40,10,.18);background:#F3EEE6}
-.hero img{display:block;width:100%;height:auto;aspect-ratio:5/3}
-.hero .play{position:absolute;left:0;right:0;bottom:12px;margin:0 auto;width:max-content;white-space:nowrap;background:rgba(42,38,32,.82);color:#FFFFFF;font-size:14px;font-weight:700;border-radius:999px;padding:7px 14px;animation:roadP 1.6s ease-in-out infinite}
+.heroprev{display:block;position:relative;width:min(340px,86vw);margin:0 auto 12px;padding:0!important;border:0!important;outline:0;min-height:0!important;border-radius:18px;overflow:hidden;cursor:pointer;box-shadow:0 8px 22px rgba(60,40,10,.18);background:#F3EEE6}
+.heroprev img{display:block;width:100%;height:auto;aspect-ratio:5/3}
+.heroprev .play{position:absolute;left:0;right:0;bottom:12px;margin:0 auto;width:max-content;white-space:nowrap;background:rgba(42,38,32,.82);color:#FFFFFF;font-size:14px;font-weight:700;border-radius:999px;padding:7px 14px;animation:roadP 1.6s ease-in-out infinite}
 .herocap{word-break:keep-all;margin:0 auto 10px;max-width:320px;font-size:13.5px;color:#6B6255;line-height:1.45}
 .bell{width:40px;height:46px;margin:0 6px 0 0;vertical-align:-6px;display:inline-block;transform-origin:50% 8%;animation:sway 1.4s ease-in-out infinite alternate}
 .bell.ringing{animation:ring .22s ease-in-out infinite alternate}
@@ -144,6 +144,8 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-off
 .joy::before{border-bottom-color:#2A2620;transform:translate(-50%,-38px)}
 .joy::after{border-top-color:#2A2620;transform:translate(-50%,26px)}
 .joy-k{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(42,38,32,.82);box-shadow:0 2px 6px rgba(0,0,0,.25);pointer-events:none}
+.skipsc{margin:18px 0 0;padding-top:14px;border-top:1px dashed var(--line);text-align:center}
+.skipsc p{margin:0 0 8px;font-size:13.5px;color:#6B6255}
 .tag-mp{font-size:11.5px;font-weight:700;background:#FFFFFF;color:#2A2620;border:2px solid #2E9A62;border-radius:999px;padding:1px 8px;white-space:nowrap}
 .mpc{position:absolute;left:10px;top:8px;z-index:6;background:rgba(42,38,32,.82);color:#FFFFFF;font-size:12.5px;font-weight:700;border-radius:999px;padding:4px 10px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .emobar{position:absolute;left:50%;transform:translateX(-50%);bottom:84px;z-index:8;display:flex;flex-direction:row;gap:4px;padding:5px 8px;border-radius:999px}
@@ -413,7 +415,7 @@ details ul{padding-left:16px}
   <div id="loading"><div class="ld">
     <p class="bbak">빡.만.앱</p><p class="bsub">청소년지도사가 <em>빡</em>쳐서 <em>만</em>든 <em>앱</em></p>
     <h1><svg class="bell" id="bellSvg" viewBox="0 0 96 110" aria-hidden="true"><rect x="44" y="0" width="8" height="12" rx="3" fill="#8A6A45"/><path d="M48 10 C22 10 18 40 18 62 C18 74 12 80 8 86 L88 86 C84 80 78 74 78 62 C78 40 74 10 48 10Z" fill="#E6B53C" stroke="#B88A1E" stroke-width="3"/><rect x="6" y="84" width="84" height="8" rx="4" fill="#C9961F"/><circle cx="48" cy="100" r="9" fill="#B88A1E"/><path d="M30 40 C32 28 40 22 48 22" stroke="#FFF2C4" stroke-width="5" fill="none" stroke-linecap="round"/></svg>모두의 급식?</h1>
-    <button class="hero" id="heroBtn" aria-label="3D 급식실 들어가기"><img src="img/hero.webp" alt="3D 급식실: 아이들이 줄 서서 배식 받고 식탁에서 밥을 먹는 모습" width="720" height="432"><span class="play">▶ 3D 급식실 들어가기 · 2분</span></button>
+    <button class="heroprev" id="heroBtn" aria-label="3D 급식실 들어가기"><img src="img/hero.webp" alt="3D 급식실: 아이들이 줄 서서 배식 받고 식탁에서 밥을 먹는 모습" width="720" height="432"><span class="play">▶ 3D 급식실 들어가기 · 2분</span></button>
     <p class="herocap">줄 서서 배식 받고, 친구랑 같이 먹고, 전국 학교 급식까지 한 그릇씩.</p><ul class="who3"><li><b class="w1">청소년</b>우리 학교 급식 찾기</li><li><b class="w2">학부모</b>우리 아이 급식 찾기</li><li><b class="w3">직장인</b>오늘 뭐 먹지? 추천</li></ul>
     <div class="ldbtns" id="ldBtns"><div class="tkwrap"><button class="ticket" id="ring" aria-label="식권 내고 들어가기 (종소리가 나요)"><span class="tk-main"><small id="tkNo">식권</small><b>식권 내고 들어가기</b><em>🔔 종이 울려요</em></span><span class="tk-stub">1인<br>1식</span></button></div></div><p class="why">하다 보면 왜 빡쳤는지 알게 돼요.</p><p class="sorry">불편하게 했다면 죄송합니다 🙏</p></div></div>
 
@@ -466,6 +468,7 @@ details ul{padding-left:16px}
       <div class="sbox"><input id="sInput" type="search" enterkeyhint="search" autocomplete="off"><button class="btn" id="sGo">찾기</button></div>
       <p class="msg" id="sMsg"></p>
       <ul class="slist" id="sList"></ul>
+      <div class="skipsc"><p>학교 이름이 기억 안 나도 괜찮아요</p><button class="btn sub" id="sSkip" style="width:100%">오늘 점심 추천으로 바로 들어가기 →</button></div>
     </div>
     <div id="dMeal" hidden>
       <button class="linkbtn back" data-back>← 처음으로</button>
@@ -1796,6 +1799,7 @@ function bindInv(){const b=$('#sitInv');if(!b)return;b.onclick=()=>{track('sit_f
   if(HOLD&&HOLD.taken==='hold'){HOLD.taken=null;const h=HOLD;HOLD=null;return goSeat(h);}
   const bs=SEATS.find(x=>x.taken===bk);const ns=bs&&seatNear(bs);if(ns)return goSeat(ns);
   const o=MP.others.get(INV.sid);const s=o?seatAcross(o.seat):null;if(s)goSeat(s);else carryAct();};}
+$('#sSkip').onclick=()=>{track('pick','skip_'+(MODE||''));showLunch();};
 $('#heroBtn').onclick=()=>{track('hero');$('#ring').click();};
 $('#doorShare').onclick=async()=>{await shareApp();const t=$('#toast').textContent;if(t){$('#doorMsg').textContent=t;$('#doorMsg').hidden=false;$('#toast').textContent='';}};
 $('#doorSave').onclick=async()=>{if(await saveMenu())$('#doorMsg').hidden=false;};
